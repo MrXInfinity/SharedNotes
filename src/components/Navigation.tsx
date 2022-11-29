@@ -30,7 +30,7 @@ const EachTabs = styled(Tab)({
   minWidth: 0,
 });
 
-const NavItem = ({ link, children }: NavItemProps) => {
+const NavItem: React.FC<NavItemProps> = ({ link, children }) => {
   return (
     <NavLink
       to={link}

@@ -1,6 +1,5 @@
 import Typography from "@mui/material/Typography";
 import { Container } from "@mui/system";
-import React from "react";
 import RecentComponent from "./RecentComponent";
 
 const Home = () => {
