@@ -9,6 +9,7 @@ import Home from "./pages/Home/Home";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import UseAuthenticate from "./hooks/useAuthenticate";
 import SignIn from "./pages/SignInComponent";
+import SignUp from "./pages/SignUpComponent";
 import { ThemeProvider } from "@mui/material/styles";
 import useCustomTheme from "./theme";
 import Container from "@mui/material/Container";
@@ -56,11 +57,11 @@ function App() {
               },
               {
                 path: "/sign-in",
-                element: <SignIn setIsDarkMode={changeTheme} />,
+                element: <SignIn {...{ changeTheme }} />,
               },
               {
                 path: "/sign-up",
-                element: <h1>Sign Up</h1>,
+                element: <SignUp {...{ changeTheme }} />,
               },
             ])}
           />

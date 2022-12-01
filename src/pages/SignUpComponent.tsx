@@ -19,36 +19,43 @@ import {
 } from "@mui/material";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import LinkIcon from "@mui/icons-material/Link";
 import notepadBg from "../assets/notepad-bg.svg";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import useAuthContext from "../context";
+import { SubmitHandler, useForm, UseFormRegister } from "react-hook-form";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import useAuthContext from "../context";
 
 type FormData = {
+  firstname: string;
+  lastname: string;
   email: string;
   password: string;
 };
 
-const StyledButtons: React.FC<{
-  children: React.ReactNode;
-  type?: "submit";
-}> = ({ children, type }) => {
+const StyledTextFieldComponent: React.FC<{
+  type: "email" | "firstname" | "lastname";
+  label: string;
+  register: UseFormRegister<FormData>;
+}> = ({ type, label, register }) => {
   return (
-    <Button
-      variant="contained"
-      sx={{ color: "white" }}
-      size="large"
+    <TextField
+      sx={{ width: "100%", mb: 2 }}
       type={type}
-    >
-      {children}
-    </Button>
+      required
+      id="outlined-basic"
+      label={label}
+      variant="outlined"
+      {...register(type, {
+        required: true,
+      })}
+    />
   );
 };
 
-const SignIn: React.FC<{ changeTheme: () => void }> = ({ changeTheme }) => {
+const SignUp: React.FC<{ changeTheme: () => void }> = ({ changeTheme }) => {
   const {
     register,
     watch,
@@ -56,6 +63,8 @@ const SignIn: React.FC<{ changeTheme: () => void }> = ({ changeTheme }) => {
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
+      firstname: "",
+      lastname: "",
       email: "",
       password: "",
     },
@@ -75,8 +84,8 @@ const SignIn: React.FC<{ changeTheme: () => void }> = ({ changeTheme }) => {
     setAnchorEl(null);
   };
 
-  const onSubmit: SubmitHandler<FormData> = (data) => {
-    login(data.email, data.password);
+  const onSubmit = (data: any) => {
+    console.log(data);
   };
 
   return (
@@ -155,19 +164,32 @@ const SignIn: React.FC<{ changeTheme: () => void }> = ({ changeTheme }) => {
         }}
         variant="outlined"
       >
-        <CardHeader title="Sign In" />
+        <CardHeader
+          action={
+            <IconButton aria-label="return">
+              <Link to="/sign-in">
+                <ArrowBackIcon />
+              </Link>
+            </IconButton>
+          }
+          title="Sign Up"
+        />
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent sx={{ dislay: "flex" }}>
-            <TextField
-              sx={{ width: "100%", mb: 2 }}
+            <StyledTextFieldComponent
+              type="firstname"
+              register={register}
+              label="First Name"
+            />
+            <StyledTextFieldComponent
+              type="lastname"
+              register={register}
+              label="Last Name"
+            />
+            <StyledTextFieldComponent
               type="email"
-              required
-              id="outlined-basic"
+              register={register}
               label="Email"
-              variant="outlined"
-              {...register("email", {
-                required: true,
-              })}
             />
             <FormControl
               required
@@ -203,15 +225,14 @@ const SignIn: React.FC<{ changeTheme: () => void }> = ({ changeTheme }) => {
               width: "100%",
             }}
           >
-            <StyledButtons>
-              <Link
-                to="/sign-up"
-                style={{ color: "inherit", textDecoration: "none" }}
-              >
-                Sign up
-              </Link>
-            </StyledButtons>
-            <StyledButtons type="submit">Sign In</StyledButtons>
+            <Button
+              variant="contained"
+              sx={{ color: "white" }}
+              size="large"
+              type="submit"
+            >
+              Sign Up
+            </Button>
           </CardActions>
         </form>
       </Card>
@@ -219,4 +240,4 @@ const SignIn: React.FC<{ changeTheme: () => void }> = ({ changeTheme }) => {
   );
 };
 
-export default SignIn;
+export default SignUp;

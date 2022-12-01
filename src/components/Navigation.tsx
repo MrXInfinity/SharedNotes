@@ -19,7 +19,6 @@ import CloudOutlinedIcon from "@mui/icons-material/CloudOutlined";
 import FolderSharedIcon from "@mui/icons-material/FolderShared";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import AssignmentIcon from "@mui/icons-material/Assignment";
-import { SvgIconComponent } from "@mui/icons-material";
 
 type NavItemProps = {
   link: string;

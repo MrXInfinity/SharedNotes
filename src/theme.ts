@@ -8,7 +8,7 @@ const designPalette = (mode: PaletteMode) => ({
         mode,
         ...(mode === 'light' ? {
             primary: {
-                main: "#ff5722"
+                main: "#F07534"
       },
       background: {
         default: "#fff",
@@ -29,7 +29,7 @@ const designPalette = (mode: PaletteMode) => ({
 })
 
 const useCustomTheme = () => {
-    const [mode, setMode] = useState<"light" | "dark">("light")
+    const [mode, setMode] = useState<("light" | "dark")>("light")
     
       const changeTheme = () => {
     setMode((prev) => (prev === "light" ? "dark" : "light"));
