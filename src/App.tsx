@@ -22,7 +22,11 @@ function App() {
   const { theme, changeTheme } = useCustomTheme();
 
   return (
-    <Container sx={{ padding: 0 }}>
+    <Container
+      disableGutters={true}
+      maxWidth="xl"
+      sx={{ padding: 0 }}
+    >
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
@@ -31,7 +35,7 @@ function App() {
               {
                 path: "/",
                 element: currentUser ? (
-                  <Navigation {...{ logout }} />
+                  <Navigation {...{ logout, changeTheme }} />
                 ) : (
                   <Navigate to="/sign-in" />
                 ),
@@ -68,11 +72,11 @@ function App() {
                 children: [
                   {
                     index: true,
-                    element: <SignIn {...{ changeTheme }} />,
+                    element: <SignIn />,
                   },
                   {
                     path: "new-user",
-                    element: <SignUp {...{ changeTheme }} />,
+                    element: <SignUp />,
                   },
                 ],
               },

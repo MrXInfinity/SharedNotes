@@ -5,7 +5,7 @@ import { CardActions, CardContent } from "@mui/material";
 
 const mockupData = [
   {
-    id: "asdjaksdhakjdkasdhkjd",
+    id: "adsdfsdfsdf",
     createdAt: new Date(),
     title: "Title1",
     description: "lorem",
@@ -19,7 +19,7 @@ const mockupData = [
     updatedAt: new Date(Date.now()),
   },
   {
-    id: "asdjaksdhakjdkasdhkjd",
+    id: "asdjargsgfdgf",
     createdAt: new Date(),
     title: "Title1",
     description: "lorem",

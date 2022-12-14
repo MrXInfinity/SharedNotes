@@ -38,7 +38,7 @@ const StyledButtons: React.FC<{
   );
 };
 
-const SignIn: React.FC<{ changeTheme: () => void }> = ({ changeTheme }) => {
+const SignIn: React.FC = () => {
   const {
     register,
     watch,
@@ -64,9 +64,11 @@ const SignIn: React.FC<{ changeTheme: () => void }> = ({ changeTheme }) => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        py: 2,
-        px: 2,
-        mx: 2,
+        p: 2,
+        pb: 3,
+        mx: "auto",
+        maxWidth: "565px",
+        mt: 10,
       }}
       variant="outlined"
     >
@@ -115,10 +117,19 @@ const SignIn: React.FC<{ changeTheme: () => void }> = ({ changeTheme }) => {
           sx={{
             display: "grid",
             gridTemplateColumns: "repeat(2, 1fr)",
+            gap: 2,
             width: "100%",
+            px: 2,
           }}
         >
-          <Button onClick={() => logout()}>Sign up</Button>
+          <StyledButtons>
+            <Link
+              to="/sign-in/new-user"
+              style={{ color: "inherit", textDecoration: "none" }}
+            >
+              Sign up
+            </Link>
+          </StyledButtons>
           <StyledButtons type="submit">Sign In</StyledButtons>
         </CardActions>
       </form>
@@ -127,14 +138,3 @@ const SignIn: React.FC<{ changeTheme: () => void }> = ({ changeTheme }) => {
 };
 
 export default SignIn;
-
-{
-  /* <StyledButtons>
-  <Link
-    to="/sign-up"
-    style={{ color: "inherit", textDecoration: "none" }}
-  >
-    Sign up
-  </Link>
-</StyledButtons>; */
-}

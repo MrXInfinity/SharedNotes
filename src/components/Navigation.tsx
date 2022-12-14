@@ -6,6 +6,7 @@ import {
   styled,
   Tab,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { NavLink, Outlet } from "react-router-dom";
 import { Stack } from "@mui/material";
@@ -43,7 +44,9 @@ const NavItem: React.FC<NavItemProps> = ({ link, children }) => {
           width: "100%",
         }}
         icon={
-          <Icon sx={{ display: "flex", justifyContent: "center" }}>
+          <Icon
+            sx={{ display: "flex", justifyContent: "center", color: "white" }}
+          >
             {children}
           </Icon>
         }
@@ -52,13 +55,22 @@ const NavItem: React.FC<NavItemProps> = ({ link, children }) => {
   );
 };
 
-const Navigation: React.FC<{ logout: () => void }> = ({ logout }) => {
+const Navigation: React.FC<{ logout: () => void; changeTheme: () => void }> = ({
+  logout,
+  changeTheme,
+}) => {
+  const isWindowLarge = useMediaQuery("(min-width:600px)");
   return (
     <>
       <Box mb={4}>
         <AppBar
           position="static"
-          sx={{ pt: 4, color: "white" }}
+          sx={{
+            pt: 4,
+            color: "white",
+            backgroundImage: "none",
+            boxShadow: "none",
+          }}
         >
           <Box
             sx={{
@@ -73,39 +85,71 @@ const Navigation: React.FC<{ logout: () => void }> = ({ logout }) => {
             <Stack
               direction="row"
               spacing={{ xs: 1, sm: 2 }}
+              sx={{ alignItems: "center" }}
             >
               <SearchIcon />
-              <DarkModeIcon />
+              <IconButton onClick={() => changeTheme()}>
+                <DarkModeIcon sx={{ color: "white" }} />
+              </IconButton>
               <IconButton onClick={() => logout()}>
-                <AccountCircleRoundedIcon />
+                <AccountCircleRoundedIcon sx={{ color: "white" }} />
               </IconButton>
               <SettingsRoundedIcon />
             </Stack>
           </Box>
-          <Stack
-            direction="row"
-            sx={{
-              display: "grid",
-              width: "100%",
-              gridTemplateColumns: "repeat(5, 1fr)",
-            }}
-          >
-            <NavItem link={"/"}>
-              <CottageOutlinedIcon />
-            </NavItem>
-            <NavItem link={"/shared-notes"}>
-              <CloudOutlinedIcon />
-            </NavItem>
-            <NavItem link={"/private-notes"}>
-              <FolderSharedIcon />
-            </NavItem>
-            <NavItem link={"/reminders"}>
-              <CalendarTodayIcon />
-            </NavItem>
-            <NavItem link={"/tasks"}>
-              <AssignmentIcon />
-            </NavItem>
-          </Stack>
+          {isWindowLarge ? (
+            <div>
+              <Box
+                sx={{
+                  display: "inline-flex",
+                  flexDirection: "column",
+                  width: "30%",
+                }}
+              >
+                <NavItem link={"/"}>
+                  <CottageOutlinedIcon />
+                </NavItem>
+                <NavItem link={"/shared-notes"}>
+                  <CloudOutlinedIcon />
+                </NavItem>
+                <NavItem link={"/private-notes"}>
+                  <FolderSharedIcon />
+                </NavItem>
+                <NavItem link={"/reminders"}>
+                  <CalendarTodayIcon />
+                </NavItem>
+                <NavItem link={"/tasks"}>
+                  <AssignmentIcon />
+                </NavItem>
+              </Box>
+              <Outlet />
+            </div>
+          ) : (
+            <Stack
+              direction="row"
+              sx={{
+                display: "grid",
+                width: "100%",
+                gridTemplateColumns: "repeat(5, 1fr)",
+              }}
+            >
+              <NavItem link={"/"}>
+                <CottageOutlinedIcon />
+              </NavItem>
+              <NavItem link={"/shared-notes"}>
+                <CloudOutlinedIcon />
+              </NavItem>
+              <NavItem link={"/private-notes"}>
+                <FolderSharedIcon />
+              </NavItem>
+              <NavItem link={"/reminders"}>
+                <CalendarTodayIcon />
+              </NavItem>
+              <NavItem link={"/tasks"}>
+                <AssignmentIcon />
+              </NavItem>
+            </Stack>
+          )}
         </AppBar>
       </Box>
       <Outlet />

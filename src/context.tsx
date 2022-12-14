@@ -58,9 +58,7 @@ export const AuthProvider: React.FC<React.ReactPortal> = ({ children }) => {
     const authChange = onAuthStateChanged(auth, (user) => {
       if (user) {
         setCurrentUser(user.uid);
-        console.log("logged in successful");
       } else {
-        console.log("logging in failed");
         setCurrentUser("");
         logout();
       }
@@ -69,7 +67,6 @@ export const AuthProvider: React.FC<React.ReactPortal> = ({ children }) => {
     });
   }, []);
 
-  console.log(currentUser);
   return (
     <AuthContext.Provider value={{ currentUser, login, logout }}>
       {children}

@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Card,
   CardActions,
@@ -10,6 +11,7 @@ import {
   InputLabel,
   OutlinedInput,
   TextField,
+  Typography,
   useTheme,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -45,7 +47,7 @@ const StyledTextFieldComponent: React.FC<{
   );
 };
 
-const SignUp: React.FC<{ changeTheme: () => void }> = ({ changeTheme }) => {
+const SignUp: React.FC = () => {
   const {
     register,
     watch,
@@ -73,24 +75,36 @@ const SignUp: React.FC<{ changeTheme: () => void }> = ({ changeTheme }) => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        py: 2,
-        px: 2,
-        mx: 2,
+        p: 2,
+        pb: 3,
+        mx: "auto",
+        maxWidth: "565px",
+        mt: 6,
       }}
       variant="outlined"
     >
-      <CardHeader
-        action={
-          <IconButton aria-label="return">
-            <Link to="/sign-in">
-              <ArrowBackIcon />
-            </Link>
-          </IconButton>
-        }
-        title="Sign Up"
-      />
+      <Box
+        sx={{
+          display: "flex",
+          width: "100%",
+          justifyContent: "center",
+          position: "relative",
+          alignItems: "center",
+          py: 2,
+        }}
+      >
+        <IconButton
+          sx={{ left: 0, position: "absolute" }}
+          aria-label="return"
+        >
+          <Link to="/sign-in">
+            <ArrowBackIcon color="primary" />
+          </Link>
+        </IconButton>
+        <Typography variant="h5">Sign Up</Typography>
+      </Box>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <CardContent sx={{ dislay: "flex" }}>
+        <CardContent sx={{ dislay: "flex", gap: 2 }}>
           <StyledTextFieldComponent
             type="firstname"
             register={register}
@@ -135,9 +149,11 @@ const SignUp: React.FC<{ changeTheme: () => void }> = ({ changeTheme }) => {
         </CardContent>
         <CardActions
           sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
+            display: "flex",
             width: "100%",
+            flexGrow: 1,
+            px: 2,
+            justifyContent: "end",
           }}
         >
           <Button

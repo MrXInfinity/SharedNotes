@@ -33,10 +33,11 @@ const LoggedOutNav: React.FC<{ changeTheme: () => void }> = ({
   return (
     <Container
       style={{
-        background: `url("${notepadBg}") no-repeat fixed center`,
+        backgroundSize: "cover",
+        background: `url("${notepadBg}") no-repeat center`,
         height: "100vh",
-        width: "100vw",
       }}
+      sx={{ px: 0 }}
     >
       <Box
         sx={{
@@ -45,7 +46,6 @@ const LoggedOutNav: React.FC<{ changeTheme: () => void }> = ({
           justifyContent: "space-between",
           px: 3,
           py: 4,
-          mb: 10,
         }}
       >
         <Typography variant="h5">ShareNotes</Typography>
