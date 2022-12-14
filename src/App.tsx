@@ -1,22 +1,24 @@
 import {
   RouterProvider,
   createBrowserRouter,
-  redirect,
+  Navigate,
 } from "react-router-dom";
 import Navigation from "./components/Navigation";
 import CssBaseline from "@mui/material/CssBaseline";
 import Home from "./pages/Home/Home";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import UseAuthenticate from "./hooks/useAuthenticate";
 import SignIn from "./pages/SignInComponent";
 import SignUp from "./pages/SignUpComponent";
 import { ThemeProvider } from "@mui/material/styles";
 import useCustomTheme from "./theme";
 import Container from "@mui/material/Container";
+import { auth } from "./firebase";
+import useAuthContext from "./context";
+import LoggedOutNav from "./components/LoggedOutNav";
 
 function App() {
   const queryClient = new QueryClient();
-  const { currentUser } = UseAuthenticate();
+  const { currentUser, logout } = useAuthContext();
   const { theme, changeTheme } = useCustomTheme();
 
   return (
@@ -28,10 +30,11 @@ function App() {
             router={createBrowserRouter([
               {
                 path: "/",
-                loader: async () => {
-                  if (!currentUser) return redirect("/sign-in");
-                },
-                element: <Navigation />,
+                element: currentUser ? (
+                  <Navigation {...{ logout }} />
+                ) : (
+                  <Navigate to="/sign-in" />
+                ),
                 children: [
                   {
                     index: true,
@@ -56,12 +59,22 @@ function App() {
                 ],
               },
               {
-                path: "/sign-in",
-                element: <SignIn {...{ changeTheme }} />,
-              },
-              {
-                path: "/sign-up",
-                element: <SignUp {...{ changeTheme }} />,
+                path: "sign-in",
+                element: !currentUser ? (
+                  <LoggedOutNav {...{ changeTheme }} />
+                ) : (
+                  <Navigate to="/" />
+                ),
+                children: [
+                  {
+                    index: true,
+                    element: <SignIn {...{ changeTheme }} />,
+                  },
+                  {
+                    path: "new-user",
+                    element: <SignUp {...{ changeTheme }} />,
+                  },
+                ],
               },
             ])}
           />

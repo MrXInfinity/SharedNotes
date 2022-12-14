@@ -1,10 +1,9 @@
 import {
   AppBar,
   Box,
-  Button,
   Icon,
+  IconButton,
   styled,
-  SvgIconProps,
   Tab,
   Typography,
 } from "@mui/material";
@@ -53,13 +52,13 @@ const NavItem: React.FC<NavItemProps> = ({ link, children }) => {
   );
 };
 
-const Navigation = () => {
+const Navigation: React.FC<{ logout: () => void }> = ({ logout }) => {
   return (
     <>
       <Box mb={4}>
         <AppBar
           position="static"
-          sx={{ pt: 4 }}
+          sx={{ pt: 4, color: "white" }}
         >
           <Box
             sx={{
@@ -77,7 +76,9 @@ const Navigation = () => {
             >
               <SearchIcon />
               <DarkModeIcon />
-              <AccountCircleRoundedIcon />
+              <IconButton onClick={() => logout()}>
+                <AccountCircleRoundedIcon />
+              </IconButton>
               <SettingsRoundedIcon />
             </Stack>
           </Box>
