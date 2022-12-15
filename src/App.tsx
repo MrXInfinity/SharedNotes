@@ -60,6 +60,10 @@ function App() {
                     path: "tasks",
                     element: <h1>Tasks</h1>,
                   },
+                  {
+                    path: "public-share",
+                    element: <h1>Public Note Sharing</h1>,
+                  },
                 ],
               },
               {

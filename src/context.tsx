@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useContext, createContext } from "react";
 import { auth } from "./firebase";
 import {
+  createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
-  UserCredential,
+  updateProfile,
 } from "firebase/auth";
-import { redirect, useNavigate } from "react-router-dom";
 
 type AuthContextType = {
-  //currentUser: UserCredential | undefined;
   currentUser: string;
   login: (email: string, password: string) => void;
   logout: () => void;
@@ -43,6 +42,19 @@ export const AuthProvider: React.FC<React.ReactPortal> = ({ children }) => {
           message: "No such email exist!",
         });
       }
+    }
+  };
+
+  const signup = async (
+    firstname: string,
+    lastname: string,
+    email: string,
+    password: string
+  ) => {
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+    } catch (err) {
+      console.log(err);
     }
   };
 

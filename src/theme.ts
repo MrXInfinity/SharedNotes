@@ -8,21 +8,21 @@ const designPalette = (mode: PaletteMode) => ({
         mode,
         ...(mode === 'light' ? {
             primary: {
-                main: "#F07534"
+                main: "#F07534",
+                contrastText: "#FFFFFF"
       },
       background: {
-        default: "#fff",
-        paper: "#f6f6f6",
-        //emphasis: "#ff5722"
+        default: "#FFFFFF",
+        paper: "#F6F6F6",
             },
         } : {
             primary: {
-                main: "#F09667"
+                main: "#F09667",
+                contrastText: "#000000"
       },
       background: {
         default: "#2A2A3B",
         paper: "#2E2E41",
-        //emphasis: "#F09667"
             }
         }),
     }
