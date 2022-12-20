@@ -26,6 +26,7 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import AddIcon from "@mui/icons-material/Add";
 import { ReactElement, useState } from "react";
 import { Container } from "@mui/system";
+import NewNoteModal from "./NewNoteModal";
 
 const NavItem: React.FC<{
   link: string;
@@ -67,16 +68,17 @@ const Navigation: React.FC<{ logout: () => void; changeTheme: () => void }> = ({
   changeTheme,
 }) => {
   //Modals
-
+  const [isNewNoteModalOpen, setIsNewNoteModalOpen] = useState(false);
+  const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
+  const [isNewReminderModalOpen, setIsNewReminderModalOpen] = useState(false);
   //Menu withing Settings
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const showMenu = Boolean(anchorEl);
-  const LinkMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const MenuClose = () => {
-    setAnchorEl(null);
-  };
+  const [anchorSettingsEl, setAnchorSettingsEl] = useState<null | HTMLElement>(
+    null
+  );
+  const showSettingsMenu = Boolean(anchorSettingsEl);
+  //Menu within new button
+  const [anchorNewEl, setAnchorNewEl] = useState<null | HTMLElement>(null);
+  const showNewMenu = Boolean(anchorNewEl);
 
   const isWindowLarge = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
@@ -132,18 +134,20 @@ const Navigation: React.FC<{ logout: () => void; changeTheme: () => void }> = ({
 
             <div>
               <IconButton
-                onClick={LinkMenuClick}
-                aria-controls={showMenu ? "basic-menu" : undefined}
+                onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+                  setAnchorSettingsEl(event.currentTarget);
+                }}
+                aria-controls={showSettingsMenu ? "basic-menu" : undefined}
                 aria-haspopup="true"
-                aria-expanded={showMenu ? "true" : undefined}
+                aria-expanded={showSettingsMenu ? "true" : undefined}
               >
                 <SettingsRoundedIcon />
               </IconButton>
               <Menu
                 id="basic-menu"
-                anchorEl={anchorEl}
-                open={showMenu}
-                onClose={MenuClose}
+                anchorEl={anchorSettingsEl}
+                open={showSettingsMenu}
+                onClose={() => setAnchorSettingsEl(null)}
                 MenuListProps={{
                   "aria-labelledby": "basic-button",
                 }}
@@ -254,13 +258,53 @@ const Navigation: React.FC<{ logout: () => void; changeTheme: () => void }> = ({
             <Box sx={{ position: "fixed", right: 30, bottom: 30 }}>
               <Fab
                 color="primary"
+                variant="extended"
                 aria-label="Add New"
+                onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+                  setAnchorNewEl(event.currentTarget);
+                }}
+                aria-controls={showNewMenu ? "basic-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={showNewMenu ? "true" : undefined}
               >
                 <AddIcon />
+                ADD NEW
               </Fab>
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorNewEl}
+                open={showNewMenu}
+                onClose={() => setAnchorNewEl(null)}
+                MenuListProps={{
+                  "aria-labelledby": "basic-button",
+                }}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                transformOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                sx={{ mb: 4 }}
+              >
+                <MenuItem onClick={() => setIsNewNoteModalOpen(true)}>
+                  New Note
+                </MenuItem>
+                <MenuItem onClick={() => setIsNewTaskModalOpen(true)}>
+                  New Task
+                </MenuItem>
+                <MenuItem onClick={() => setIsNewReminderModalOpen(true)}>
+                  New Reminder
+                </MenuItem>
+              </Menu>
             </Box>
           </>
         )}
+        <NewNoteModal
+          isOpen={isNewNoteModalOpen}
+          setIsOpen={setIsNewNoteModalOpen}
+        />
       </Box>
     </>
   );
