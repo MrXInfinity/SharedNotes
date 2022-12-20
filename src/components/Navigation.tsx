@@ -1,13 +1,11 @@
 import {
   AppBar,
   Box,
-  Icon,
+  Fab,
   IconButton,
   Menu,
   MenuItem,
   Paper,
-  styled,
-  SvgIconTypeMap,
   Tab,
   Tabs,
   Typography,
@@ -25,19 +23,9 @@ import CloudOutlinedIcon from "@mui/icons-material/CloudOutlined";
 import FolderSharedIcon from "@mui/icons-material/FolderShared";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import AssignmentIcon from "@mui/icons-material/Assignment";
+import AddIcon from "@mui/icons-material/Add";
 import { ReactElement, useState } from "react";
 import { Container } from "@mui/system";
-
-const IconMenu: React.FC<{
-  eventClick?: () => void;
-  children: JSX.Element;
-}> = ({ children, eventClick }) => {
-  return (
-    <IconButton onClick={eventClick ? () => eventClick() : undefined}>
-      {children}
-    </IconButton>
-  );
-};
 
 const NavItem: React.FC<{
   link: string;
@@ -78,13 +66,14 @@ const Navigation: React.FC<{ logout: () => void; changeTheme: () => void }> = ({
   logout,
   changeTheme,
 }) => {
+  //Modals
+
+  //Menu withing Settings
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const showMenu = Boolean(anchorEl);
-
   const LinkMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
-
   const MenuClose = () => {
     setAnchorEl(null);
   };
@@ -97,8 +86,8 @@ const Navigation: React.FC<{ logout: () => void; changeTheme: () => void }> = ({
         <AppBar
           position="static"
           sx={{
-            pt: 4,
-            pb: 3,
+            pt: { xs: 2, md: 4 },
+            pb: { xs: 1.5, md: 3 },
             backgroundColor: theme.palette.background.paper,
             boxShadow: "none",
             display: "flex",
@@ -110,7 +99,7 @@ const Navigation: React.FC<{ logout: () => void; changeTheme: () => void }> = ({
           }}
         >
           <Typography
-            variant="h5"
+            sx={{ fontWeight: 450, fontSize: { xs: 24, md: 24 } }}
             color="primary"
           >
             ShareNotes
@@ -120,7 +109,7 @@ const Navigation: React.FC<{ logout: () => void; changeTheme: () => void }> = ({
             spacing={{ xs: 1, sm: 2 }}
             sx={{ alignItems: "center" }}
           >
-            <IconMenu>
+            <IconButton>
               <Link
                 to="/public-share"
                 style={{
@@ -131,15 +120,15 @@ const Navigation: React.FC<{ logout: () => void; changeTheme: () => void }> = ({
               >
                 <LanguageIcon />
               </Link>
-            </IconMenu>
+            </IconButton>
 
-            <IconMenu eventClick={() => changeTheme()}>
+            <IconButton onClick={() => changeTheme()}>
               {theme.palette.mode === "dark" ? (
                 <Brightness7Icon />
               ) : (
                 <DarkModeIcon />
               )}
-            </IconMenu>
+            </IconButton>
 
             <div>
               <IconButton
@@ -166,6 +155,7 @@ const Navigation: React.FC<{ logout: () => void; changeTheme: () => void }> = ({
             </div>
           </Stack>
         </AppBar>
+        {/* When Windows is larger than or equal to 600px*/}
         {isWindowLarge ? (
           <Container
             disableGutters={true}
@@ -222,6 +212,7 @@ const Navigation: React.FC<{ logout: () => void; changeTheme: () => void }> = ({
           </Container>
         ) : (
           <>
+            {/* Mobile Port */}
             <Paper
               sx={{
                 display: "grid",
@@ -260,6 +251,14 @@ const Navigation: React.FC<{ logout: () => void; changeTheme: () => void }> = ({
               />
             </Paper>
             <Outlet />
+            <Box sx={{ position: "fixed", right: 30, bottom: 30 }}>
+              <Fab
+                color="primary"
+                aria-label="Add New"
+              >
+                <AddIcon />
+              </Fab>
+            </Box>
           </>
         )}
       </Box>

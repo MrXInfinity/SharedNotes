@@ -1,6 +1,7 @@
 import Typography from "@mui/material/Typography";
-import { Container } from "@mui/system";
+import { Box, Container, Fab, Stack } from "@mui/material";
 import RecentComponent from "./RecentComponent";
+import TodayComponent from "./TodayComponent";
 
 const Home = () => {
   return (
@@ -12,17 +13,27 @@ const Home = () => {
         Welcome
       </Typography>
       <Typography>Johann Isaiah Mendoza</Typography>
-
-      <div>
+      <Stack
+        sx={{ my: 3 }}
+        direction={{ xs: "column", md: "row" }}
+        spacing={{ xs: 2, md: 4 }}
+      >
         <RecentComponent
-          title={"created"}
+          header={"Created"}
           category={"createdAt"}
         />
         <RecentComponent
-          title={"Updated"}
+          header={"Updated"}
           category={"updatedAt"}
         />
-      </div>
+      </Stack>
+      <Stack
+        direction="column"
+        spacing={{ xs: 2, md: 4 }}
+      >
+        <TodayComponent category="Reminder" />
+        <TodayComponent category="Task" />
+      </Stack>
     </Container>
   );
 };

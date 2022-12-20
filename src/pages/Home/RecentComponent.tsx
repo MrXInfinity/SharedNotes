@@ -1,34 +1,32 @@
-import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
-import React, { useState } from "react";
-import { CardActions, CardContent } from "@mui/material";
+import { useState } from "react";
+import { Box, Card, CardActionArea, Typography } from "@mui/material";
 
 const mockupData = [
   {
     id: "adsdfsdfsdf",
     createdAt: new Date(),
-    title: "Title1",
+    title: "My Favorite Bands",
     description: "lorem",
     updatedAt: new Date(Date.now()),
   },
   {
     id: "asdjaksdhakjdkasdhkjd",
     createdAt: new Date(),
-    title: "Title1",
+    title: "Accountancy Reviewer",
     description: "lorem",
     updatedAt: new Date(Date.now()),
   },
   {
     id: "asdjargsgfdgf",
     createdAt: new Date(),
-    title: "Title1",
+    title: "List of Manhwa",
     description: "lorem",
     updatedAt: new Date(Date.now()),
   },
 ];
 
 type RecentComponentProps = {
-  title: string;
+  header: string;
   category: string;
 };
 
@@ -39,22 +37,28 @@ type APIDataTypes = {
   description: string;
   updatedAt: Date;
 };
-const RecentComponent = ({ title, category }: RecentComponentProps) => {
+const RecentComponent = ({ header, category }: RecentComponentProps) => {
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
 
   return (
-    <>
-      <CardContent>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
+      <Typography
+        sx={{ fontWeight: "medium", fontSize: { xs: 18, md: 20 }, mb: 1 }}
+      >
+        Recently {header}
+      </Typography>
+      <Card sx={{ p: { xs: 1.5 }, borderRadius: 5 }}>
         {mockupData.map(({ id, title }: APIDataTypes) => (
-          <CardActions
+          <CardActionArea
+            sx={{ p: 1.5 }}
             key={id}
             onClick={() => setIsNoteModalOpen(true)}
           >
-            {title}
-          </CardActions>
+            <Typography>{title}</Typography>
+          </CardActionArea>
         ))}
-      </CardContent>
-    </>
+      </Card>
+    </Box>
   );
 };
 
