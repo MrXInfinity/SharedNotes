@@ -27,7 +27,10 @@ import AddIcon from "@mui/icons-material/Add";
 import { ReactElement, useState } from "react";
 import { Container } from "@mui/system";
 import NewNoteModal from "./NewNoteModal";
+import NewTaskModal from "./NewTaskModal";
+import NewReminderModal from "./NewReminderModal";
 
+//Each navitem
 const NavItem: React.FC<{
   link: string;
   icon: ReactElement;
@@ -304,6 +307,14 @@ const Navigation: React.FC<{ logout: () => void; changeTheme: () => void }> = ({
         <NewNoteModal
           isOpen={isNewNoteModalOpen}
           setIsOpen={setIsNewNoteModalOpen}
+        />
+        <NewTaskModal
+          isOpen={isNewTaskModalOpen}
+          setIsOpen={setIsNewTaskModalOpen}
+        />
+        <NewReminderModal
+          isOpen={isNewReminderModalOpen}
+          setIsOpen={setIsNewReminderModalOpen}
         />
       </Box>
     </>
