@@ -42,6 +42,7 @@ const NewNoteModal: React.FC<{
       title: "",
       tags: [""],
     },
+    shouldUnregister: true,
   });
 
   const tagList = [
@@ -82,10 +83,6 @@ const NewNoteModal: React.FC<{
         clearErrors("tags");
       }
     }
-
-    return () => {
-      setValue("tags", [""]);
-    };
   }, [personName]);
 
   console.log(errors);

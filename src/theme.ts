@@ -1,7 +1,8 @@
 import { PaletteMode } from "@mui/material";
-import { deepOrange } from "@mui/material/colors";
 import { createTheme } from "@mui/material/styles";
-import { useState, useMemo } from "react";
+// When using TypeScript 4.x and above
+import type {} from '@mui/x-date-pickers/themeAugmentation';
+import { useState } from "react";
 
 const designPalette = (mode: PaletteMode) => ({
     palette: {

@@ -28,29 +28,36 @@ const NewTaskModal: React.FC<{
     setValue,
     setError,
     clearErrors,
-    watch,
     formState: { errors },
   } = useForm<FormTypes>({
     defaultValues: {
       title: "",
       dueDate: null,
     },
+    shouldUnregister: true,
   });
 
-  const [dueDate, setDueDate] = useState<Moment | null>(moment(Date.now()));
+  const [dueDate, setDueDate] = useState<Moment | null>(null);
+
+  const closeModal = () => {
+    setIsOpen(false);
+    setDueDate(null);
+  };
+
+  const formSubmit = (e: any) => {
+    console.log(e);
+  };
 
   useEffect(() => {
     if (dueDate) {
-      setValue("dueDate", dueDate["_d"]);
+      setValue("dueDate", dueDate);
     }
   }, [dueDate]);
-
-  console.log(watch());
 
   return (
     <Modal
       open={isOpen}
-      onClose={() => setIsOpen(false)}
+      onClose={() => closeModal()}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
@@ -77,11 +84,12 @@ const NewTaskModal: React.FC<{
           >
             New Task
           </Typography>
-          <IconButton onClick={() => setIsOpen(false)}>
+          <IconButton onClick={() => closeModal()}>
             <CloseIcon />
           </IconButton>
         </Stack>
         <form
+          onSubmit={handleSubmit(formSubmit)}
           style={{
             display: "flex",
             flexDirection: "column",
@@ -93,15 +101,33 @@ const NewTaskModal: React.FC<{
             variant="outlined"
             label="Title"
             aria-label="title-text-field"
-            {...register("title")}
+            error={errors?.title ? true : false}
+            helperText={errors?.title?.message}
+            {...register("title", {
+              required: "Provide the title of your task.",
+              minLength: {
+                value: 2,
+                message: "Please provide more characters for your title.",
+              },
+              maxLength: {
+                value: 20,
+                message: "Please remove some characters from your title.",
+              },
+            })}
           />
 
           <DateTimePicker
-            renderInput={(props) => <TextField {...props} />}
+            renderInput={(props) => (
+              <TextField
+                {...props}
+                error={errors?.dueDate ? true : false}
+                helperText={errors?.dueDate?.message}
+              />
+            )}
             label="DateTimePicker"
             value={dueDate}
             {...register("dueDate", {
-              required: "Please specify the Due Date",
+              required: "Provide the due date of your task.",
             })}
             onChange={(e) => setDueDate(e)}
             minDateTime={moment(Date.now())}
