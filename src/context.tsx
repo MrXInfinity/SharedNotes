@@ -30,6 +30,7 @@ export const AuthProvider: React.FC<React.ReactPortal> = ({ children }) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
     } catch (err: any) {
+      console.log(err.message);
       if (err.message === "INVALID_PASSWORD") {
         setError({
           name: "Invalid Password",
@@ -70,6 +71,7 @@ export const AuthProvider: React.FC<React.ReactPortal> = ({ children }) => {
     const authChange = onAuthStateChanged(auth, (user) => {
       if (user) {
         setCurrentUser(user.uid);
+        console.log(user);
       } else {
         setCurrentUser("");
         logout();
@@ -78,6 +80,7 @@ export const AuthProvider: React.FC<React.ReactPortal> = ({ children }) => {
       return () => authChange();
     });
   }, []);
+  console.log(currentUser);
 
   return (
     <AuthContext.Provider value={{ currentUser, login, logout }}>

@@ -271,7 +271,9 @@ const Navigation: React.FC<{ logout: () => void; changeTheme: () => void }> = ({
                 aria-expanded={showNewMenu ? "true" : undefined}
               >
                 <AddIcon />
-                ADD NEW
+                <Typography sx={{ fontWeight: "bold", fontSize: 18, ml: 1 }}>
+                  ADD
+                </Typography>
               </Fab>
               <Menu
                 id="basic-menu"
@@ -304,6 +306,7 @@ const Navigation: React.FC<{ logout: () => void; changeTheme: () => void }> = ({
             </Box>
           </>
         )}
+
         <NewNoteModal
           isOpen={isNewNoteModalOpen}
           setIsOpen={setIsNewNoteModalOpen}

@@ -41,7 +41,7 @@ const RecentComponent = ({ header, category }: RecentComponentProps) => {
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column" }}>
+    <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
       <Typography
         sx={{ fontWeight: "medium", fontSize: { xs: 18, md: 20 }, mb: 1 }}
       >

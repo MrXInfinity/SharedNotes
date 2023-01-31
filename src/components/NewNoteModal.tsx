@@ -6,27 +6,31 @@ import {
   FormControlLabel,
   FormHelperText,
   FormLabel,
-  IconButton,
   MenuItem,
-  Modal,
   OutlinedInput,
   Radio,
   RadioGroup,
   Select,
   SelectChangeEvent,
-  Stack,
-  Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
-import CloseIcon from "@mui/icons-material/Close";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { ModalWrapper } from "./UIComponents";
+import { useFirestoreDb } from "../hooks/useFirestoreDb";
+
+type NewNoteFormType = {
+  type: string;
+  title: string;
+  tags: string[];
+};
 
 const NewNoteModal: React.FC<{
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }> = ({ isOpen, setIsOpen }) => {
   const [personName, setPersonName] = useState<string[]>([]);
+  const { addNewNote } = useFirestoreDb();
 
   const {
     register,
@@ -36,7 +40,7 @@ const NewNoteModal: React.FC<{
     clearErrors,
     control,
     formState: { errors },
-  } = useForm({
+  } = useForm<NewNoteFormType>({
     defaultValues: {
       type: "",
       title: "",
@@ -53,7 +57,6 @@ const NewNoteModal: React.FC<{
     "NSFW",
     "Romantic",
   ];
-  console.log(personName);
 
   const closeModal = () => {
     setIsOpen(false);
@@ -67,8 +70,13 @@ const NewNoteModal: React.FC<{
     setPersonName(typeof value === "string" ? value.split(",") : value);
   };
 
-  const formSubmit = (e: any) => {
-    console.log(e);
+  const formSubmit: SubmitHandler<NewNoteFormType> = ({
+    type,
+    title,
+    tags,
+  }) => {
+    addNewNote(type, title, tags);
+    closeModal();
   };
 
   useEffect(() => {
@@ -85,166 +93,144 @@ const NewNoteModal: React.FC<{
     }
   }, [personName]);
 
-  console.log(errors);
-
   return (
-    <Modal
-      open={isOpen}
-      onClose={() => closeModal()}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
+    <ModalWrapper
+      isOpen={isOpen}
+      title="Note"
+      closeModal={closeModal}
     >
-      <Box
-        sx={{
-          position: "absolute" as "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 400,
-          bgcolor: "background.paper",
-          border: "2px solid #000",
-          boxShadow: 24,
-          p: 4,
-        }}
+      <form
+        style={{ display: "flex", flexDirection: "column", gap: 6 }}
+        onSubmit={handleSubmit(formSubmit)}
       >
-        <Stack
-          direction="row"
-          sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}
-        >
-          <Typography
-            id="new-note-modal-title"
-            sx={{ fontWeight: "bold", fontSize: { xs: 28, md: 32 } }}
+        <FormControl fullWidth>
+          <FormLabel
+            sx={{ fontWeight: "medium" }}
+            id="type-radio-label"
           >
-            New Note
-          </Typography>
-          <IconButton onClick={() => closeModal()}>
-            <CloseIcon />
-          </IconButton>
-        </Stack>
-
-        <form
-          style={{ display: "flex", flexDirection: "column", gap: 6 }}
-          onSubmit={handleSubmit(formSubmit)}
-        >
-          <FormControl fullWidth>
+            Type
+          </FormLabel>
+          {errors?.type?.message && (
             <FormLabel
-              sx={{ fontWeight: "medium" }}
+              sx={{ fontSize: 10, color: "red", mt: 1 }}
               id="type-radio-label"
             >
-              Type
+              {errors.type.message}
             </FormLabel>
-            {errors?.type?.message && (
-              <FormLabel
-                sx={{ fontSize: 10, color: "red", mt: 1 }}
-                id="type-radio-label"
+          )}
+          <Controller
+            rules={{
+              required: "Choose a type of note.",
+            }}
+            control={control}
+            name="type"
+            render={({ field }) => (
+              <RadioGroup
+                row
+                aria-labelledby="type-radio-buttons"
+                {...field}
               >
-                {errors.type.message}
-              </FormLabel>
-            )}
-            <Controller
-              rules={{
-                required: "Choose a type of note.",
-              }}
-              shouldUnregister={true}
-              control={control}
-              name="type"
-              render={({ field }) => (
-                <RadioGroup
-                  row
-                  aria-labelledby="type-radio-buttons"
-                  {...field}
-                >
-                  <FormControlLabel
-                    value="private"
-                    control={<Radio />}
-                    label="Private"
-                  />
-                  <FormControlLabel
-                    value="shared"
-                    control={<Radio />}
-                    label="Shared"
-                  />
-                </RadioGroup>
-              )}
-            />
-          </FormControl>
-
-          <FormControl fullWidth>
-            <FormLabel
-              sx={{ fontWeight: "medium" }}
-              id="title-text-input-label"
-            >
-              Title
-            </FormLabel>
-            <OutlinedInput
-              label="Title"
-              required
-              {...register("title", {
-                required: "Please specify the title.",
-                shouldUnregister: true,
-              })}
-            />
-            <FormHelperText></FormHelperText>
-          </FormControl>
-          <FormControl fullWidth>
-            <FormLabel
-              sx={{ fontWeight: "medium" }}
-              id="Tags-select-label"
-            >
-              Tags
-            </FormLabel>
-            {errors?.tags?.message && (
-              <FormLabel
-                sx={{ fontSize: 10, color: "red", mt: 1 }}
-                id="type-radio-label"
-              >
-                {errors.tags.message}
-              </FormLabel>
-            )}
-            <Select
-              labelId="multiple-tags-label"
-              multiple
-              value={personName}
-              onChange={handleChange}
-              input={
-                <OutlinedInput
-                  id="select-multiple-chip"
-                  label="Chip"
+                <FormControlLabel
+                  value="private"
+                  control={<Radio />}
+                  label="Private"
                 />
-              }
-              renderValue={(selected) => (
-                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                  {selected.map((value) => (
-                    <Chip
-                      key={value}
-                      label={value}
-                    />
-                  ))}
-                </Box>
-              )}
-            >
-              {tagList.map((eachTag) => (
-                <MenuItem
-                  key={eachTag}
-                  value={eachTag}
-                >
-                  {eachTag}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <Button
-            type="submit"
-            variant="contained"
-            size="large"
-            sx={{ alignSelf: "flex-end", mt: 2.5 }}
-            endIcon={<NoteAddIcon />}
+                <FormControlLabel
+                  value="shared"
+                  control={<Radio />}
+                  label="Shared"
+                />
+              </RadioGroup>
+            )}
+          />
+        </FormControl>
+
+        <FormControl fullWidth>
+          <FormLabel
+            error={errors?.title ? true : false}
+            sx={{ fontWeight: "medium" }}
+            id="title-text-input-label"
           >
-            Create New Note
-          </Button>
-        </form>
-      </Box>
-    </Modal>
+            Title
+          </FormLabel>
+          <OutlinedInput
+            label="Title"
+            required
+            {...register("title", {
+              required: "Please specify the title.",
+              minLength: {
+                value: 2,
+                message: "Please provide more characters for your title.",
+              },
+              maxLength: {
+                value: 30,
+                message: "Please remove some characters from your title.",
+              },
+            })}
+          />
+          <FormHelperText>{errors?.title?.message}</FormHelperText>
+        </FormControl>
+        <FormControl
+          fullWidth
+          error={errors?.tags ? true : false}
+        >
+          <FormLabel
+            sx={{ fontWeight: "medium" }}
+            id="Tags-select-label"
+          >
+            Tags
+          </FormLabel>
+          {errors?.tags?.message && (
+            <FormLabel
+              sx={{ fontSize: 10, color: "red", mt: 1 }}
+              id="type-radio-label"
+            >
+              {errors.tags.message}
+            </FormLabel>
+          )}
+          <Select
+            labelId="multiple-tags-label"
+            multiple
+            value={personName}
+            onChange={handleChange}
+            input={
+              <OutlinedInput
+                id="select-multiple-chip"
+                label="Chip"
+              />
+            }
+            renderValue={(selected) => (
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                {selected.map((value) => (
+                  <Chip
+                    key={value}
+                    label={value}
+                  />
+                ))}
+              </Box>
+            )}
+          >
+            {tagList.map((eachTag) => (
+              <MenuItem
+                key={eachTag}
+                value={eachTag}
+              >
+                {eachTag}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <Button
+          type="submit"
+          variant="contained"
+          size="large"
+          sx={{ alignSelf: "flex-end", mt: 2.5 }}
+          endIcon={<NoteAddIcon />}
+        >
+          Create New Note
+        </Button>
+      </form>
+    </ModalWrapper>
   );
 };
 

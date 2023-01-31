@@ -20,6 +20,8 @@ import useAuthContext from "../context";
 import { useForm, UseFormRegister } from "react-hook-form";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useFirestoreDb } from "../hooks/useFirestoreDb";
+import type { ErrorObject, ObjectKeys, Error } from "../hooks/useFirestoreDb";
 
 type FormData = {
   firstname: string;
@@ -32,16 +34,23 @@ const StyledTextFieldComponent: React.FC<{
   type: "email" | "firstname" | "lastname";
   label: string;
   register: UseFormRegister<FormData>;
-}> = ({ type, label, register }) => {
+  error: Error;
+}> = ({ type, label, register, error }) => {
   return (
     <TextField
       sx={{ width: "100%", mb: 2 }}
+      error={error[type] ? true : false}
+      helperText={error[type as ObjectKeys]?.message}
       type={type}
       required
       label={label}
       variant="outlined"
       {...register(type, {
-        required: true,
+        required: `${type} is required.`,
+        minLength: {
+          value: 2,
+          message: "Length should be atleast 3 characters.",
+        },
       })}
     />
   );
@@ -62,12 +71,13 @@ const SignUp: React.FC = () => {
     },
   });
 
-  const { login } = useAuthContext();
+  const { signup, newError } = useFirestoreDb();
   const [showPassword, setShowPassword] = useState(false);
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = ({ email, password, firstname, lastname }: FormData) => {
+    signup(firstname, lastname, email, password);
   };
+  console.log(errors);
 
   return (
     <Card
@@ -108,16 +118,19 @@ const SignUp: React.FC = () => {
           <StyledTextFieldComponent
             type="firstname"
             register={register}
+            error={newError}
             label="First Name"
           />
           <StyledTextFieldComponent
             type="lastname"
             register={register}
+            error={newError}
             label="Last Name"
           />
           <StyledTextFieldComponent
             type="email"
             register={register}
+            error={newError}
             label="Email"
           />
           <FormControl

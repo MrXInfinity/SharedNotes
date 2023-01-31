@@ -2,19 +2,35 @@ import Typography from "@mui/material/Typography";
 import { Box, Container, Fab, Stack } from "@mui/material";
 import RecentComponent from "./RecentComponent";
 import TodayComponent from "./TodayComponent";
+import { auth } from "../../firebase";
 
 const Home = () => {
+  console.log(auth.currentUser);
   return (
-    <Container sx={{ px: 3 }}>
+    <Container
+      sx={{ px: { xs: 4, md: 12 } }}
+      maxWidth="lg"
+      disableGutters={true}
+    >
       <Typography
-        variant="h3"
-        sx={{ fontWeight: "bold" }}
+        sx={{
+          fontWeight: "bold",
+          fontSize: { xs: 48, sm: 56, md: 64 },
+          mb: { xs: -1, sm: -2 },
+        }}
       >
         Welcome
       </Typography>
-      <Typography>Johann Isaiah Mendoza</Typography>
+      <Typography
+        sx={{
+          fontWeight: { xs: "medium", sm: 400 },
+          fontSize: { xs: 20, sm: 20, md: 24 },
+        }}
+      >
+        {auth.currentUser?.displayName}
+      </Typography>
       <Stack
-        sx={{ my: 3 }}
+        sx={{ my: 3, display: "flex" }}
         direction={{ xs: "column", md: "row" }}
         spacing={{ xs: 2, md: 4 }}
       >
@@ -28,7 +44,7 @@ const Home = () => {
         />
       </Stack>
       <Stack
-        direction="column"
+        direction={{ xs: "column", md: "row" }}
         spacing={{ xs: 2, md: 4 }}
       >
         <TodayComponent category="Reminder" />

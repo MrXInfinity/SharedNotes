@@ -17,6 +17,7 @@ import useAuthContext from "./context";
 import LoggedOutNav from "./components/LoggedOutNav";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers";
+import SharedNotes from "./pages/SharedNotes/SharedNotes";
 
 function App() {
   const queryClient = new QueryClient();
@@ -37,7 +38,7 @@ function App() {
               router={createBrowserRouter([
                 {
                   path: "/",
-                  element: currentUser ? (
+                  element: auth.currentUser ? (
                     <Navigation {...{ logout, changeTheme }} />
                   ) : (
                     <Navigate to="/sign-in" />
@@ -49,7 +50,7 @@ function App() {
                     },
                     {
                       path: "shared-notes",
-                      element: <h1>Shared Notes</h1>,
+                      element: <SharedNotes />,
                     },
                     {
                       path: "private-notes",
@@ -71,7 +72,7 @@ function App() {
                 },
                 {
                   path: "sign-in",
-                  element: !currentUser ? (
+                  element: !auth.currentUser ? (
                     <LoggedOutNav {...{ changeTheme }} />
                   ) : (
                     <Navigate to="/" />

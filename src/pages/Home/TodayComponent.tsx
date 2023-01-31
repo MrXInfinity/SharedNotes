@@ -1,4 +1,11 @@
-import { Box, Card, Grid, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardActionArea,
+  Grid,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import React from "react";
 
 const mockupData = [
@@ -44,7 +51,11 @@ const TodayComponent: React.FC<{ category: string }> = ({ category }) => {
   const theme = useTheme();
   return (
     <Box>
-      <Typography>Today's {category}</Typography>
+      <Typography
+        sx={{ fontWeight: "medium", fontSize: { xs: 18, md: 20 }, mb: 1 }}
+      >
+        Today's {category}
+      </Typography>
       <Box sx={{ overflowX: "auto" }}>
         <Box
           sx={{
@@ -55,55 +66,59 @@ const TodayComponent: React.FC<{ category: string }> = ({ category }) => {
         >
           {mockupData.map(
             ({ dateOfStart, dateOfEnd, title, status }: MockUpDataType) => (
-              <Card
-                sx={{
-                  width: "100px",
-                  height: "100px",
-                  display: "inline-flex",
-                  flexDirection: "column",
-                  borderTop: 5,
-                  px: 1,
-                  pb: 1,
-                }}
-                style={{
-                  borderBlockColor:
-                    status === "completed"
-                      ? theme.palette.success.main
-                      : status === "missed"
-                      ? theme.palette.error.main
-                      : status === "current"
-                      ? theme.palette.primary.main
-                      : theme.palette.background.paper,
-                }}
-              >
-                <Box
+              <Card>
+                <CardActionArea
                   sx={{
-                    display: "flex",
+                    width: "100px",
+                    height: "100px",
+                    display: "inline-flex",
                     flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "100%",
+                    alignItems: "start",
+                    borderTop: 5,
+                    px: 1,
+                    pb: 1,
+                  }}
+                  style={{
+                    borderBlockColor:
+                      status === "completed"
+                        ? theme.palette.success.main
+                        : status === "missed"
+                        ? theme.palette.error.main
+                        : status === "current"
+                        ? theme.palette.primary.main
+                        : theme.palette.background.paper,
                   }}
                 >
-                  <Typography sx={{ fontSize: 24, fontWeight: "bold" }}>
-                    {dateOfStart}
-                  </Typography>
-                  {dateOfEnd && (
-                    <Typography sx={{ fontSize: 14, fontWeight: "bold" }}>
-                      {dateOfEnd}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      height: "100%",
+                      mx: "auto",
+                    }}
+                  >
+                    <Typography sx={{ fontSize: 24, fontWeight: "bold" }}>
+                      {dateOfStart}
                     </Typography>
-                  )}
-                </Box>
-                <Typography
-                  noWrap={true}
-                  sx={{
-                    fontSize: { xs: 12, md: 14 },
-                    mt: "auto",
-                    textAlign: "center",
-                  }}
-                >
-                  {title}
-                </Typography>
+                    {dateOfEnd && (
+                      <Typography sx={{ fontSize: 14, fontWeight: "bold" }}>
+                        {dateOfEnd}
+                      </Typography>
+                    )}
+                  </Box>
+                  <Typography
+                    noWrap={true}
+                    sx={{
+                      fontSize: { xs: 12, md: 14 },
+                      mt: "auto",
+                      textAlign: "center",
+                    }}
+                  >
+                    {title}
+                  </Typography>
+                </CardActionArea>
               </Card>
             )
           )}

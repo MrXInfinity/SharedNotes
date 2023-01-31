@@ -5,6 +5,7 @@ import {
   CardContent,
   CardHeader,
   FormControl,
+  FormHelperText,
   IconButton,
   InputAdornment,
   InputLabel,
@@ -14,8 +15,8 @@ import {
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import React, { useState } from "react";
-import { Link, redirect } from "react-router-dom";
-import useAuthContext from "../context";
+import { Link } from "react-router-dom";
+import { useFirestoreDb } from "../hooks/useFirestoreDb";
 
 type FormData = {
   email: string;
@@ -51,12 +52,13 @@ const SignIn: React.FC = () => {
     },
   });
 
-  const { login, logout } = useAuthContext();
+  const { login, error } = useFirestoreDb();
   const [showPassword, setShowPassword] = useState(false);
 
-  const onSubmit: SubmitHandler<FormData> = (data) => {
-    login(data.email, data.password);
+  const onSubmit: SubmitHandler<FormData> = ({ email, password }) => {
+    login(email, password);
   };
+  console.log(error);
 
   return (
     <Card
@@ -78,8 +80,9 @@ const SignIn: React.FC = () => {
           <TextField
             sx={{ width: "100%", mb: 2 }}
             type="email"
+            error={error.type === "EMAIL"}
+            helperText={error.type === "EMAIL" && error.message}
             required
-            id="outlined-basic"
             label="Email"
             variant="outlined"
             {...register("email", {
@@ -90,10 +93,9 @@ const SignIn: React.FC = () => {
             required
             sx={{ my: 1, width: "100%" }}
             variant="outlined"
+            error={error.type === "PASSWORD"}
           >
-            <InputLabel htmlFor="outlined-adornment-password">
-              Password
-            </InputLabel>
+            <InputLabel>Password</InputLabel>
             <OutlinedInput
               id="outlined-adornment-password"
               type={showPassword ? "text" : "password"}
@@ -111,6 +113,9 @@ const SignIn: React.FC = () => {
                 </InputAdornment>
               }
             />
+            <FormHelperText>
+              {error.type === "PASSWORD" && error.message}
+            </FormHelperText>
           </FormControl>
         </CardContent>
         <CardActions
