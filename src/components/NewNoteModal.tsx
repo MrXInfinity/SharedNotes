@@ -131,12 +131,12 @@ const NewNoteModal: React.FC<{
                 {...field}
               >
                 <FormControlLabel
-                  value="private"
+                  value="Private"
                   control={<Radio />}
                   label="Private"
                 />
                 <FormControlLabel
-                  value="shared"
+                  value="Shared"
                   control={<Radio />}
                   label="Shared"
                 />

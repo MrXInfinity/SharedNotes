@@ -16,7 +16,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useFirestoreDb } from "../hooks/useFirestoreDb";
+import useAuth from "../hooks/useAuth";
+import type { ErrorType, ErrorKeys, ErrorValues } from "../hooks/useAuth";
 
 type FormData = {
   email: string;
@@ -52,7 +53,7 @@ const SignIn: React.FC = () => {
     },
   });
 
-  const { login, error } = useFirestoreDb();
+  const { login, error } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit: SubmitHandler<FormData> = ({ email, password }) => {
@@ -80,8 +81,8 @@ const SignIn: React.FC = () => {
           <TextField
             sx={{ width: "100%", mb: 2 }}
             type="email"
-            error={error.type === "EMAIL"}
-            helperText={error.type === "EMAIL" && error.message}
+            error={error.email ? true : false}
+            helperText={error.email?.message}
             required
             label="Email"
             variant="outlined"
@@ -93,7 +94,7 @@ const SignIn: React.FC = () => {
             required
             sx={{ my: 1, width: "100%" }}
             variant="outlined"
-            error={error.type === "PASSWORD"}
+            error={error.password ? true : false}
           >
             <InputLabel>Password</InputLabel>
             <OutlinedInput
@@ -113,9 +114,7 @@ const SignIn: React.FC = () => {
                 </InputAdornment>
               }
             />
-            <FormHelperText>
-              {error.type === "PASSWORD" && error.message}
-            </FormHelperText>
+            <FormHelperText>{error.password?.message}</FormHelperText>
           </FormControl>
         </CardContent>
         <CardActions
