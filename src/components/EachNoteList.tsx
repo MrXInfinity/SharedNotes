@@ -28,7 +28,15 @@ const EachNoteList: React.FC<{ data: dbDataType[] }> = ({ data }) => {
             alignItems: "start",
           }}
         >
-          <CardActionArea sx={{ height: "100%", py: 1.7 }}>
+          <CardActionArea
+            sx={{
+              height: "100%",
+              py: 1.7,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "start",
+            }}
+          >
             <Typography
               sx={{
                 px: 2,
@@ -38,13 +46,22 @@ const EachNoteList: React.FC<{ data: dbDataType[] }> = ({ data }) => {
             >
               {title}
             </Typography>
-            <CardContent sx={{ pt: 0.75, display: "flex", height: "50%" }}>
+            <CardContent
+              sx={{
+                pt: 0.75,
+                display: "flex",
+                maxHeight: "100px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
               <Typography
                 sx={{
                   fontSize: 14,
                   opacity: 0.6,
                   textOverflow: "ellipsis",
                   overflow: "hidden",
+                  height: "100%",
                 }}
               >
                 {content}
@@ -53,7 +70,7 @@ const EachNoteList: React.FC<{ data: dbDataType[] }> = ({ data }) => {
             <Stack
               direction="row"
               spacing={2}
-              sx={{ mx: 2 }}
+              sx={{ mx: 2, pt: 1 }}
             >
               <Typography sx={{ fontSize: { xs: 10 } }}>
                 {dateCreated.toDate().toLocaleDateString(undefined, {
@@ -62,8 +79,11 @@ const EachNoteList: React.FC<{ data: dbDataType[] }> = ({ data }) => {
                   day: "numeric",
                 })}
               </Typography>
-              <IconButton sx={{ p: 0 }}>
-                {favorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+              <IconButton
+                sx={{ p: 0, pb: 2 }}
+                color="primary"
+              >
+                {favorite && <FavoriteIcon />}
               </IconButton>
             </Stack>
           </CardActionArea>

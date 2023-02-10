@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, FieldValue, getDocs, query, setDoc, Timestamp, where } from 'firebase/firestore';
+import { addDoc, collection, doc, FieldValue, getDocs, onSnapshot, orderBy, query, setDoc, Timestamp, where } from 'firebase/firestore';
 import { auth } from "../firebase";
 import { useState, useEffect } from 'react'
 import { db } from "../firebase"
@@ -41,21 +41,33 @@ const useFetchedNotes = (category: string) => {
   const [dbData, setDbData] = useState<dbDataType[]>([])
   
   const fetchDocuments = async () => {
-  let dbCollection: any[] = []
-      try {
-        const documentCollection = await getDocs(collection(db, "Users", auth.currentUser!.uid, category));
-        documentCollection.forEach((eachDocument) => {
-          dbCollection.push(eachDocument.data())
-        })
-        setDbData(dbCollection)
-      } catch (err) {
-        console.log(err)
-      }
-  }
+    try {
+       const q = query(collection(db, "Users", auth.currentUser!.uid, category), orderBy("favorite", "desc"));
+       const documentCollection = onSnapshot(q, (querySnapshot) => {
+         querySnapshot.docChanges().forEach(({type, doc}: any) => {
+           if (type === "added") {
+             setDbData(arr => [...arr, doc.data()])
+             console.log("initial data added...")
+           }
+           if (type === "modified") {
+             console.log("modified")
+              setDbData(arr => [...arr, doc.data()])
+            }
+          if (type === "removed") {
+                console.log("Removed city: ", doc.data());
+            }
+         })
+       })
+    } catch (err) {
+      console.log(err)
+     }
+   }
+       
   useEffect(() => {
-  fetchDocuments()
-  }, [])
-  
+    console.log("side effect on fetch")
+    fetchDocuments()
+  }, [category])
+
   return {dbData}
 }
 

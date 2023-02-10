@@ -4,13 +4,11 @@ import App from "./App";
 import { AuthProvider } from "./context";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <AuthProvider
-      key={null}
-      type={""}
-      props={undefined}
-    >
-      <App />
-    </AuthProvider>
-  </React.StrictMode>
+  <AuthProvider
+    key={null}
+    type={""}
+    props={undefined}
+  >
+    <App />
+  </AuthProvider>
 );

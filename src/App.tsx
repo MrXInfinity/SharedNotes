@@ -18,6 +18,7 @@ import LoggedOutNav from "./components/LoggedOutNav";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import SharedNotes from "./pages/SharedNotes/SharedNotes";
+import NotePage from "./pages/PrivateNotes/NotePage";
 
 function App() {
   const queryClient = new QueryClient();
@@ -54,7 +55,7 @@ function App() {
                     },
                     {
                       path: "private-notes",
-                      element: <h1>Private Notes</h1>,
+                      element: <NotePage category={"Private"} />,
                     },
                     {
                       path: "reminders",
