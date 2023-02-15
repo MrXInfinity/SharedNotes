@@ -73,18 +73,18 @@ const EachNoteList: React.FC<{ data: dbDataType[] }> = ({ data }) => {
               sx={{ mx: 2, pt: 1 }}
             >
               <Typography sx={{ fontSize: { xs: 10 } }}>
-                {dateCreated.toDate().toLocaleDateString(undefined, {
+                {dateCreated?.toDate().toLocaleDateString(undefined, {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
                 })}
               </Typography>
-              <IconButton
-                sx={{ p: 0, pb: 2 }}
-                color="primary"
-              >
-                {favorite && <FavoriteIcon />}
-              </IconButton>
+              {favorite && (
+                <FavoriteIcon
+                  sx={{}}
+                  color="primary"
+                />
+              )}
             </Stack>
           </CardActionArea>
         </Card>

@@ -3,11 +3,12 @@ import { auth } from "../firebase";
 import {
   AuthErrorCodes,
   createUserWithEmailAndPassword,
+  onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
   updateProfile,
 } from "firebase/auth";
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { db } from "../firebase"
 
 
@@ -18,11 +19,14 @@ type ErrorValues = {
 }
 
 const useAuth = () => {
+  const [currentUser, setCurrentUser] = useState("")
   const [error, setError] = useState<ErrorType>({} as ErrorType | (() => ErrorType))
 
     const login = async (email: string, password: string) => {
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
+      try {
+      console.log("logging in")
+      const data = await signInWithEmailAndPassword(auth, email, password);
+      
     } catch (err: any) {
       console.log(err)
       if (err.code == AuthErrorCodes.INVALID_PASSWORD) {
@@ -75,6 +79,20 @@ const useAuth = () => {
       console.log(err);
     }
   };
+
+  useEffect(() => {
+    const authChange = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setCurrentUser(user.uid);
+        console.log(user);
+      } else {
+        setCurrentUser("");
+        logout();
+      }
+
+      return () => authChange();
+    });
+  }, []);
 
   return {login, signup, logout, error}
 }

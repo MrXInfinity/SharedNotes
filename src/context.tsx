@@ -1,92 +1,106 @@
 import React, { useState, useEffect, useContext, createContext } from "react";
 import { auth } from "./firebase";
+import { db } from "./firebase";
 import {
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  signOut,
-  updateProfile,
-} from "firebase/auth";
+  collection,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+  setDoc,
+  Timestamp,
+} from "firebase/firestore";
 
-type AuthContextType = {
-  currentUser: string;
-  login: (email: string, password: string) => void;
-  logout: () => void;
+type firestoreContextProps = {
+  dbData: dbDataObject;
+  fetchDocuments: (category: string) => void;
+  addNewNote: (type: string, title: string, tags: string[]) => void;
 };
 
-const AuthContext = createContext<AuthContextType>({} as AuthContextType);
+export type dbDataType = {
+  title: string;
+  content: string;
+  favorite: boolean;
+  tags?: string[];
+  dateCreated: Timestamp;
+  dateUpdated: Timestamp;
+};
 
-const useAuthContext = () => useContext(AuthContext);
+type dbDataObject = {
+  [index: string]: dbDataType[];
+};
 
-export const AuthProvider: React.FC<React.ReactPortal> = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState("");
-  const [error, setError] = useState({
-    name: "",
-    message: "",
+const firestoreContext = createContext<firestoreContextProps>(
+  {} as firestoreContextProps
+);
+
+const useFirestoreContext = () => useContext(firestoreContext);
+
+export const FirestoreProvider: React.FC<React.ReactPortal> = ({
+  children,
+}) => {
+  const [dbData, setDbData] = useState<dbDataObject>({
+    Shared: [],
+    Private: [],
   });
+  console.log(dbData);
+  const fetchDocuments = (category: string) => {
+    const q = query(
+      collection(db, "Users", auth.currentUser!.uid, category),
+      orderBy("favorite", "desc")
+    );
 
-  const login = async (email: string, password: string) => {
-    setError({ name: "", message: "" });
+    console.log("fetchingg");
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-    } catch (err: any) {
-      console.log(err.message);
-      if (err.message === "INVALID_PASSWORD") {
-        setError({
-          name: "Invalid Password",
-          message: "You're password is incorrect!",
+      const documentCollection = onSnapshot(q, (querySnapshot) => {
+        querySnapshot.docChanges().forEach(({ type, doc }: any) => {
+          if (type === "added") {
+            console.log("data added...");
+            setDbData((prev) => ({
+              ...prev,
+              [category]: [doc.data(), ...prev[category]],
+            }));
+          }
+          // if (type === "modified") {
+          //   console.log("modified");
+          //   setDbData((prev) => ({
+          //     ...prev,
+          //     [category]: [doc.data(), ...prev[category]],
+          //   }));
+          // }
+          // if (type === "removed") {
+          //   console.log("Removed city: ", doc.data());
+          // }
         });
-      }
-      if (err.message === "EMAIL_NOT_FOUND") {
-        setError({
-          name: "Email not Found",
-          message: "No such email exist!",
-        });
-      }
-    }
-  };
-
-  const signup = async (
-    firstname: string,
-    lastname: string,
-    email: string,
-    password: string
-  ) => {
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      });
     } catch (err) {
       console.log(err);
     }
   };
 
-  const logout = async () => {
+  const addNewNote = async (type: string, title: string, tags: string[]) => {
     try {
-      signOut(auth);
+      await setDoc(
+        doc(db, "Users", auth.currentUser!.uid, type, Date.now().toString()),
+        {
+          title,
+          tags,
+          content: "",
+          favorite: false,
+          dateCreated: new Date(),
+          dateUpdated: new Date(),
+        }
+      );
     } catch (err) {
       console.log(err);
     }
   };
-
-  useEffect(() => {
-    const authChange = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setCurrentUser(user.uid);
-        console.log(user);
-      } else {
-        setCurrentUser("");
-        logout();
-      }
-
-      return () => authChange();
-    });
-  }, []);
-  console.log(currentUser);
 
   return (
-    <AuthContext.Provider value={{ currentUser, login, logout }}>
+    <firestoreContext.Provider value={{ dbData, fetchDocuments, addNewNote }}>
       {children}
-    </AuthContext.Provider>
+    </firestoreContext.Provider>
   );
 };
 
-export default useAuthContext;
+export default useFirestoreContext;

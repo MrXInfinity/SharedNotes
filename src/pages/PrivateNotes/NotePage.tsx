@@ -1,10 +1,15 @@
 import { Container, Pagination, Stack, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import EachNoteList from "../../components/EachNoteList";
-import { useFetchedNotes } from "../../hooks/useFirestoreDb";
+import { useFirestoreDb } from "../../hooks/useFirestoreDb";
+import useFirestoreContext from "../../context";
 
 const NotePage: React.FC<{ category: string }> = ({ category }) => {
-  const { dbData } = useFetchedNotes(category);
+  const { dbData, fetchDocuments } = useFirestoreContext();
+
+  useEffect(() => {
+    fetchDocuments(category);
+  }, [category]);
 
   return (
     <Container
@@ -33,7 +38,7 @@ const NotePage: React.FC<{ category: string }> = ({ category }) => {
               gap: 20,
             }}
           >
-            <EachNoteList data={dbData} />
+            <EachNoteList data={dbData[category]} />
           </div>
         </Stack>
       </Stack>

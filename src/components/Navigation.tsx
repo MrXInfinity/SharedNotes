@@ -66,10 +66,10 @@ const NavItem: React.FC<{
   );
 };
 
-const Navigation: React.FC<{ logout: () => void; changeTheme: () => void }> = ({
-  logout,
-  changeTheme,
-}) => {
+const Navigation: React.FC<{
+  logout: () => Promise<void>;
+  changeTheme: () => void;
+}> = ({ logout, changeTheme }) => {
   //Modals
   const [isNewNoteModalOpen, setIsNewNoteModalOpen] = useState(false);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
