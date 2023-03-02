@@ -48,7 +48,7 @@ const NewTaskModal: React.FC<{
   return (
     <ModalWrapper
       isOpen={isOpen}
-      title="Note"
+      title="New Task"
       closeModal={closeModal}
     >
       <form

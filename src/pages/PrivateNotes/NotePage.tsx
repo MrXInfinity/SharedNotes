@@ -1,15 +1,22 @@
 import { Container, Pagination, Stack, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import EachNoteList from "../../components/EachNoteList";
-import { useFirestoreDb } from "../../hooks/useFirestoreDb";
-import useFirestoreContext from "../../context";
+import { dbDataType, useFirestoreDb } from "../../hooks/useFirestoreDb";
+import NoteEditor from "../../components/Note_Editor/NoteEditor";
+import NoteTest from "../../components/Note_Editor/NoteTest";
+import { Node } from "slate";
+import NewNoteEditor from "../../components/Note_Editor/NewNoteEditor";
 
 const NotePage: React.FC<{ category: string }> = ({ category }) => {
-  const { dbData, fetchDocuments } = useFirestoreContext();
-
-  useEffect(() => {
-    fetchDocuments(category);
-  }, [category]);
+  const {
+    dbData,
+    noteContentData,
+    setNoteContentData,
+    isModalOpen,
+    setIsModalOpen,
+    updateNote,
+  } = useFirestoreDb(category);
+  console.log(noteContentData);
 
   return (
     <Container
@@ -38,10 +45,21 @@ const NotePage: React.FC<{ category: string }> = ({ category }) => {
               gap: 20,
             }}
           >
-            <EachNoteList data={dbData[category]} />
+            <EachNoteList
+              data={dbData[category]}
+              toggleModal={setIsModalOpen}
+              setNoteData={setNoteContentData}
+            />
           </div>
         </Stack>
       </Stack>
+      <NoteEditor
+        isOpen={isModalOpen}
+        toggleModal={setIsModalOpen}
+        noteData={noteContentData}
+        setNoteData={setNoteContentData}
+        updateNote={updateNote}
+      />
     </Container>
   );
 };

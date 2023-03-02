@@ -18,8 +18,9 @@ import { FormTypes } from "./NewTaskModal";
 
 const ModalWrapper: React.FC<{
   isOpen: boolean;
-  title: string;
+  title: string | JSX.Element;
   closeModal: () => void;
+  options?: JSX.Element;
   children: React.ReactNode;
 }> = ({ isOpen, title, closeModal, children }) => {
   return (
@@ -46,12 +47,17 @@ const ModalWrapper: React.FC<{
           direction="row"
           sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}
         >
-          <Typography
-            id="new-note-modal-title"
-            sx={{ fontWeight: "bold", fontSize: { xs: 28, md: 32 } }}
-          >
-            New {title}
-          </Typography>
+          {typeof title === "string" ? (
+            <Typography
+              id="new-note-modal-title"
+              sx={{ fontWeight: "bold", fontSize: { xs: 28, md: 32 } }}
+            >
+              {title}
+            </Typography>
+          ) : (
+            title
+          )}
+
           <IconButton onClick={() => closeModal()}>
             <CloseIcon />
           </IconButton>

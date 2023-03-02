@@ -13,7 +13,7 @@ import {
 
 type firestoreContextProps = {
   dbData: dbDataObject;
-  fetchDocuments: (category: string) => void;
+  setLocalCategory: React.Dispatch<React.SetStateAction<string>>;
   addNewNote: (type: string, title: string, tags: string[]) => void;
 };
 
@@ -43,40 +43,44 @@ export const FirestoreProvider: React.FC<React.ReactPortal> = ({
     Shared: [],
     Private: [],
   });
-  console.log(dbData);
-  const fetchDocuments = (category: string) => {
-    const q = query(
-      collection(db, "Users", auth.currentUser!.uid, category),
-      orderBy("favorite", "desc")
-    );
+  const [localCategory, setLocalCategory] = useState("Shared");
 
+  console.log(dbData);
+
+  useEffect(() => {
     console.log("fetchingg");
-    try {
-      const documentCollection = onSnapshot(q, (querySnapshot) => {
-        querySnapshot.docChanges().forEach(({ type, doc }: any) => {
-          if (type === "added") {
-            console.log("data added...");
-            setDbData((prev) => ({
-              ...prev,
-              [category]: [doc.data(), ...prev[category]],
-            }));
-          }
-          // if (type === "modified") {
-          //   console.log("modified");
-          //   setDbData((prev) => ({
-          //     ...prev,
-          //     [category]: [doc.data(), ...prev[category]],
-          //   }));
-          // }
-          // if (type === "removed") {
-          //   console.log("Removed city: ", doc.data());
-          // }
+    if (auth.currentUser) {
+      try {
+        const q = query(
+          collection(db, "Users", auth.currentUser!.uid, localCategory),
+          orderBy("favorite", "desc")
+        );
+        onSnapshot(q, (querySnapshot) => {
+          querySnapshot.docChanges().forEach(({ type, doc }: any) => {
+            if (type === "added") {
+              console.log("data added...");
+              setDbData((prev) => ({
+                ...prev,
+                [localCategory]: [doc.data(), ...prev[localCategory]],
+              }));
+            }
+            // if (type === "modified") {
+            //   console.log("modified");
+            //   setDbData((prev) => ({
+            //     ...prev,
+            //     [category]: [doc.data(), ...prev[category]],
+            //   }));
+            // }
+            // if (type === "removed") {
+            //   console.log("Removed city: ", doc.data());
+            // }
+          });
         });
-      });
-    } catch (err) {
-      console.log(err);
+      } catch (err) {
+        console.log(err);
+      }
     }
-  };
+  }, []);
 
   const addNewNote = async (type: string, title: string, tags: string[]) => {
     try {
@@ -97,7 +101,7 @@ export const FirestoreProvider: React.FC<React.ReactPortal> = ({
   };
 
   return (
-    <firestoreContext.Provider value={{ dbData, fetchDocuments, addNewNote }}>
+    <firestoreContext.Provider value={{ dbData, setLocalCategory, addNewNote }}>
       {children}
     </firestoreContext.Provider>
   );

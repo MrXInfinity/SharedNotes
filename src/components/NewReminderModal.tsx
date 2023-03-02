@@ -59,7 +59,7 @@ const NewReminderModal: React.FC<{
   return (
     <ModalWrapper
       isOpen={isOpen}
-      title="Reminder"
+      title="New Reminder"
       closeModal={closeModal}
     >
       <form
