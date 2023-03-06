@@ -2,7 +2,11 @@ import escapeHtml from "escape-html";
 import { Text, Node } from "slate";
 
 const useSerialize = (node: any) => {
-    return node.map((n: any) => Node.string(n)).join('\n')
+    
+    if (Array.isArray(node)) return node.map((n: any) => Node.string(n)).join('\n')
+    if (typeof node === "string") return node
+    return Node.string(node)
+    
 
     // if (Text.isText(node)) {
     //   let string = escapeHtml(node.text);

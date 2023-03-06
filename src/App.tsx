@@ -12,11 +12,11 @@ import { ThemeProvider } from "@mui/material/styles";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import Navigation from "./components/Navigation";
-import LoggedOutNav from "./components/LoggedOutNav";
+import LoggedOutNav from "./pages/LoggedOutPage/LoggedOutNav";
 import Home from "./pages/Home/Home";
-import SignIn from "./pages/SignInComponent";
-import SignUp from "./pages/SignUpComponent";
-import NotePage from "./pages/PrivateNotes/NotePage";
+import SignIn from "./pages/LoggedOutPage/SignInComponent";
+import SignUp from "./pages/LoggedOutPage/SignUpComponent";
+import NotePage from "./pages/NotesPage/NotePage";
 
 function App() {
   const { theme, changeTheme } = useCustomTheme();

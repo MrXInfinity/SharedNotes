@@ -7,18 +7,18 @@ import {
   Typography,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import type { dbDataType } from "../hooks/useFirestoreDb";
-import { useSerialize } from "../hooks/useFormatContent";
+import { useSerialize } from "../../hooks/useFormatContent";
+import { noteType } from "../../types/firestoreDataTypes";
 
 const EachNoteList: React.FC<{
-  setNoteData: React.Dispatch<React.SetStateAction<dbDataType>>;
-  data: dbDataType[];
+  setNoteData: React.Dispatch<React.SetStateAction<noteType>>;
+  data: noteType[];
   toggleModal: React.Dispatch<React.SetStateAction<boolean>>;
 }> = ({ setNoteData, data, toggleModal }) => {
   if (data) {
     return (
       <>
-        {data.map((eachData: dbDataType) => (
+        {data.map((eachData: noteType, arr) => (
           <Card
             sx={{
               borderRadius: "16px",
@@ -29,6 +29,7 @@ const EachNoteList: React.FC<{
               width: "150px",
               alignItems: "start",
             }}
+            key={arr}
           >
             <CardActionArea
               sx={{
@@ -39,6 +40,7 @@ const EachNoteList: React.FC<{
                 alignItems: "start",
               }}
               onClick={() => {
+                console.log(eachData);
                 setNoteData(eachData);
                 toggleModal(true);
               }}
@@ -70,9 +72,7 @@ const EachNoteList: React.FC<{
                     height: "100%",
                   }}
                 >
-                  {typeof eachData.content === "object"
-                    ? useSerialize(eachData.content)
-                    : eachData.content}
+                  {useSerialize(eachData.content)}
                 </Typography>
               </CardContent>
               <Stack

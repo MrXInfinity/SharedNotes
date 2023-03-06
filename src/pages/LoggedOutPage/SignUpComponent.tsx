@@ -16,12 +16,12 @@ import {
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import useAuthContext from "../context";
+import useAuthContext from "../../context";
 import { useForm, UseFormRegister } from "react-hook-form";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
-import type { ErrorType, ErrorKeys, ErrorValues } from "../hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
+import type { ErrorType, ErrorKeys, ErrorValues } from "../../hooks/useAuth";
 
 type FormData = {
   firstname: string;

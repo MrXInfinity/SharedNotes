@@ -17,7 +17,7 @@ import React, { useEffect, useState } from "react";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { ModalWrapper } from "./UIComponents";
-import { useFirestoreDb, useAddNewNote } from "../hooks/useFirestoreDb";
+import { useFirestoreDb, useAddNote } from "../hooks/useFirestoreDb";
 
 type NewNoteFormType = {
   type: string;
@@ -74,7 +74,7 @@ const NewNoteModal: React.FC<{
     title,
     tags,
   }) => {
-    useAddNewNote(type, title, tags);
+    useAddNote(type, title, tags);
     closeModal();
   };
 

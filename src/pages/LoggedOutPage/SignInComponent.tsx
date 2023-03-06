@@ -16,8 +16,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
-import type { ErrorType, ErrorKeys, ErrorValues } from "../hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
+import type { ErrorType, ErrorKeys, ErrorValues } from "../../hooks/useAuth";
 
 type FormData = {
   email: string;

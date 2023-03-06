@@ -1,11 +1,8 @@
-import { Container, Pagination, Stack, Typography } from "@mui/material";
-import React, { useState, useEffect } from "react";
-import EachNoteList from "../../components/EachNoteList";
-import { dbDataType, useFirestoreDb } from "../../hooks/useFirestoreDb";
+import { Container, Stack, Typography } from "@mui/material";
+import React from "react";
+import EachNoteList from "./EachNoteList";
+import { useFirestoreDb } from "../../hooks/useFirestoreDb";
 import NoteEditor from "../../components/Note_Editor/NoteEditor";
-import NoteTest from "../../components/Note_Editor/NoteTest";
-import { Node } from "slate";
-import NewNoteEditor from "../../components/Note_Editor/NewNoteEditor";
 
 const NotePage: React.FC<{ category: string }> = ({ category }) => {
   const {
@@ -16,7 +13,6 @@ const NotePage: React.FC<{ category: string }> = ({ category }) => {
     setIsModalOpen,
     updateNote,
   } = useFirestoreDb(category);
-  console.log(noteContentData);
 
   return (
     <Container

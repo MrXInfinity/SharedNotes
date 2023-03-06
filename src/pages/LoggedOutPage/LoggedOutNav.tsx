@@ -11,7 +11,7 @@ import {
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import LinkIcon from "@mui/icons-material/Link";
-import notepadBg from "../assets/notepad-bg.svg";
+import notepadBg from "../../assets/notepad-bg.svg";
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 
