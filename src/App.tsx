@@ -17,6 +17,7 @@ import Home from "./pages/Home/Home";
 import SignIn from "./pages/LoggedOutPage/SignInComponent";
 import SignUp from "./pages/LoggedOutPage/SignUpComponent";
 import NotePage from "./pages/NotesPage/NotePage";
+import Reminder from "./pages/Reminder/Reminder";
 
 function App() {
   const { theme, changeTheme } = useCustomTheme();
@@ -57,7 +58,7 @@ function App() {
                   },
                   {
                     path: "reminders",
-                    element: <h1>Reminders</h1>,
+                    element: <Reminder />,
                   },
                   {
                     path: "tasks",

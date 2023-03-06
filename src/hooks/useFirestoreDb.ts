@@ -74,12 +74,12 @@ const useFirestoreDb = (category: string) => {
     }
 }
   
-const useAddReminder = async (startTime: any, endTime: any, desc: string) => {
+const useAddReminder = async (title: string, startTime: any, endTime: any) => {
   try {
     await setDoc(doc(db, "Users", auth.currentUser!.uid, "Reminder", Date.now().toString()), {
       startTime,
       endTime,
-      desc,
+      title,
       favorite: false,
       status: "forthcoming",
       dateCreated: new Date(),
@@ -90,12 +90,12 @@ const useAddReminder = async (startTime: any, endTime: any, desc: string) => {
   }
 }
 
-const useAddTask = async (dueDate: any, dueTime: any, desc: string) => {
+const useAddTask = async (dueDate: any, dueTime: any, title: string) => {
   try {
     await setDoc(doc(db, "Users", auth.currentUser!.uid, "Reminder", Date.now().toString()), {
       dueDate,
       dueTime,
-      desc,
+      title,
       favorite: false,
       dateCreated: new Date(),
       dateUpdated: new Date(),

@@ -24,7 +24,7 @@ type noteType = {
 type reminderType = {
   startTime: any,
   endiTime: any,
-  desc: string,
+  title: string,
   favorite: boolean,
   status: "forthcoming" | "ongoing" | "finished",
   dateCreated: Timestamp,
@@ -34,7 +34,7 @@ type reminderType = {
 type taskType = {
   dueDate: any,
   dueTime: any,
-  desc: string,
+  title: string,
   favorite: boolean,
   dateCreated: Timestamp,
   ateUpdated: Timestamp

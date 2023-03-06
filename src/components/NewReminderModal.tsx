@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import moment, { Moment } from "moment";
 import { useForm } from "react-hook-form";
 import { ModalWrapper } from "./UIComponents";
+import { useAddReminder } from "../hooks/useFirestoreDb";
 
 type FormTypes = {
   title: string;
@@ -40,8 +41,8 @@ const NewReminderModal: React.FC<{
     setDueDate(null);
   };
 
-  const formSubmit = (e: any) => {
-    console.log(e);
+  const formSubmit = ({ title, initialDate, dueDate }) => {
+    useAddReminder(title, initialDate, dueDate);
   };
 
   useEffect(() => {
