@@ -2,16 +2,14 @@ import { Moment } from "moment";
 
 type reminderFormTypes = {
   title: string;
-} & reminderReducerStateTypes;
+} & reminderDateTypes;
 
-type reminderReducerStateTypes = {
+
+type reminderDateTypes = {
   initialDate: Moment | null;
   dueDate: Moment | null;
 };
 
-type reminderReducerActionTypes = {
-  type: string;
-  payload: Moment | null;
-};
 
-export type {reminderFormTypes, reminderReducerStateTypes, reminderReducerActionTypes}
+
+export type {reminderFormTypes, reminderDateTypes}

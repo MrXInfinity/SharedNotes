@@ -1,6 +1,6 @@
 import { Button, TextField } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import React, { useReducer } from "react";
+import React, { useState } from "react";
 import moment from "moment";
 import { useForm } from "react-hook-form";
 import { ModalWrapper } from "./UIComponents";
@@ -8,28 +8,8 @@ import { useAddReminder } from "../hooks/useFirestoreDb";
 import useFirestoreContext from "../firestoreContext";
 import type {
   reminderFormTypes,
-  reminderReducerStateTypes,
-  reminderReducerActionTypes,
+  reminderDateTypes,
 } from "../types/modalContentTypes";
-
-const dateReducer = (
-  state: reminderReducerStateTypes,
-  { type, payload }: reminderReducerActionTypes
-) => {
-  switch (type) {
-    case "SET_INITIAL_DATE": {
-      return { ...state, initialDate: payload };
-    }
-    case "SET_DUE_DATE": {
-      return { ...state, dueDate: payload };
-    }
-    case "DELETE_ALL": {
-      return { initialDate: payload, dueDate: payload };
-    }
-    default:
-      return state;
-  }
-};
 
 const NewReminderModal: React.FC<{
   isOpen: boolean;
@@ -38,7 +18,6 @@ const NewReminderModal: React.FC<{
   const {
     register,
     handleSubmit,
-    getValues,
     setValue,
     formState: { errors },
   } = useForm<reminderFormTypes>({
@@ -52,14 +31,14 @@ const NewReminderModal: React.FC<{
 
   const { addReminder } = useFirestoreContext();
 
-  const [state, dispatch] = useReducer(dateReducer, {
+  const [formDatesData, setFormDatesData] = useState<reminderDateTypes>({
     initialDate: null,
     dueDate: null,
   });
 
   const closeModal = () => {
     setIsOpen(false);
-    dispatch({ type: "DELETE_ALL", payload: null });
+    setFormDatesData({ initialDate: null, dueDate: null });
   };
 
   const formSubmit = ({ title, initialDate, dueDate }: reminderFormTypes) => {
@@ -118,15 +97,15 @@ const NewReminderModal: React.FC<{
             />
           )}
           label="Initial-Date-Time-Picker"
-          value={state.initialDate}
+          value={formDatesData.initialDate}
           {...register("initialDate")}
           onChange={(e) => {
             setValue("initialDate", e);
-            dispatch({ type: "SET_INITIAL_DATE", payload: e });
+            setFormDatesData((state) => ({ ...state, initialDate: e }));
           }}
           minDateTime={moment(Date.now())}
           minTime={moment(Date.now())}
-          maxDateTime={state.dueDate}
+          maxDateTime={formDatesData.dueDate}
         />
         <DateTimePicker
           renderInput={(props) => (
@@ -138,16 +117,16 @@ const NewReminderModal: React.FC<{
             />
           )}
           label="Due-Date-Time-Picker"
-          value={state.dueDate}
+          value={formDatesData.dueDate}
           {...register("dueDate", {
             required: "Please select Due Date",
           })}
           onChange={(e) => {
             setValue("dueDate", e);
-            dispatch({ type: "SET_DUE_DATE", payload: e });
+            setFormDatesData((state) => ({ ...state, dueDate: e }));
           }}
-          minDateTime={state.initialDate}
-          minTime={state.initialDate}
+          minDateTime={formDatesData.initialDate}
+          minTime={formDatesData.initialDate}
         />
         <Button
           type="submit"
