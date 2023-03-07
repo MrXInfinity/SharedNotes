@@ -12,7 +12,7 @@ const NotePage: React.FC<{ category: string }> = ({ category }) => {
     isModalOpen,
     setIsModalOpen,
     updateNote,
-  } = useFirestoreDb(category);
+  } = useFirestoreDb();
 
   return (
     <Container

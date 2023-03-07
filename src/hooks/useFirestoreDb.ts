@@ -4,25 +4,27 @@ import { useState, useEffect } from 'react'
 import { db } from "../firebase"
 import { dbDataObject, noteType } from '../types/firestoreDataTypes';
 
-const useFirestoreDb = (category: string) => {
+const useFirestoreDb = () => {
   const [error, setError] = useState<Error>({} as Error | (() => Error))
   const [dbData, setDbData] = useState<dbDataObject>({
     Shared: [],
     Private: [],
+    Reminder: []
   });
   const [noteContentData, setNoteContentData] = useState<noteType>({} as noteType);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  console.log(dbData)
   
   useEffect(() => {
         const q = query(
-          collection(db, "Users", auth.currentUser!.uid, category),
+          collection(db, "Users", auth.currentUser!.uid, "Shared"),
           orderBy("favorite", "desc")
     );
     
     const unsubscribe = onSnapshot(q, (querySnapshot: QuerySnapshot<any>) => {
           setDbData((prev: any) => ({
             ...prev,
-            [category]: querySnapshot.docs.map((doc) => {
+            Shared: querySnapshot.docs.map((doc) => {
               return  {id: doc.id, ...doc.data()}
             })
           }))
@@ -30,7 +32,45 @@ const useFirestoreDb = (category: string) => {
         });
 
     return () => unsubscribe()
-  }, [category]);
+  }, []);
+
+    useEffect(() => {
+        const q = query(
+          collection(db, "Users", auth.currentUser!.uid, "Private"),
+          orderBy("favorite", "desc")
+    );
+    
+    const unsubscribe = onSnapshot(q, (querySnapshot: QuerySnapshot<any>) => {
+          setDbData((prev: any) => ({
+            ...prev,
+            Private: querySnapshot.docs.map((doc) => {
+              return  {id: doc.id, ...doc.data()}
+            })
+          }))
+         
+        });
+
+    return () => unsubscribe()
+    }, []);
+  
+    useEffect(() => {
+        const q = query(
+          collection(db, "Users", auth.currentUser!.uid, "Reminder"),
+          orderBy("favorite", "desc")
+    );
+    
+    const unsubscribe = onSnapshot(q, (querySnapshot: QuerySnapshot<any>) => {
+          setDbData((prev: any) => ({
+            ...prev,
+            Reminder: querySnapshot.docs.map((doc) => {
+              return  {id: doc.id, ...doc.data()}
+            })
+          }))
+         
+        });
+
+    return () => unsubscribe()
+  }, []);
 
   const updateNote = async () => {
     
