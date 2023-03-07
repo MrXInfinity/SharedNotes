@@ -3,6 +3,7 @@ import React from "react";
 import EachNoteList from "./EachNoteList";
 import { useFirestoreDb } from "../../hooks/useFirestoreDb";
 import NoteEditor from "../../components/Note_Editor/NoteEditor";
+import useFirestoreContext from "../../firestoreContext";
 
 const NotePage: React.FC<{ category: string }> = ({ category }) => {
   const {
@@ -12,7 +13,7 @@ const NotePage: React.FC<{ category: string }> = ({ category }) => {
     isModalOpen,
     setIsModalOpen,
     updateNote,
-  } = useFirestoreDb();
+  } = useFirestoreContext();
 
   return (
     <Container

@@ -17,7 +17,7 @@ import React, { useEffect, useState } from "react";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { ModalWrapper } from "./UIComponents";
-import { useFirestoreDb, useAddNote } from "../hooks/useFirestoreDb";
+import useFirestoreContext from "../firestoreContext";
 
 type NewNoteFormType = {
   type: string;
@@ -30,6 +30,7 @@ const NewNoteModal: React.FC<{
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }> = ({ isOpen, setIsOpen }) => {
   const [personName, setPersonName] = useState<string[]>([]);
+  const { addNote } = useFirestoreContext();
 
   const {
     register,
@@ -74,7 +75,7 @@ const NewNoteModal: React.FC<{
     title,
     tags,
   }) => {
-    useAddNote(type, title, tags);
+    addNote(type, title, tags);
     closeModal();
   };
 

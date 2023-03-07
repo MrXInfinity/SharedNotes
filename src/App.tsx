@@ -18,6 +18,7 @@ import SignIn from "./pages/LoggedOutPage/SignInComponent";
 import SignUp from "./pages/LoggedOutPage/SignUpComponent";
 import NotePage from "./pages/NotesPage/NotePage";
 import Reminder from "./pages/Reminder/Reminder";
+import { FirestoreProvider } from "./firestoreContext";
 
 function App() {
   const { theme, changeTheme } = useCustomTheme();
@@ -39,7 +40,13 @@ function App() {
               {
                 path: "/",
                 element: auth.currentUser ? (
-                  <Navigation {...{ logout, changeTheme }} />
+                  <FirestoreProvider
+                    key={null}
+                    type={""}
+                    props={undefined}
+                  >
+                    <Navigation {...{ logout, changeTheme }} />
+                  </FirestoreProvider>
                 ) : (
                   <Navigate to="/sign-in" />
                 ),

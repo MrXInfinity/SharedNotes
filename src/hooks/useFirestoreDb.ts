@@ -9,7 +9,8 @@ const useFirestoreDb = () => {
   const [dbData, setDbData] = useState<dbDataObject>({
     Shared: [],
     Private: [],
-    Reminder: []
+    Reminder: [],
+    Tasks: []
   });
   const [noteContentData, setNoteContentData] = useState<noteType>({} as noteType);
   const [isModalOpen, setIsModalOpen] = useState(false);
