@@ -60,14 +60,6 @@ const NewTaskModal: React.FC<{
           marginTop: "1rem",
         }}
       >
-        {/* <TextInputComponent<FormTypes>
-          label="Title"
-          title="title"
-          maxLength={20}
-          register={register}
-          errors={errors}
-        /> */}
-
         <TextField
           variant="outlined"
           label="Title"

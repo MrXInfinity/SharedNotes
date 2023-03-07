@@ -1,19 +1,11 @@
 import { Container, Stack, Typography } from "@mui/material";
 import React from "react";
 import EachNoteList from "./EachNoteList";
-import { useFirestoreDb } from "../../hooks/useFirestoreDb";
-import NoteEditor from "../../components/Note_Editor/NoteEditor";
 import useFirestoreContext from "../../firestoreContext";
 
 const NotePage: React.FC<{ category: string }> = ({ category }) => {
-  const {
-    dbData,
-    noteContentData,
-    setNoteContentData,
-    isModalOpen,
-    setIsModalOpen,
-    updateNote,
-  } = useFirestoreContext();
+  const { dbData, setNoteContentData, setIsNoteEditorModalOpen } =
+    useFirestoreContext();
 
   return (
     <Container
@@ -44,19 +36,12 @@ const NotePage: React.FC<{ category: string }> = ({ category }) => {
           >
             <EachNoteList
               data={dbData[category]}
-              toggleModal={setIsModalOpen}
+              toggleModal={setIsNoteEditorModalOpen}
               setNoteData={setNoteContentData}
             />
           </div>
         </Stack>
       </Stack>
-      <NoteEditor
-        isOpen={isModalOpen}
-        toggleModal={setIsModalOpen}
-        noteData={noteContentData}
-        setNoteData={setNoteContentData}
-        updateNote={updateNote}
-      />
     </Container>
   );
 };

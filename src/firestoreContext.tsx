@@ -18,8 +18,8 @@ type firestoreContextProps = {
   dbData: dbDataObject;
   noteContentData: noteType;
   setNoteContentData: React.Dispatch<React.SetStateAction<noteType>>;
-  isModalOpen: boolean;
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isNoteEditorModalOpen: boolean;
+  setIsNoteEditorModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   updateNote: () => Promise<void>;
   addNote: (type: string, title: string, tags: string[]) => Promise<void>;
   addReminder: (title: string, startTime: any, endTime: any) => Promise<void>;
@@ -45,7 +45,8 @@ export const FirestoreProvider: React.FC<React.ReactPortal> = ({
   const [noteContentData, setNoteContentData] = useState<noteType>(
     {} as noteType
   );
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [isNoteEditorModalOpen, setIsNoteEditorModalOpen] = useState(false);
   console.log(dbData);
 
   const addNote = async (type: string, title: string, tags: string[]) => {
@@ -92,7 +93,11 @@ export const FirestoreProvider: React.FC<React.ReactPortal> = ({
     }
   };
 
-  const addReminder = async (title: string, startTime: any, endTime: any) => {
+  const addReminder = async (
+    title: string,
+    startTime: string | null,
+    endTime: string
+  ) => {
     try {
       await setDoc(
         doc(
@@ -103,7 +108,7 @@ export const FirestoreProvider: React.FC<React.ReactPortal> = ({
           Date.now().toString()
         ),
         {
-          startTime,
+          startTime: startTime,
           endTime,
           title,
           favorite: false,
@@ -140,7 +145,7 @@ export const FirestoreProvider: React.FC<React.ReactPortal> = ({
       console.log(err);
     }
   };
-
+  // SHARED NOTES QUERY
   useEffect(() => {
     const q = query(
       collection(db, "Users", auth.currentUser!.uid, "Shared"),
@@ -159,6 +164,7 @@ export const FirestoreProvider: React.FC<React.ReactPortal> = ({
     return () => unsubscribe();
   }, []);
 
+  //PRIVATE NOTES QUERY
   useEffect(() => {
     const q = query(
       collection(db, "Users", auth.currentUser!.uid, "Private"),
@@ -177,6 +183,7 @@ export const FirestoreProvider: React.FC<React.ReactPortal> = ({
     return () => unsubscribe();
   }, []);
 
+  //REMINDER NOTES QUERY
   useEffect(() => {
     const q = query(
       collection(db, "Users", auth.currentUser!.uid, "Reminder"),
@@ -202,8 +209,8 @@ export const FirestoreProvider: React.FC<React.ReactPortal> = ({
         dbData,
         noteContentData,
         setNoteContentData,
-        isModalOpen,
-        setIsModalOpen,
+        isNoteEditorModalOpen,
+        setIsNoteEditorModalOpen,
         updateNote,
         addNote,
         addReminder,

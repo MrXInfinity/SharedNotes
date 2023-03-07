@@ -5,6 +5,7 @@ import moment from "moment";
 import { useForm } from "react-hook-form";
 import { ModalWrapper } from "./UIComponents";
 import { useAddReminder } from "../hooks/useFirestoreDb";
+import useFirestoreContext from "../firestoreContext";
 import type {
   reminderFormTypes,
   reminderReducerStateTypes,
@@ -49,6 +50,8 @@ const NewReminderModal: React.FC<{
     shouldUnregister: true,
   });
 
+  const { addReminder } = useFirestoreContext();
+
   const [state, dispatch] = useReducer(dateReducer, {
     initialDate: null,
     dueDate: null,
@@ -60,7 +63,11 @@ const NewReminderModal: React.FC<{
   };
 
   const formSubmit = ({ title, initialDate, dueDate }: reminderFormTypes) => {
-    useAddReminder(title, initialDate!.format("x"), dueDate!.format("x"));
+    addReminder(
+      title,
+      initialDate ? typeof initialDate.format("x") : null,
+      dueDate!.format("x")
+    );
     closeModal();
   };
 
