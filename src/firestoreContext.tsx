@@ -11,19 +11,33 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { dbDataObject, noteType } from "./types/firestoreDataTypes";
+import {
+  dbDataObject,
+  noteType,
+  reminderType,
+  taskType,
+} from "./types/firestoreDataTypes";
 
 type firestoreContextProps = {
   error: Error;
-  dbData: dbDataObject;
+  dbData: {
+    Shared: noteType[];
+    Private: noteType[];
+    Reminder: reminderType[];
+    Tasks: taskType[];
+  };
   noteContentData: noteType;
   setNoteContentData: React.Dispatch<React.SetStateAction<noteType>>;
   isNoteEditorModalOpen: boolean;
   setIsNoteEditorModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   updateNote: () => Promise<void>;
   addNote: (type: string, title: string, tags: string[]) => Promise<void>;
-  addReminder: (title: string, startTime: any, endTime: any) => Promise<void>;
-  addTask: (dueDate: any, dueTime: any, title: string) => Promise<void>;
+  addReminder: (
+    title: string,
+    startTime: string,
+    endTime: string | null
+  ) => Promise<void>;
+  addTask: (title: string, dueDateTime: string) => Promise<void>;
 };
 
 const firestoreContext = createContext<firestoreContextProps>(
@@ -95,8 +109,8 @@ export const FirestoreProvider: React.FC<React.ReactPortal> = ({
 
   const addReminder = async (
     title: string,
-    startTime: string | null,
-    endTime: string
+    startTime: string,
+    endTime: string | null
   ) => {
     try {
       await setDoc(
@@ -108,7 +122,7 @@ export const FirestoreProvider: React.FC<React.ReactPortal> = ({
           Date.now().toString()
         ),
         {
-          startTime: startTime,
+          startTime,
           endTime,
           title,
           favorite: false,
@@ -122,19 +136,12 @@ export const FirestoreProvider: React.FC<React.ReactPortal> = ({
     }
   };
 
-  const addTask = async (dueDate: any, dueTime: any, title: string) => {
+  const addTask = async (title: string, dueDateTime: string) => {
     try {
       await setDoc(
-        doc(
-          db,
-          "Users",
-          auth.currentUser!.uid,
-          "Reminder",
-          Date.now().toString()
-        ),
+        doc(db, "Users", auth.currentUser!.uid, "Tasks", Date.now().toString()),
         {
-          dueDate,
-          dueTime,
+          dueDateTime,
           title,
           favorite: false,
           dateCreated: new Date(),
@@ -194,6 +201,24 @@ export const FirestoreProvider: React.FC<React.ReactPortal> = ({
       setDbData((prev: any) => ({
         ...prev,
         Reminder: querySnapshot.docs.map((doc) => {
+          return { id: doc.id, ...doc.data() };
+        }),
+      }));
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const q = query(
+      collection(db, "Users", auth.currentUser!.uid, "Tasks"),
+      orderBy("favorite", "desc")
+    );
+
+    const unsubscribe = onSnapshot(q, (querySnapshot: QuerySnapshot<any>) => {
+      setDbData((prev: any) => ({
+        ...prev,
+        Tasks: querySnapshot.docs.map((doc) => {
           return { id: doc.id, ...doc.data() };
         }),
       }));

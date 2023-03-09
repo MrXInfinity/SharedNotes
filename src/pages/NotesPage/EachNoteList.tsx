@@ -9,12 +9,13 @@ import {
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useSerialize } from "../../hooks/useFormatContent";
 import { noteType } from "../../types/firestoreDataTypes";
+import { eachListType } from "../../types/componentTypes";
 
-const EachNoteList: React.FC<{
-  setNoteData: React.Dispatch<React.SetStateAction<noteType>>;
-  data: noteType[];
-  toggleModal: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ setNoteData, data, toggleModal }) => {
+const EachNoteList: React.FC<eachListType<noteType>> = ({
+  setData,
+  data,
+  toggleModal,
+}) => {
   if (data) {
     return (
       <>
@@ -40,8 +41,7 @@ const EachNoteList: React.FC<{
                 alignItems: "start",
               }}
               onClick={() => {
-                console.log(eachData);
-                setNoteData(eachData);
+                setData(eachData);
                 toggleModal(true);
               }}
             >

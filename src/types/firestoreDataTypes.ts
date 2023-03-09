@@ -22,8 +22,9 @@ type noteType = {
 } 
 
 type reminderType = {
+  id: string
   startTime: any,
-  endiTime: any,
+  endTime: any,
   title: string,
   favorite: boolean,
   status: "forthcoming" | "ongoing" | "finished",
@@ -32,6 +33,7 @@ type reminderType = {
 }
 
 type taskType = {
+  id: string
   dueDate: any,
   dueTime: any,
   title: string,
@@ -41,7 +43,15 @@ type taskType = {
 }
 
 type dbDataObject = {
-  [category: string]: noteType[]
+   Shared: noteType[];
+    Private: noteType[];
+    Reminder: reminderType[];
+    Tasks: taskType[];
+}
+
+type dbDataObject2 = {
+  Private: noteType[]
+
 }
 
 export type {noteType, reminderType, taskType, dbDataObject}

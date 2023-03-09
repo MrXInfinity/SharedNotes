@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import moment from "moment";
 import { useForm } from "react-hook-form";
 import { ModalWrapper } from "./UIComponents";
-import { useAddReminder } from "../hooks/useFirestoreDb";
 import useFirestoreContext from "../firestoreContext";
 import type {
   reminderFormTypes,
@@ -23,8 +22,8 @@ const NewReminderModal: React.FC<{
   } = useForm<reminderFormTypes>({
     defaultValues: {
       title: "",
-      initialDate: null,
-      dueDate: null,
+      startingDueDate: null,
+      endingDueDate: null,
     },
     shouldUnregister: true,
   });
@@ -32,20 +31,24 @@ const NewReminderModal: React.FC<{
   const { addReminder } = useFirestoreContext();
 
   const [formDatesData, setFormDatesData] = useState<reminderDateTypes>({
-    initialDate: null,
-    dueDate: null,
+    startingDueDate: null,
+    endingDueDate: null,
   });
 
   const closeModal = () => {
     setIsOpen(false);
-    setFormDatesData({ initialDate: null, dueDate: null });
+    setFormDatesData({ startingDueDate: null, endingDueDate: null });
   };
 
-  const formSubmit = ({ title, initialDate, dueDate }: reminderFormTypes) => {
+  const formSubmit = ({
+    title,
+    startingDueDate,
+    endingDueDate,
+  }: reminderFormTypes) => {
     addReminder(
       title,
-      initialDate ? typeof initialDate.format("x") : null,
-      dueDate!.format("x")
+      startingDueDate!.format("x"),
+      endingDueDate ? endingDueDate!.format("x") : null
     );
     closeModal();
   };
@@ -89,44 +92,44 @@ const NewReminderModal: React.FC<{
           renderInput={(props) => (
             <TextField
               {...props}
-              error={errors?.initialDate ? true : false}
-              helperText={
-                errors?.initialDate?.message ??
-                "An initial date is optional for reminders that have a start and an end."
-              }
+              required
+              error={errors?.startingDueDate ? true : false}
+              helperText={errors?.startingDueDate?.message}
             />
           )}
-          label="Initial-Date-Time-Picker"
-          value={formDatesData.initialDate}
-          {...register("initialDate")}
+          label="Starting Due Date"
+          value={formDatesData.startingDueDate}
+          {...register("startingDueDate", {
+            required: "Please select a due date",
+          })}
           onChange={(e) => {
-            setValue("initialDate", e);
-            setFormDatesData((state) => ({ ...state, initialDate: e }));
+            setValue("startingDueDate", e);
+            setFormDatesData((state) => ({ ...state, startingDueDate: e }));
           }}
           minDateTime={moment(Date.now())}
           minTime={moment(Date.now())}
-          maxDateTime={formDatesData.dueDate}
+          maxDateTime={formDatesData.endingDueDate}
         />
         <DateTimePicker
           renderInput={(props) => (
             <TextField
-              required
               {...props}
-              error={errors?.dueDate ? true : false}
-              helperText={errors?.dueDate?.message ?? ""}
+              error={errors?.endingDueDate ? true : false}
+              helperText={
+                errors?.endingDueDate?.message ??
+                "This is optional for reminders that have a start and end time"
+              }
             />
           )}
-          label="Due-Date-Time-Picker"
-          value={formDatesData.dueDate}
-          {...register("dueDate", {
-            required: "Please select Due Date",
-          })}
+          label="Ending Due Date"
+          value={formDatesData.endingDueDate}
+          {...register("endingDueDate")}
           onChange={(e) => {
-            setValue("dueDate", e);
-            setFormDatesData((state) => ({ ...state, dueDate: e }));
+            setValue("endingDueDate", e);
+            setFormDatesData((state) => ({ ...state, endingDueDate: e }));
           }}
-          minDateTime={formDatesData.initialDate}
-          minTime={formDatesData.initialDate}
+          minDateTime={formDatesData.startingDueDate}
+          minTime={formDatesData.startingDueDate}
         />
         <Button
           type="submit"

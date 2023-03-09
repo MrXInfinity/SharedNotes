@@ -6,8 +6,8 @@ type reminderFormTypes = {
 
 
 type reminderDateTypes = {
-  initialDate: Moment | null;
-  dueDate: Moment | null;
+  startingDueDate: Moment | null;
+  endingDueDate: Moment | null;
 };
 
 

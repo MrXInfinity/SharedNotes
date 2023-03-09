@@ -19,6 +19,7 @@ import SignUp from "./pages/LoggedOutPage/SignUpComponent";
 import NotePage from "./pages/NotesPage/NotePage";
 import Reminder from "./pages/Reminder/Reminder";
 import { FirestoreProvider } from "./firestoreContext";
+import Task from "./pages/Task/Task";
 
 function App() {
   const { theme, changeTheme } = useCustomTheme();
@@ -69,7 +70,7 @@ function App() {
                   },
                   {
                     path: "tasks",
-                    element: <h1>Tasks</h1>,
+                    element: <Task />,
                   },
                   {
                     path: "public-share",

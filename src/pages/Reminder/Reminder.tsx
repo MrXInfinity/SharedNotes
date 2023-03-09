@@ -1,8 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { Container, Stack, Typography } from "@mui/material";
 import EachReminderList from "./eachReminderList";
+import useFirestoreContext from "../../firestoreContext";
+import { reminderType } from "../../types/firestoreDataTypes";
 
 const Reminder = () => {
+  const { dbData } = useFirestoreContext();
+
+  const [selectedReminderData, setSelectedReminderData] =
+    useState<reminderType>({} as reminderType);
+  const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
+
   return (
     <Container
       sx={{ px: { xs: 4, md: 12 } }}
@@ -19,20 +27,20 @@ const Reminder = () => {
         spacing={2}
         sx={{ display: "flex" }}
       >
-        <Stack sx={{ display: "flex" }}>
-          <Typography sx={{ margin: 1, fontWeight: "medium" }}>
-            to me
-          </Typography>
-          <div
-            style={{
-              display: "inline-flex",
-              flexWrap: "wrap",
-              gap: 20,
-            }}
-          >
-            <EachReminderList />
-          </div>
-        </Stack>
+        <div
+          style={{
+            display: "inline-flex",
+            flexWrap: "wrap",
+            gap: 20,
+            paddingTop: 10,
+          }}
+        >
+          <EachReminderList
+            data={dbData["Reminder"]}
+            toggleModal={setIsReminderModalOpen}
+            setData={setSelectedReminderData}
+          />
+        </div>
       </Stack>
     </Container>
   );

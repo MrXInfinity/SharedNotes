@@ -1,13 +1,16 @@
+import React, { useState } from "react";
 import { Container, Stack, Typography } from "@mui/material";
-import React from "react";
-import EachNoteList from "./EachNoteList";
 import useFirestoreContext from "../../firestoreContext";
+import { taskType } from "../../types/firestoreDataTypes";
+import EachTaskList from "./eachTaskList";
 
-const NotePage: React.FC<{ category: "Private" | "Shared" }> = ({
-  category,
-}) => {
-  const { dbData, setNoteContentData, setIsNoteEditorModalOpen } =
-    useFirestoreContext();
+const Task = () => {
+  const { dbData } = useFirestoreContext();
+
+  const [selectedTaskData, setSelectedTaskData] = useState<taskType>(
+    {} as taskType
+  );
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
 
   return (
     <Container
@@ -18,7 +21,7 @@ const NotePage: React.FC<{ category: "Private" | "Shared" }> = ({
         variant="h4"
         sx={{ fontWeight: "bold", fontSize: { xs: 30, sm: 39, md: 48 } }}
       >
-        {category} Notes
+        Tasks
       </Typography>
       <Stack
         direction="row"
@@ -26,9 +29,6 @@ const NotePage: React.FC<{ category: "Private" | "Shared" }> = ({
         sx={{ display: "flex" }}
       >
         <Stack sx={{ display: "flex" }}>
-          <Typography sx={{ margin: 1, fontWeight: "medium" }}>
-            to me
-          </Typography>
           <div
             style={{
               display: "inline-flex",
@@ -36,10 +36,10 @@ const NotePage: React.FC<{ category: "Private" | "Shared" }> = ({
               gap: 20,
             }}
           >
-            <EachNoteList
-              data={dbData[category]}
-              toggleModal={setIsNoteEditorModalOpen}
-              setData={setNoteContentData}
+            <EachTaskList
+              data={dbData["Tasks"]}
+              setData={setSelectedTaskData}
+              toggleModal={setIsTaskModalOpen}
             />
           </div>
         </Stack>
@@ -48,4 +48,4 @@ const NotePage: React.FC<{ category: "Private" | "Shared" }> = ({
   );
 };
 
-export default NotePage;
+export default Task;

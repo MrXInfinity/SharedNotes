@@ -4,11 +4,11 @@ import React, { useEffect, useState } from "react";
 import moment, { Moment } from "moment";
 import { useForm } from "react-hook-form";
 import { ModalWrapper } from "./UIComponents";
+import useFirestoreContext from "../firestoreContext";
 
 export type FormTypes = {
   title: string;
-  description: string;
-  dueDate: Moment | null;
+  dueDateTime: Moment | null;
 };
 
 const NewTaskModal: React.FC<{
@@ -23,27 +23,23 @@ const NewTaskModal: React.FC<{
   } = useForm<FormTypes>({
     defaultValues: {
       title: "",
-      dueDate: null,
+      dueDateTime: null,
     },
     shouldUnregister: true,
   });
 
-  const [dueDate, setDueDate] = useState<Moment | null>(null);
+  const [dueDateTime, setDueDateTime] = useState<Moment | null>(null);
+  const { addTask } = useFirestoreContext();
 
   const closeModal = () => {
     setIsOpen(false);
-    setDueDate(null);
+    setDueDateTime(null);
   };
 
-  const formSubmit = (e: any) => {
-    console.log(e);
+  const formSubmit = ({ title, dueDateTime }: FormTypes) => {
+    addTask(title, dueDateTime!.format("x"));
+    closeModal();
   };
-
-  useEffect(() => {
-    if (dueDate) {
-      setValue("dueDate", dueDate);
-    }
-  }, [dueDate]);
 
   return (
     <ModalWrapper
@@ -76,40 +72,24 @@ const NewTaskModal: React.FC<{
             },
           })}
         />
-        <TextField
-          type="text"
-          variant="outlined"
-          label="Description"
-          aria-label="title-text-field"
-          error={errors?.title ? true : false}
-          helperText={errors?.title?.message}
-          {...register("title", {
-            required: "Provide the title of your task.",
-            minLength: {
-              value: 2,
-              message: "Please provide more characters for your title.",
-            },
-            maxLength: {
-              value: 20,
-              message: "Please remove some characters from your title.",
-            },
-          })}
-        />
 
         <DateTimePicker
           renderInput={(props) => (
             <TextField
               {...props}
-              error={errors?.dueDate ? true : false}
-              helperText={errors?.dueDate?.message}
+              error={errors?.dueDateTime ? true : false}
+              helperText={errors?.dueDateTime?.message}
             />
           )}
           label="Due Date"
-          value={dueDate}
-          {...register("dueDate", {
+          value={dueDateTime}
+          {...register("dueDateTime", {
             required: "Provide the due date of your task.",
           })}
-          onChange={(e) => setDueDate(e)}
+          onChange={(e) => {
+            setValue("dueDateTime", e);
+            setDueDateTime(e);
+          }}
           minDateTime={moment(Date.now())}
           minTime={moment(Date.now())}
         />
