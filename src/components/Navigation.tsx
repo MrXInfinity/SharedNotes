@@ -29,8 +29,6 @@ import { Container } from "@mui/system";
 import NewNoteModal from "./NewNoteModal";
 import NewTaskModal from "./NewTaskModal";
 import NewReminderModal from "./NewReminderModal";
-import useFirestoreContext from "../firestoreContext";
-import NoteEditor from "./Note_Editor/NoteEditor";
 
 //Each navitem
 const NavItem: React.FC<{
@@ -77,13 +75,6 @@ const Navigation: React.FC<{
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
   const [isNewReminderModalOpen, setIsNewReminderModalOpen] = useState(false);
 
-  const {
-    noteContentData,
-    setNoteContentData,
-    isNoteEditorModalOpen,
-    setIsNoteEditorModalOpen,
-    updateNote,
-  } = useFirestoreContext();
   //Menu withing Settings
   const [anchorSettingsEl, setAnchorSettingsEl] = useState<null | HTMLElement>(
     null
@@ -328,13 +319,6 @@ const Navigation: React.FC<{
         <NewReminderModal
           isOpen={isNewReminderModalOpen}
           setIsOpen={setIsNewReminderModalOpen}
-        />
-        <NoteEditor
-          isOpen={isNoteEditorModalOpen}
-          toggleModal={setIsNoteEditorModalOpen}
-          noteData={noteContentData}
-          setNoteData={setNoteContentData}
-          updateNote={updateNote}
         />
       </Box>
     </>

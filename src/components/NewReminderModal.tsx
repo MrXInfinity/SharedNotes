@@ -4,11 +4,11 @@ import React, { useState } from "react";
 import moment from "moment";
 import { useForm } from "react-hook-form";
 import { ModalWrapper } from "./UIComponents";
-import useFirestoreContext from "../firestoreContext";
 import type {
   reminderFormTypes,
   reminderDateTypes,
 } from "../types/modalContentTypes";
+import useFirestoreDb from "../hooks/useFirestoreDb";
 
 const NewReminderModal: React.FC<{
   isOpen: boolean;
@@ -28,7 +28,7 @@ const NewReminderModal: React.FC<{
     shouldUnregister: true,
   });
 
-  const { addReminder } = useFirestoreContext();
+  const { addReminder } = useFirestoreDb();
 
   const [formDatesData, setFormDatesData] = useState<reminderDateTypes>({
     startingDueDate: null,

@@ -21,6 +21,8 @@ type noteType = {
   dateUpdated: Timestamp
 } 
 
+type updateNoteType = Pick<noteType, "noteType" | "id" | "title" | "content">
+
 type reminderType = {
   id: string
   startTime: any,
@@ -49,9 +51,5 @@ type dbDataObject = {
     Tasks: taskType[];
 }
 
-type dbDataObject2 = {
-  Private: noteType[]
 
-}
-
-export type {noteType, reminderType, taskType, dbDataObject}
+export type {noteType, reminderType, taskType, dbDataObject, updateNoteType}

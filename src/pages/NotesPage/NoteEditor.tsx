@@ -1,7 +1,7 @@
 import React from "react";
 import { Editable, Slate } from "slate-react";
 import { Box, Button, Typography } from "@mui/material";
-import { ModalWrapper } from "../UIComponents";
+import { ModalWrapper } from "../../components/UIComponents";
 import FormatBoldIcon from "@mui/icons-material/FormatBold";
 import FormatItalicIcon from "@mui/icons-material/FormatItalic";
 import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
@@ -16,15 +16,15 @@ import FormatAlignCenterIcon from "@mui/icons-material/FormatAlignCenter";
 import FormatAlignRightIcon from "@mui/icons-material/FormatAlignRight";
 import FormatAlignJustifyIcon from "@mui/icons-material/FormatAlignJustify";
 import useNoteEditor from "./NoteEditorLogic";
-import { noteType } from "../../types/firestoreDataTypes";
+import { noteType, updateNoteType } from "../../types/firestoreDataTypes";
+import useFirestoreDb from "../../hooks/useFirestoreDb";
 
 const NoteEditor: React.FC<{
   isOpen: boolean;
   toggleModal: React.Dispatch<React.SetStateAction<boolean>>;
   noteData: noteType;
   setNoteData: React.Dispatch<React.SetStateAction<noteType>>;
-  updateNote: () => void;
-}> = ({ isOpen, toggleModal, noteData, setNoteData, updateNote }) => {
+}> = ({ isOpen, toggleModal, noteData, setNoteData }) => {
   const {
     keyDownEvent,
     renderLeaf,
@@ -36,6 +36,10 @@ const NoteEditor: React.FC<{
     MarkButton,
     BlockButton,
   } = useNoteEditor();
+
+  const { updateNote } = useFirestoreDb();
+
+  const { noteType, id, title, content } = noteData;
 
   if (Object.keys(noteData).length > 0) {
     return (
@@ -149,7 +153,14 @@ const NoteEditor: React.FC<{
             />
           </Box>
         </Slate>
-        <Button onClick={() => updateNote()}>Submit</Button>
+        <Button
+          onClick={() => {
+            toggleModal(false);
+            updateNote({ noteType, id, title, content });
+          }}
+        >
+          Submit
+        </Button>
       </ModalWrapper>
     );
   } else {

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import moment, { Moment } from "moment";
 import { useForm } from "react-hook-form";
 import { ModalWrapper } from "./UIComponents";
-import useFirestoreContext from "../firestoreContext";
+import useFirestoreDb from "../hooks/useFirestoreDb";
 
 export type FormTypes = {
   title: string;
@@ -29,7 +29,7 @@ const NewTaskModal: React.FC<{
   });
 
   const [dueDateTime, setDueDateTime] = useState<Moment | null>(null);
-  const { addTask } = useFirestoreContext();
+  const { addTask } = useFirestoreDb();
 
   const closeModal = () => {
     setIsOpen(false);
