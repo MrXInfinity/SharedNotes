@@ -34,11 +34,13 @@ type reminderType = {
   dateUpdated: Timestamp
 }
 
+type updateReminderType = Pick<reminderType, "title" | "startTime" | "endTime">
+
 type taskType = {
   id: string
-  dueDate: any,
-  dueTime: any,
+  dueDateTime: string,
   title: string,
+  status: "forthcoming" | "finished" | "missed",
   favorite: boolean,
   dateCreated: Timestamp,
   ateUpdated: Timestamp
@@ -52,4 +54,4 @@ type dbDataObject = {
 }
 
 
-export type {noteType, reminderType, taskType, dbDataObject, updateNoteType}
+export type {noteType, reminderType, taskType, dbDataObject, updateNoteType, updateReminderType}

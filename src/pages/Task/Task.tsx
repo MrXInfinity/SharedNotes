@@ -6,7 +6,6 @@ import EachTaskList from "./eachTaskList";
 
 const Task = () => {
   const { dbData } = useFirestoreContext();
-
   const [selectedTaskData, setSelectedTaskData] = useState<taskType>(
     {} as taskType
   );
@@ -19,7 +18,7 @@ const Task = () => {
     >
       <Typography
         variant="h4"
-        sx={{ fontWeight: "bold", fontSize: { xs: 30, sm: 39, md: 48 } }}
+        sx={{ fontWeight: "bold", fontSize: { xs: 28, sm: 39, md: 48 } }}
       >
         Tasks
       </Typography>
@@ -28,21 +27,20 @@ const Task = () => {
         spacing={2}
         sx={{ display: "flex" }}
       >
-        <Stack sx={{ display: "flex" }}>
-          <div
-            style={{
-              display: "inline-flex",
-              flexWrap: "wrap",
-              gap: 20,
-            }}
-          >
-            <EachTaskList
-              data={dbData["Tasks"]}
-              setData={setSelectedTaskData}
-              toggleModal={setIsTaskModalOpen}
-            />
-          </div>
-        </Stack>
+        <div
+          style={{
+            display: "inline-flex",
+            flexWrap: "wrap",
+            gap: 20,
+            paddingTop: 10,
+          }}
+        >
+          <EachTaskList
+            data={dbData["Tasks"]}
+            setData={setSelectedTaskData}
+            toggleModal={setIsTaskModalOpen}
+          />
+        </div>
       </Stack>
     </Container>
   );

@@ -83,6 +83,7 @@ const useFirestoreDb = () => {
           dueDateTime,
           title,
           favorite: false,
+          status: "forthcoming",
           dateCreated: new Date(),
           dateUpdated: new Date(),
         }

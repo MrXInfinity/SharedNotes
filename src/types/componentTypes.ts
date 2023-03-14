@@ -4,4 +4,5 @@ type eachListType<T> = {
     toggleModal: React.Dispatch<React.SetStateAction<boolean>>
 }
 
+
 export type {eachListType}

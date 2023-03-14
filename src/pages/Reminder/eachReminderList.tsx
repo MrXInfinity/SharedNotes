@@ -1,15 +1,46 @@
-import React from "react";
+import React, { useState } from "react";
 import {
+  Button,
   Card,
   CardActionArea,
   CardContent,
+  CardHeader,
+  IconButton,
+  Menu,
+  MenuItem,
   Stack,
   Typography,
   useTheme,
 } from "@mui/material";
-import { reminderType } from "../../types/firestoreDataTypes";
+import {
+  reminderType,
+  updateReminderType,
+} from "../../types/firestoreDataTypes";
 import moment from "moment";
 import { eachListType } from "../../types/componentTypes";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import EditIcon from "@mui/icons-material/Edit";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import DeleteIcon from "@mui/icons-material/Delete";
+
+const PopUpMenuItem = (props: any) => {
+  const { title, icon, click, ...otherProps } = props;
+  return (
+    <MenuItem
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}
+      onClick={() => click(true)}
+      {...otherProps}
+    >
+      <Typography sx={{ pr: 1 }}>{title}</Typography>
+      {icon}
+    </MenuItem>
+  );
+};
 
 const EachReminderList: React.FC<eachListType<reminderType>> = ({
   data,
@@ -17,15 +48,33 @@ const EachReminderList: React.FC<eachListType<reminderType>> = ({
   toggleModal,
 }) => {
   const theme = useTheme();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const showMenu = Boolean(anchorEl);
+
+  const LinkMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const MenuClose = () => {
+    setAnchorEl(null);
+  };
+
   moment.updateLocale("en", {
     weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    calendar: {
+      lastDay: "[Yesterday]",
+      sameDay: "[Today]",
+      nextDay: "[Tomorrow]",
+      lastWeek: "[last] dddd",
+      nextWeek: "dddd",
+      sameElse: "L",
+    },
   });
 
   if (data) {
-    console.log(data);
     return (
       <>
-        {data.map(({ id, startTime, endTime, title, favorite, status }) => (
+        {data.map((eachData) => (
           <Card
             sx={{
               borderTop: 5,
@@ -33,80 +82,127 @@ const EachReminderList: React.FC<eachListType<reminderType>> = ({
               flexDirection: "column",
               height: "min-content",
               maxHeight: "200px",
-              width: "150px",
+              width: "auto",
               alignItems: "start",
+              pt: 2,
+              px: 2,
             }}
             style={{
               borderColor:
-                status === "forthcoming"
+                eachData.status === "forthcoming"
                   ? theme.palette.background.paper
-                  : status === "ongoing"
+                  : eachData.status === "ongoing"
                   ? theme.palette.primary.main
-                  : status === "finished"
+                  : eachData.status === "finished"
                   ? theme.palette.success.main
                   : theme.palette.error.main,
             }}
+            key={eachData.id}
           >
-            <CardActionArea
+            <CardHeader
+              sx={{ p: 0, width: "100%" }}
+              action={
+                <>
+                  <IconButton
+                    aria-label="settings"
+                    onClick={LinkMenuClick}
+                    aria-controls={showMenu ? "basic-menu" : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={showMenu ? "true" : undefined}
+                  >
+                    <MoreVertIcon />
+                  </IconButton>
+                  <Menu
+                    id="basic-menu"
+                    anchorEl={anchorEl}
+                    open={showMenu}
+                    onClose={MenuClose}
+                    MenuListProps={{
+                      "aria-labelledby": "basic-button",
+                    }}
+                    anchorOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                  >
+                    <PopUpMenuItem
+                      title="Edit"
+                      icon={<EditIcon />}
+                      click={() => {
+                        toggleModal(true);
+                        setData(eachData);
+                      }}
+                    />
+                    <PopUpMenuItem
+                      title={!eachData.favorite ? "Favorite" : "Unfavorite"}
+                      icon={
+                        !eachData.favorite ? (
+                          <FavoriteBorderIcon />
+                        ) : (
+                          <FavoriteIcon />
+                        )
+                      }
+                    />
+                    <PopUpMenuItem
+                      title="Delete"
+                      icon={<DeleteIcon />}
+                    />
+                  </Menu>
+                </>
+              }
+              title={
+                <Typography
+                  sx={{
+                    opacity: 0.6,
+                    fontSize: 14,
+                    fontWeight: "medium",
+                  }}
+                >
+                  {moment(parseInt(eachData.startTime)).calendar()} |{" "}
+                  {moment(parseInt(eachData.startTime)).format("dddd")}
+                </Typography>
+              }
+            />
+            <CardContent
               sx={{
                 height: "100%",
-                py: 1.7,
-                px: 2,
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "start",
+                p: 0,
               }}
             >
               <Typography
                 sx={{
-                  opacity: 0.6,
-
-                  fontSize: 14,
-                  fontWeight: "medium",
-                }}
-              >
-                {moment(parseInt(startTime)).format("MMM Do YY")} |{" "}
-                {moment(parseInt(startTime)).format("dddd")}
-              </Typography>
-              <Typography
-                sx={{
-                  opacity: 0.6,
-                  fontSize: 14,
-                  fontWeight: "medium",
-                }}
-              >
-                {moment(parseInt(startTime)).fromNow()}
-              </Typography>
-
-              <Typography
-                sx={{
                   fontSize: 24,
-                  pt: 0.75,
                   fontWeight: "bold",
                   textOverflow: "ellipsis",
                   overflow: "hidden",
                   height: "100%",
                 }}
               >
-                {moment(parseInt(startTime)).format("h:mm a")}
-                {endTime && (
-                  <Typography
-                    sx={{
+                {moment(parseInt(eachData.startTime)).format("h:mm a")}
+                {eachData.endTime && (
+                  <span
+                    style={{
                       fontSize: 16,
                       fontWeight: "bold",
-                      textOverflow: "ellipsis",
-                      overflow: "hidden",
                       height: "100%",
+                      display: "block",
                     }}
                   >
-                    {`- ${moment(parseInt(endTime)).format("h:mm a")}`}
-                  </Typography>
+                    {`- ${moment(parseInt(eachData.endTime)).format("h:mm a")}`}
+                  </span>
                 )}
               </Typography>
               <Typography sx={{ fontSize: { xs: 16 }, pt: 0.75 }}>
-                {title}
+                {eachData.title}
               </Typography>
-            </CardActionArea>
+            </CardContent>
           </Card>
         ))}
       </>
@@ -117,3 +213,5 @@ const EachReminderList: React.FC<eachListType<reminderType>> = ({
 };
 
 export default EachReminderList;
+
+// moment(parseInt(startTime)).fromNow();

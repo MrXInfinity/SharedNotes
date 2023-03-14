@@ -29,6 +29,8 @@ type firestoreContextProps = {
   setNoteContentData: React.Dispatch<React.SetStateAction<noteType>>;
   isNoteEditorModalOpen: boolean;
   setIsNoteEditorModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isNewReminderModalOpen: boolean;
+  setIsNewReminderModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const firestoreContext = createContext<firestoreContextProps>(
@@ -52,6 +54,7 @@ export const FirestoreProvider: React.FC<React.ReactPortal> = ({
   );
 
   const [isNoteEditorModalOpen, setIsNoteEditorModalOpen] = useState(false);
+  const [isNewReminderModalOpen, setIsNewReminderModalOpen] = useState(false);
   console.log(dbData);
 
   // SHARED NOTES QUERY
@@ -138,6 +141,8 @@ export const FirestoreProvider: React.FC<React.ReactPortal> = ({
         setNoteContentData,
         isNoteEditorModalOpen,
         setIsNoteEditorModalOpen,
+        isNewReminderModalOpen,
+        setIsNewReminderModalOpen,
       }}
     >
       {children}

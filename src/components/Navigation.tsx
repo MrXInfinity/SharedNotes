@@ -1,6 +1,7 @@
 import {
   AppBar,
   Box,
+  Button,
   Fab,
   IconButton,
   Menu,
@@ -18,49 +19,51 @@ import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LanguageIcon from "@mui/icons-material/Language";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
+import CottageIcon from "@mui/icons-material/Cottage";
 import CottageOutlinedIcon from "@mui/icons-material/CottageOutlined";
+import CloudIcon from "@mui/icons-material/Cloud";
 import CloudOutlinedIcon from "@mui/icons-material/CloudOutlined";
 import FolderSharedIcon from "@mui/icons-material/FolderShared";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import FolderSharedOutlinedIcon from "@mui/icons-material/FolderSharedOutlined";
+import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 import AssignmentIcon from "@mui/icons-material/Assignment";
+import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import { ReactElement, useState } from "react";
 import { Container } from "@mui/system";
 import NewNoteModal from "./NewNoteModal";
 import NewTaskModal from "./NewTaskModal";
 import NewReminderModal from "./NewReminderModal";
+import useFirestoreContext from "../firestoreContext";
 
 //Each navitem
-const NavItem: React.FC<{
-  link: string;
-  icon: ReactElement;
-  label?: string;
-  ariaLabel: string;
-}> = ({ link, icon, label, ariaLabel }) => {
-  const themeColor = useTheme();
+const NavItem: React.FC<any> = ({
+  link,
+  inactiveIcon,
+  activeIcon,
+  label,
+  value,
+  setValue,
+}) => {
   return (
     <NavLink
+      onClick={() => setValue("shared-notes")}
       to={link}
-      style={({ isActive }) =>
-        isActive
-          ? {
-              backgroundColor: themeColor.palette.primary.main,
-              color: themeColor.palette.primary.contrastText,
-            }
-          : { color: themeColor.palette.text.primary }
-      }
+      style={{ textDecoration: "none" }}
     >
       <Tab
-        aria-label={ariaLabel}
+        style={value === label ? { color: "primary.main" } : { color: "black" }}
+        onClick={() => setValue("home")}
         iconPosition="start"
         sx={{
           minWidth: 0,
           flexGrow: 1,
           width: "100%",
-          textDecoration: "none",
+          justifyContent: { md: "start" },
         }}
         label={label}
-        icon={icon}
+        icon={value === label ? activeIcon : inactiveIcon}
       />
     </NavLink>
   );
@@ -70,10 +73,10 @@ const Navigation: React.FC<{
   logout: () => Promise<void>;
   changeTheme: () => void;
 }> = ({ logout, changeTheme }) => {
+  const { setIsNewReminderModalOpen } = useFirestoreContext();
   //Modals
   const [isNewNoteModalOpen, setIsNewNoteModalOpen] = useState(false);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
-  const [isNewReminderModalOpen, setIsNewReminderModalOpen] = useState(false);
 
   //Menu withing Settings
   const [anchorSettingsEl, setAnchorSettingsEl] = useState<null | HTMLElement>(
@@ -83,6 +86,8 @@ const Navigation: React.FC<{
   //Menu within new button
   const [anchorNewEl, setAnchorNewEl] = useState<null | HTMLElement>(null);
   const showNewMenu = Boolean(anchorNewEl);
+  const [tabsValue, setTabsValue] = useState("");
+  console.log(tabsValue);
 
   const isWindowLarge = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
@@ -92,8 +97,8 @@ const Navigation: React.FC<{
         <AppBar
           position="static"
           sx={{
-            pt: { xs: 2, md: 4 },
-            pb: { xs: 1.5, md: 3 },
+            pt: { xs: 1, md: 4 },
+            pb: { xs: 1, md: 3 },
             backgroundColor: theme.palette.background.paper,
             boxShadow: "none",
             display: "flex",
@@ -102,10 +107,11 @@ const Navigation: React.FC<{
             justifyContent: "space-between",
             backgroundImage: "none",
             px: 3,
+            textDecoration: "none",
           }}
         >
           <Typography
-            sx={{ fontWeight: 450, fontSize: { xs: 24, md: 24 } }}
+            sx={{ fontWeight: 450, fontSize: { xs: 16, md: 24 } }}
             color="primary"
           >
             ShareNotes
@@ -170,52 +176,119 @@ const Navigation: React.FC<{
             maxWidth="xl"
             sx={{ display: "flex" }}
           >
-            <Tabs
-              orientation="vertical"
-              sx={{
-                backgroundColor: theme.palette.background.paper,
-                position: "static",
-                pt: 4,
-                color: "white",
-                backgroundImage: "none",
-                boxShadow: "none",
-                display: "inline-flex",
-                flexDirection: "column",
-                width: "20%",
-                height: "100%",
-              }}
+            <div
+              style={{ display: "flex", flexDirection: "column", width: "20%" }}
             >
-              <NavItem
-                link={"/"}
-                icon={<CottageOutlinedIcon />}
-                label="Home"
-                ariaLabel="Home Menu"
-              />
-              <NavItem
-                link={"/shared-notes"}
-                icon={<CloudOutlinedIcon />}
-                label="Shared Notes"
-                ariaLabel="Share Notes Menu"
-              />
-              <NavItem
-                link={"/private-notes"}
-                icon={<FolderSharedIcon />}
-                label="Public Notes"
-                ariaLabel="Private Notes Menu"
-              />
-              <NavItem
-                link={"/reminders"}
-                icon={<CalendarTodayIcon />}
-                label="Reminders"
-                ariaLabel="Reminders Menu"
-              />
-              <NavItem
-                link={"/tasks"}
-                icon={<AssignmentIcon />}
-                label="Tasks"
-                ariaLabel="Tasks Menu"
-              />
-            </Tabs>
+              <Box
+                sx={{
+                  backgroundColor: "background.paper",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Button
+                  color="primary"
+                  variant="contained"
+                  aria-label="Add New"
+                  onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+                    setAnchorNewEl(event.currentTarget);
+                  }}
+                  aria-controls={showNewMenu ? "basic-menu" : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={showNewMenu ? "true" : undefined}
+                >
+                  <AddIcon />
+                  <Typography sx={{ fontWeight: "bold", fontSize: 18, ml: 1 }}>
+                    ADD NEW
+                  </Typography>
+                </Button>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorNewEl}
+                  open={showNewMenu}
+                  onClose={() => setAnchorNewEl(null)}
+                  MenuListProps={{
+                    "aria-labelledby": "basic-button",
+                  }}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "center",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "center",
+                  }}
+                  sx={{ mt: 5 }}
+                >
+                  <MenuItem onClick={() => setIsNewNoteModalOpen(true)}>
+                    New Note
+                  </MenuItem>
+                  <MenuItem onClick={() => setIsNewTaskModalOpen(true)}>
+                    New Task
+                  </MenuItem>
+                  <MenuItem onClick={() => setIsNewReminderModalOpen(true)}>
+                    New Reminder
+                  </MenuItem>
+                </Menu>
+              </Box>
+              <Tabs
+                orientation="vertical"
+                sx={{
+                  backgroundColor: theme.palette.background.paper,
+                  position: "static",
+                  pt: 4,
+                  color: "white",
+                  backgroundImage: "none",
+                  boxShadow: "none",
+                  display: "inline-flex",
+                  flexDirection: "column",
+
+                  height: "100%",
+                }}
+              >
+                <NavItem
+                  link={"/"}
+                  inactiveIcon={<CottageOutlinedIcon />}
+                  activeIcon={<CottageIcon />}
+                  label="home"
+                  value={tabsValue}
+                  setValue={setTabsValue}
+                />
+                <NavItem
+                  link={"/shared-notes"}
+                  inactiveIcon={<CloudOutlinedIcon />}
+                  activeIcon={<CloudIcon />}
+                  label="shared notes"
+                  value={tabsValue}
+                  setValue={setTabsValue}
+                />
+                <NavItem
+                  link={"/private-notes"}
+                  inactiveIcon={<FolderSharedOutlinedIcon />}
+                  activeIcon={<FolderSharedIcon />}
+                  label="public notes"
+                  value={tabsValue}
+                  setValue={setTabsValue}
+                />
+                <NavItem
+                  link={"/reminders"}
+                  inactiveIcon={<NotificationsOutlinedIcon />}
+                  activeIcon={<NotificationsIcon />}
+                  label="reminders"
+                  value={tabsValue}
+                  setValue={setTabsValue}
+                />
+                <NavItem
+                  link={"/tasks"}
+                  inactiveIcon={<AssignmentOutlinedIcon />}
+                  activeIcon={<AssignmentIcon />}
+                  label="tasks"
+                  value={tabsValue}
+                  setValue={setTabsValue}
+                />
+              </Tabs>
+            </div>
             <Outlet />
           </Container>
         ) : (
@@ -229,33 +302,43 @@ const Navigation: React.FC<{
                 backgroundImage: "none",
                 boxShadow: "none",
                 position: "static",
-                mb: 4,
+                mb: 3,
               }}
             >
               <NavItem
                 link={"/"}
-                icon={<CottageOutlinedIcon />}
-                ariaLabel="Home Menu"
+                inactiveIcon={<CottageOutlinedIcon />}
+                activeIcon={<CottageIcon />}
+                value={tabsValue}
+                setValue={setTabsValue}
               />
               <NavItem
                 link={"/shared-notes"}
-                icon={<CloudOutlinedIcon />}
-                ariaLabel="Shared Notes Menu"
+                inactiveIcon={<CloudOutlinedIcon />}
+                activeIcon={<CloudIcon />}
+                value={tabsValue}
+                setValue={setTabsValue}
               />
               <NavItem
                 link={"/private-notes"}
-                icon={<FolderSharedIcon />}
-                ariaLabel="Private Notes Menu"
+                inactiveIcon={<FolderSharedOutlinedIcon />}
+                activeIcon={<FolderSharedIcon />}
+                value={tabsValue}
+                setValue={setTabsValue}
               />
               <NavItem
                 link={"/reminders"}
-                icon={<CalendarTodayIcon />}
-                ariaLabel="Reminder Menu"
+                inactiveIcon={<NotificationsOutlinedIcon />}
+                activeIcon={<NotificationsIcon />}
+                value={tabsValue}
+                setValue={setTabsValue}
               />
               <NavItem
                 link={"/tasks"}
-                icon={<AssignmentIcon />}
-                ariaLabel="Tasks Menu"
+                inactiveIcon={<AssignmentOutlinedIcon />}
+                activeIcon={<AssignmentIcon />}
+                value={tabsValue}
+                setValue={setTabsValue}
               />
             </Paper>
             <Outlet />
@@ -315,10 +398,6 @@ const Navigation: React.FC<{
         <NewTaskModal
           isOpen={isNewTaskModalOpen}
           setIsOpen={setIsNewTaskModalOpen}
-        />
-        <NewReminderModal
-          isOpen={isNewReminderModalOpen}
-          setIsOpen={setIsNewReminderModalOpen}
         />
       </Box>
     </>
