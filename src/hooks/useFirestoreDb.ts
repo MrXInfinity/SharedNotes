@@ -1,8 +1,8 @@
-import { collection, doc, onSnapshot, orderBy, query, QuerySnapshot, setDoc, Timestamp, updateDoc } from 'firebase/firestore';
+import { collection, deleteDoc, doc, onSnapshot, orderBy, query, QuerySnapshot, setDoc, Timestamp, updateDoc } from 'firebase/firestore';
 import { auth } from "../firebase";
 import { useState, useEffect } from 'react'
 import { db } from "../firebase"
-import { dbDataObject, noteType, updateNoteType } from '../types/firestoreDataTypes';
+import { dbDataObject, noteType, updateNoteType, reminderType } from '../types/firestoreDataTypes';
 
 const useFirestoreDb = () => {
 
@@ -46,11 +46,11 @@ const useFirestoreDb = () => {
     }
   }
 
-  const addReminder = async (
-    title: string,
-    startTime: string,
-    endTime: string | null
-  ) => {
+  const addReminder = async ({
+    title,
+    startTime,
+    endTime
+  }: Pick<reminderType, "title" | "startTime" | "endTime">) => {
     try {
       await setDoc(
         doc(
@@ -74,6 +74,21 @@ const useFirestoreDb = () => {
       console.log(err);
     }
   };
+  // Pick<reminderType, "id" | "title" | "startTime" | "endTime">
+
+  const updateReminder = async ({id, ...data}: any) => {
+    try {
+      await updateDoc(
+        doc(db, "Users", auth.currentUser!.uid, "Reminder", id),
+        {
+          ...data,
+          dateUpdated: new Date()
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   const addTask = async (title: string, dueDateTime: string) => {
     try {
@@ -93,7 +108,9 @@ const useFirestoreDb = () => {
     }
   };
 
-  return {addNote, addReminder, addTask, updateNote}
+  const remove = async (type: "string", id: "string") => await deleteDoc(doc(db, "Users", auth.currentUser!.uid, type, id))
+
+  return {addNote, addReminder, addTask, updateNote, updateReminder, remove}
 }
 
   

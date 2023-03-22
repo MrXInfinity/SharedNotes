@@ -2,12 +2,14 @@ import { Moment } from "moment";
 
 type reminderFormTypes = {
   title: string;
-} & reminderDateTypes;
+  startTime: string | null;
+  endTime: string | null
+}
 
 
 type reminderDateTypes = {
-  startingDueDate: Moment | null;
-  endingDueDate: Moment | null;
+  startTime: Moment | null;
+  endTime: Moment | null;
 };
 
 

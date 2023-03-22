@@ -1,46 +1,15 @@
 import React, { useState } from "react";
 import {
-  Button,
   Card,
-  CardActionArea,
   CardContent,
   CardHeader,
-  IconButton,
-  Menu,
-  MenuItem,
-  Stack,
   Typography,
   useTheme,
 } from "@mui/material";
-import {
-  reminderType,
-  updateReminderType,
-} from "../../types/firestoreDataTypes";
+import { reminderType } from "../../types/firestoreDataTypes";
 import moment from "moment";
 import { eachListType } from "../../types/componentTypes";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import EditIcon from "@mui/icons-material/Edit";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import DeleteIcon from "@mui/icons-material/Delete";
-
-const PopUpMenuItem = (props: any) => {
-  const { title, icon, click, ...otherProps } = props;
-  return (
-    <MenuItem
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-      }}
-      onClick={() => click(true)}
-      {...otherProps}
-    >
-      <Typography sx={{ pr: 1 }}>{title}</Typography>
-      {icon}
-    </MenuItem>
-  );
-};
+import MenuComponent from "../../components/MenuComponent";
 
 const EachReminderList: React.FC<eachListType<reminderType>> = ({
   data,
@@ -49,15 +18,6 @@ const EachReminderList: React.FC<eachListType<reminderType>> = ({
 }) => {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const showMenu = Boolean(anchorEl);
-
-  const LinkMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const MenuClose = () => {
-    setAnchorEl(null);
-  };
 
   moment.updateLocale("en", {
     weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
@@ -102,57 +62,11 @@ const EachReminderList: React.FC<eachListType<reminderType>> = ({
             <CardHeader
               sx={{ p: 0, width: "100%" }}
               action={
-                <>
-                  <IconButton
-                    aria-label="settings"
-                    onClick={LinkMenuClick}
-                    aria-controls={showMenu ? "basic-menu" : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={showMenu ? "true" : undefined}
-                  >
-                    <MoreVertIcon />
-                  </IconButton>
-                  <Menu
-                    id="basic-menu"
-                    anchorEl={anchorEl}
-                    open={showMenu}
-                    onClose={MenuClose}
-                    MenuListProps={{
-                      "aria-labelledby": "basic-button",
-                    }}
-                    anchorOrigin={{
-                      vertical: "top",
-                      horizontal: "right",
-                    }}
-                    transformOrigin={{
-                      vertical: "top",
-                      horizontal: "right",
-                    }}
-                  >
-                    <PopUpMenuItem
-                      title="Edit"
-                      icon={<EditIcon />}
-                      click={() => {
-                        toggleModal(true);
-                        setData(eachData);
-                      }}
-                    />
-                    <PopUpMenuItem
-                      title={!eachData.favorite ? "Favorite" : "Unfavorite"}
-                      icon={
-                        !eachData.favorite ? (
-                          <FavoriteBorderIcon />
-                        ) : (
-                          <FavoriteIcon />
-                        )
-                      }
-                    />
-                    <PopUpMenuItem
-                      title="Delete"
-                      icon={<DeleteIcon />}
-                    />
-                  </Menu>
-                </>
+                <MenuComponent
+                  eachData={eachData}
+                  setData={setData}
+                  toggleModal={toggleModal}
+                />
               }
               title={
                 <Typography

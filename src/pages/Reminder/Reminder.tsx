@@ -4,13 +4,25 @@ import EachReminderList from "./eachReminderList";
 import useFirestoreContext from "../../firestoreContext";
 import { reminderType } from "../../types/firestoreDataTypes";
 import NewReminderModal from "../../components/NewReminderModal";
+import useFirestoreDb from "../../hooks/useFirestoreDb";
+import UpdateReminderModal from "./updateReminderModal";
 
 const Reminder = () => {
-  const { isNewReminderModalOpen, setIsNewReminderModalOpen, dbData } =
-    useFirestoreContext();
+  const { dbData } = useFirestoreContext();
+  const { updateReminder } = useFirestoreDb();
+
+  const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
 
   const [selectedReminderData, setSelectedReminderData] =
     useState<reminderType>({} as reminderType);
+
+  const updateReminderInitializer = ({
+    title,
+    startTime,
+    endTime,
+  }: Pick<reminderType, "title" | "startTime" | "endTime">) => {
+    updateReminder({ id: selectedReminderData.id, startTime, title, endTime });
+  };
 
   return (
     <>
@@ -43,15 +55,19 @@ const Reminder = () => {
         >
           <EachReminderList
             data={dbData["Reminder"]}
-            toggleModal={setIsNewReminderModalOpen}
+            toggleModal={setIsReminderModalOpen}
             setData={setSelectedReminderData}
           />
         </Box>
       </Container>
-      <NewReminderModal
-        isOpen={isNewReminderModalOpen}
-        setIsOpen={setIsNewReminderModalOpen}
-      />
+      {Object.keys(selectedReminderData).length > 0 && (
+        <UpdateReminderModal
+          isOpen={isReminderModalOpen}
+          setIsOpen={setIsReminderModalOpen}
+          data={selectedReminderData}
+          setData={setSelectedReminderData}
+        />
+      )}
     </>
   );
 };

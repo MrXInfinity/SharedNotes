@@ -16,7 +16,7 @@ import FormatAlignCenterIcon from "@mui/icons-material/FormatAlignCenter";
 import FormatAlignRightIcon from "@mui/icons-material/FormatAlignRight";
 import FormatAlignJustifyIcon from "@mui/icons-material/FormatAlignJustify";
 import useNoteEditor from "./NoteEditorLogic";
-import { noteType, updateNoteType } from "../../types/firestoreDataTypes";
+import { noteType } from "../../types/firestoreDataTypes";
 import useFirestoreDb from "../../hooks/useFirestoreDb";
 
 const NoteEditor: React.FC<{

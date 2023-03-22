@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Container, Stack, Typography } from "@mui/material";
+import { Box, Container, Stack, Typography } from "@mui/material";
 import useFirestoreContext from "../../firestoreContext";
 import { taskType } from "../../types/firestoreDataTypes";
 import EachTaskList from "./eachTaskList";
@@ -22,26 +22,28 @@ const Task = () => {
       >
         Tasks
       </Typography>
-      <Stack
-        direction="row"
-        spacing={2}
-        sx={{ display: "flex" }}
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "repeat(2, minmax(0, 1fr))",
+            sm: "repeat(3, minmax(0, 1fr))",
+            md: "repeat(4, minmax(0, 1fr))",
+            lg: "repeat(5, minmax(0, 1fr))",
+            xl: "repeat(6, minmax(0, 1fr))",
+          },
+          gap: 4,
+          width: "100%",
+          flexWrap: "wrap",
+          paddingTop: 2,
+        }}
       >
-        <div
-          style={{
-            display: "inline-flex",
-            flexWrap: "wrap",
-            gap: 20,
-            paddingTop: 10,
-          }}
-        >
-          <EachTaskList
-            data={dbData["Tasks"]}
-            setData={setSelectedTaskData}
-            toggleModal={setIsTaskModalOpen}
-          />
-        </div>
-      </Stack>
+        <EachTaskList
+          data={dbData["Tasks"]}
+          setData={setSelectedTaskData}
+          toggleModal={setIsTaskModalOpen}
+        />
+      </Box>
     </Container>
   );
 };

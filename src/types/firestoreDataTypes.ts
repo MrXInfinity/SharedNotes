@@ -23,6 +23,7 @@ type noteType = {
 
 type updateNoteType = Pick<noteType, "noteType" | "id" | "title" | "content">
 
+
 type reminderType = {
   id: string
   startTime: any,
@@ -34,7 +35,7 @@ type reminderType = {
   dateUpdated: Timestamp
 }
 
-type updateReminderType = Pick<reminderType, "title" | "startTime" | "endTime">
+type updateReminderType = Pick<reminderType, "id" | "title" | "startTime" | "endTime">
 
 type taskType = {
   id: string

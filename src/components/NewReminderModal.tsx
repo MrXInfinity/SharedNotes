@@ -9,6 +9,8 @@ import type {
   reminderDateTypes,
 } from "../types/modalContentTypes";
 import useFirestoreDb from "../hooks/useFirestoreDb";
+import { reminderType } from "../types/firestoreDataTypes";
+import { StringDiff } from "slate-react/dist/utils/diff-text";
 
 const NewReminderModal: React.FC<{
   isOpen: boolean;
@@ -22,8 +24,8 @@ const NewReminderModal: React.FC<{
   } = useForm<reminderFormTypes>({
     defaultValues: {
       title: "",
-      startingDueDate: null,
-      endingDueDate: null,
+      startTime: null,
+      endTime: null,
     },
     shouldUnregister: true,
   });
@@ -31,27 +33,20 @@ const NewReminderModal: React.FC<{
   const { addReminder } = useFirestoreDb();
 
   const [formDatesData, setFormDatesData] = useState<reminderDateTypes>({
-    startingDueDate: null,
-    endingDueDate: null,
+    startTime: null,
+    endTime: null,
   });
 
   const closeModal = () => {
     setIsOpen(false);
-    setFormDatesData({ startingDueDate: null, endingDueDate: null });
+    setFormDatesData({ startTime: null, endTime: null });
   };
 
-  const formSubmit = ({
-    title,
-    startingDueDate,
-    endingDueDate,
-  }: reminderFormTypes) => {
-    addReminder(
-      title,
-      startingDueDate!.format("x"),
-      endingDueDate ? endingDueDate!.format("x") : null
-    );
+  const formSubmit = (data: reminderFormTypes) => {
+    addReminder(data);
     closeModal();
   };
+  console.log(formDatesData);
 
   return (
     <ModalWrapper
@@ -93,43 +88,43 @@ const NewReminderModal: React.FC<{
             <TextField
               {...props}
               required
-              error={errors?.startingDueDate ? true : false}
-              helperText={errors?.startingDueDate?.message}
+              error={errors?.startTime ? true : false}
+              helperText={errors?.startTime?.message}
             />
           )}
           label="Starting Due Date"
-          value={formDatesData.startingDueDate}
-          {...register("startingDueDate", {
+          value={formDatesData.startTime}
+          {...register("startTime", {
             required: "Please select a due date",
           })}
-          onChange={(e) => {
-            setValue("startingDueDate", e);
-            setFormDatesData((state) => ({ ...state, startingDueDate: e }));
+          onChange={(data) => {
+            setValue("startTime", data!.format("x"));
+            setFormDatesData((state) => ({ ...state, startTime: data }));
           }}
           minDateTime={moment(Date.now())}
           minTime={moment(Date.now())}
-          maxDateTime={formDatesData.endingDueDate}
+          maxDateTime={formDatesData.endTime}
         />
         <DateTimePicker
           renderInput={(props) => (
             <TextField
               {...props}
-              error={errors?.endingDueDate ? true : false}
+              error={errors?.endTime ? true : false}
               helperText={
-                errors?.endingDueDate?.message ??
+                errors?.endTime?.message ??
                 "This is optional for reminders that have a start and end time"
               }
             />
           )}
           label="Ending Due Date"
-          value={formDatesData.endingDueDate}
-          {...register("endingDueDate")}
-          onChange={(e) => {
-            setValue("endingDueDate", e);
-            setFormDatesData((state) => ({ ...state, endingDueDate: e }));
+          value={formDatesData.endTime}
+          {...register("endTime")}
+          onChange={(data) => {
+            setValue("endTime", data ? data!.format("x") : null);
+            setFormDatesData((state) => ({ ...state, endTime: data }));
           }}
-          minDateTime={formDatesData.startingDueDate}
-          minTime={formDatesData.startingDueDate}
+          minDateTime={formDatesData.startTime}
+          minTime={formDatesData.startTime}
         />
         <Button
           type="submit"

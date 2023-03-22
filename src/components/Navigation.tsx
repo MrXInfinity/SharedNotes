@@ -36,6 +36,7 @@ import NewNoteModal from "./NewNoteModal";
 import NewTaskModal from "./NewTaskModal";
 import NewReminderModal from "./NewReminderModal";
 import useFirestoreContext from "../firestoreContext";
+import useFirestoreDb from "../hooks/useFirestoreDb";
 
 //Each navitem
 const NavItem: React.FC<any> = ({
@@ -44,26 +45,33 @@ const NavItem: React.FC<any> = ({
   activeIcon,
   label,
   value,
-  setValue,
+  selectedValue,
+  setSelectedValue,
 }) => {
+  const theme = useTheme();
   return (
     <NavLink
-      onClick={() => setValue("shared-notes")}
+      onClick={() => setSelectedValue(value)}
       to={link}
       style={{ textDecoration: "none" }}
     >
       <Tab
-        style={value === label ? { color: "primary.main" } : { color: "black" }}
-        onClick={() => setValue("home")}
+        style={
+          selectedValue === value
+            ? { color: theme.palette.primary.main }
+            : { color: theme.palette.text.primary }
+        }
+        onClick={() => setSelectedValue("home")}
         iconPosition="start"
         sx={{
+          opacity: 1,
           minWidth: 0,
           flexGrow: 1,
           width: "100%",
           justifyContent: { md: "start" },
         }}
         label={label}
-        icon={value === label ? activeIcon : inactiveIcon}
+        icon={selectedValue === value ? activeIcon : inactiveIcon}
       />
     </NavLink>
   );
@@ -73,8 +81,10 @@ const Navigation: React.FC<{
   logout: () => Promise<void>;
   changeTheme: () => void;
 }> = ({ logout, changeTheme }) => {
-  const { setIsNewReminderModalOpen } = useFirestoreContext();
+  const { addReminder } = useFirestoreDb();
+  // const { setIsNewReminderModalOpen } = useFirestoreContext();
   //Modals
+  const [isNewReminderModalOpen, setIsNewReminderModalOpen] = useState(false);
   const [isNewNoteModalOpen, setIsNewNoteModalOpen] = useState(false);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
 
@@ -86,7 +96,7 @@ const Navigation: React.FC<{
   //Menu within new button
   const [anchorNewEl, setAnchorNewEl] = useState<null | HTMLElement>(null);
   const showNewMenu = Boolean(anchorNewEl);
-  const [tabsValue, setTabsValue] = useState("");
+  const [tabsValue, setTabsValue] = useState("home");
   console.log(tabsValue);
 
   const isWindowLarge = useMediaQuery("(min-width:600px)");
@@ -233,6 +243,7 @@ const Navigation: React.FC<{
                 </Menu>
               </Box>
               <Tabs
+                value={null}
                 orientation="vertical"
                 sx={{
                   backgroundColor: theme.palette.background.paper,
@@ -251,41 +262,46 @@ const Navigation: React.FC<{
                   link={"/"}
                   inactiveIcon={<CottageOutlinedIcon />}
                   activeIcon={<CottageIcon />}
-                  label="home"
-                  value={tabsValue}
-                  setValue={setTabsValue}
+                  label="Home"
+                  value="home"
+                  selectedValue={tabsValue}
+                  setSelectedValue={setTabsValue}
                 />
                 <NavItem
                   link={"/shared-notes"}
                   inactiveIcon={<CloudOutlinedIcon />}
                   activeIcon={<CloudIcon />}
-                  label="shared notes"
-                  value={tabsValue}
-                  setValue={setTabsValue}
+                  label="Shared notes"
+                  value="shared notes"
+                  selectedValue={tabsValue}
+                  setSelectedValue={setTabsValue}
                 />
                 <NavItem
                   link={"/private-notes"}
                   inactiveIcon={<FolderSharedOutlinedIcon />}
                   activeIcon={<FolderSharedIcon />}
-                  label="public notes"
-                  value={tabsValue}
-                  setValue={setTabsValue}
+                  label="Public notes"
+                  value="public notes"
+                  selectedValue={tabsValue}
+                  setSelectedValue={setTabsValue}
                 />
                 <NavItem
                   link={"/reminders"}
                   inactiveIcon={<NotificationsOutlinedIcon />}
                   activeIcon={<NotificationsIcon />}
                   label="reminders"
-                  value={tabsValue}
-                  setValue={setTabsValue}
+                  value="Reminders"
+                  selectedValue={tabsValue}
+                  setSelectedValue={setTabsValue}
                 />
                 <NavItem
                   link={"/tasks"}
                   inactiveIcon={<AssignmentOutlinedIcon />}
                   activeIcon={<AssignmentIcon />}
-                  label="tasks"
-                  value={tabsValue}
-                  setValue={setTabsValue}
+                  label="Tasks"
+                  value="tasks"
+                  selectedValue={tabsValue}
+                  setSelectedValue={setTabsValue}
                 />
               </Tabs>
             </div>
@@ -309,36 +325,41 @@ const Navigation: React.FC<{
                 link={"/"}
                 inactiveIcon={<CottageOutlinedIcon />}
                 activeIcon={<CottageIcon />}
-                value={tabsValue}
-                setValue={setTabsValue}
+                value="home"
+                selectedValue={tabsValue}
+                setSelectedValue={setTabsValue}
               />
               <NavItem
                 link={"/shared-notes"}
                 inactiveIcon={<CloudOutlinedIcon />}
                 activeIcon={<CloudIcon />}
-                value={tabsValue}
-                setValue={setTabsValue}
+                value="shared notes"
+                selectedValue={tabsValue}
+                setSelectedValue={setTabsValue}
               />
               <NavItem
                 link={"/private-notes"}
                 inactiveIcon={<FolderSharedOutlinedIcon />}
                 activeIcon={<FolderSharedIcon />}
-                value={tabsValue}
-                setValue={setTabsValue}
+                value="private notes"
+                selectedValue={tabsValue}
+                setSelectedValue={setTabsValue}
               />
               <NavItem
                 link={"/reminders"}
                 inactiveIcon={<NotificationsOutlinedIcon />}
                 activeIcon={<NotificationsIcon />}
-                value={tabsValue}
-                setValue={setTabsValue}
+                value="reminders"
+                selectedValue={tabsValue}
+                setSelectedValue={setTabsValue}
               />
               <NavItem
                 link={"/tasks"}
                 inactiveIcon={<AssignmentOutlinedIcon />}
                 activeIcon={<AssignmentIcon />}
-                value={tabsValue}
-                setValue={setTabsValue}
+                value="tasks"
+                selectedValue={tabsValue}
+                setSelectedValue={setTabsValue}
               />
             </Paper>
             <Outlet />
@@ -398,6 +419,10 @@ const Navigation: React.FC<{
         <NewTaskModal
           isOpen={isNewTaskModalOpen}
           setIsOpen={setIsNewTaskModalOpen}
+        />
+        <NewReminderModal
+          isOpen={isNewReminderModalOpen}
+          setIsOpen={setIsNewReminderModalOpen}
         />
       </Box>
     </>
