@@ -32,7 +32,7 @@ const Reminder = () => {
       >
         <Typography
           variant="h4"
-          sx={{ fontWeight: "bold", fontSize: { xs: 30, sm: 39, md: 48 } }}
+          sx={{ fontWeight: "bold", fontSize: { xs: 24, sm: 39, md: 48 } }}
         >
           Reminders
         </Typography>
@@ -51,6 +51,7 @@ const Reminder = () => {
             width: "100%",
             flexWrap: "wrap",
             paddingTop: 2,
+            alignContent: "flex-end",
           }}
         >
           <EachReminderList

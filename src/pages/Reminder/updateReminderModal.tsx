@@ -134,7 +134,7 @@ const updateReminderModal: React.FC<{
           size="large"
           sx={{ alignSelf: "flex-end", mt: 2.5 }}
         >
-          Uodate Reminder
+          Update Reminder
         </Button>
       </form>
     </ModalWrapper>

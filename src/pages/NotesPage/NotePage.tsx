@@ -1,4 +1,4 @@
-import { Container, Stack, Typography } from "@mui/material";
+import { Box, Container, Stack, Typography } from "@mui/material";
 import React, { useState } from "react";
 import EachNoteList from "./EachNoteList";
 import useFirestoreContext from "../../firestoreContext";
@@ -23,34 +23,33 @@ const NotePage: React.FC<{ category: "Private" | "Shared" }> = ({
       >
         <Typography
           variant="h4"
-          sx={{ fontWeight: "bold", fontSize: { xs: 30, sm: 39, md: 48 } }}
+          sx={{ fontWeight: "bold", fontSize: { xs: 24, sm: 39, md: 48 } }}
         >
           {category} Notes
         </Typography>
-        <Stack
-          direction="row"
-          spacing={2}
-          sx={{ display: "flex" }}
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "repeat(2, minmax(0, 1fr))",
+              sm: "repeat(3, minmax(0, 1fr))",
+              md: "repeat(4, minmax(0, 1fr))",
+              lg: "repeat(5, minmax(0, 1fr))",
+              xl: "repeat(6, minmax(0, 1fr))",
+            },
+            gap: 4,
+            width: "100%",
+            flexWrap: "wrap",
+            paddingTop: 2,
+            alignContent: "flex-end",
+          }}
         >
-          <Stack sx={{ display: "flex" }}>
-            <Typography sx={{ margin: 1, fontWeight: "medium" }}>
-              to me
-            </Typography>
-            <div
-              style={{
-                display: "inline-flex",
-                flexWrap: "wrap",
-                gap: 20,
-              }}
-            >
-              <EachNoteList
-                data={dbData[category]}
-                toggleModal={setIsNoteEditorModalOpen}
-                setData={setNoteContentData}
-              />
-            </div>
-          </Stack>
-        </Stack>
+          <EachNoteList
+            data={dbData[category]}
+            toggleModal={setIsNoteEditorModalOpen}
+            setData={setNoteContentData}
+          />
+        </Box>
       </Container>
       <NoteEditor
         isOpen={isNoteEditorModalOpen}

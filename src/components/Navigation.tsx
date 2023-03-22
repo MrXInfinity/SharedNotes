@@ -97,7 +97,6 @@ const Navigation: React.FC<{
   const [anchorNewEl, setAnchorNewEl] = useState<null | HTMLElement>(null);
   const showNewMenu = Boolean(anchorNewEl);
   const [tabsValue, setTabsValue] = useState("home");
-  console.log(tabsValue);
 
   const isWindowLarge = useMediaQuery("(min-width:600px)");
   const theme = useTheme();

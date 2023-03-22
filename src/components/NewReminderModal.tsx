@@ -9,8 +9,6 @@ import type {
   reminderDateTypes,
 } from "../types/modalContentTypes";
 import useFirestoreDb from "../hooks/useFirestoreDb";
-import { reminderType } from "../types/firestoreDataTypes";
-import { StringDiff } from "slate-react/dist/utils/diff-text";
 
 const NewReminderModal: React.FC<{
   isOpen: boolean;

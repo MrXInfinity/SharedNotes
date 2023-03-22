@@ -18,7 +18,7 @@ const Task = () => {
     >
       <Typography
         variant="h4"
-        sx={{ fontWeight: "bold", fontSize: { xs: 28, sm: 39, md: 48 } }}
+        sx={{ fontWeight: "bold", fontSize: { xs: 24, sm: 39, md: 48 } }}
       >
         Tasks
       </Typography>

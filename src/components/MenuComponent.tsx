@@ -18,7 +18,7 @@ const PopUpMenuItem = (props: any) => {
       onClick={() => click(true)}
       {...otherProps}
     >
-      <Typography sx={{ pr: 1 }}>{title}</Typography>
+      <Typography sx={{ pr: 1, fontSize: { xs: 14 } }}>{title}</Typography>
       {icon}
     </MenuItem>
   );

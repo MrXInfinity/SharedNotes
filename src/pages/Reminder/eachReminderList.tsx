@@ -17,7 +17,6 @@ const EachReminderList: React.FC<eachListType<reminderType>> = ({
   toggleModal,
 }) => {
   const theme = useTheme();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   moment.updateLocale("en", {
     weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
@@ -27,7 +26,7 @@ const EachReminderList: React.FC<eachListType<reminderType>> = ({
       nextDay: "[Tomorrow]",
       lastWeek: "[last] dddd",
       nextWeek: "dddd",
-      sameElse: "L",
+      sameElse: "MM/DD/YY",
     },
   });
 
@@ -44,7 +43,7 @@ const EachReminderList: React.FC<eachListType<reminderType>> = ({
               maxHeight: "200px",
               width: "auto",
               alignItems: "start",
-              pt: 2,
+              pt: 2.5,
               px: 2,
             }}
             style={{
@@ -55,7 +54,7 @@ const EachReminderList: React.FC<eachListType<reminderType>> = ({
                   ? theme.palette.primary.main
                   : eachData.status === "finished"
                   ? theme.palette.success.main
-                  : theme.palette.error.main,
+                  : "transparent",
             }}
             key={eachData.id}
           >
@@ -71,13 +70,12 @@ const EachReminderList: React.FC<eachListType<reminderType>> = ({
               title={
                 <Typography
                   sx={{
-                    opacity: 0.6,
-                    fontSize: 14,
-                    fontWeight: "medium",
+                    fontSize: 18,
+                    fontWeight: "bold",
+                    overflowWrap: "anywhere",
                   }}
                 >
-                  {moment(parseInt(eachData.startTime)).calendar()} |{" "}
-                  {moment(parseInt(eachData.startTime)).format("dddd")}
+                  {eachData.title}
                 </Typography>
               }
             />
@@ -87,35 +85,31 @@ const EachReminderList: React.FC<eachListType<reminderType>> = ({
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "start",
-                p: 0,
+                py: 1,
+                px: 0,
               }}
             >
               <Typography
                 sx={{
-                  fontSize: 24,
-                  fontWeight: "bold",
-                  textOverflow: "ellipsis",
-                  overflow: "hidden",
+                  fontSize: 14,
                   height: "100%",
                 }}
               >
-                {moment(parseInt(eachData.startTime)).format("h:mm a")}
-                {eachData.endTime && (
-                  <span
-                    style={{
-                      fontSize: 16,
-                      fontWeight: "bold",
-                      height: "100%",
-                      display: "block",
-                    }}
-                  >
-                    {`- ${moment(parseInt(eachData.endTime)).format("h:mm a")}`}
-                  </span>
-                )}
+                {moment(parseInt(eachData.startTime)).format("HH:mm")} |{" "}
+                {moment(parseInt(eachData.startTime)).calendar()}
               </Typography>
-              <Typography sx={{ fontSize: { xs: 16 }, pt: 0.75 }}>
-                {eachData.title}
-              </Typography>
+              {eachData.endTime && (
+                <Typography
+                  sx={{
+                    fontSize: 14,
+                    height: "100%",
+                    display: "block",
+                  }}
+                >
+                  {moment(parseInt(eachData.endTime)).format("HH:mm")} |{" "}
+                  {moment(parseInt(eachData.endTime)).calendar()}
+                </Typography>
+              )}
             </CardContent>
           </Card>
         ))}
@@ -127,5 +121,3 @@ const EachReminderList: React.FC<eachListType<reminderType>> = ({
 };
 
 export default EachReminderList;
-
-// moment(parseInt(startTime)).fromNow();

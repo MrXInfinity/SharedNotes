@@ -50,7 +50,7 @@ const ModalWrapper: React.FC<{
           {typeof title === "string" ? (
             <Typography
               id="new-note-modal-title"
-              sx={{ fontWeight: "bold", fontSize: { xs: 28, md: 32 } }}
+              sx={{ fontWeight: "bold", fontSize: { xs: 24, md: 32 } }}
             >
               {title}
             </Typography>

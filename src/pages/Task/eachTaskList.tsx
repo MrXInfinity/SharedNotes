@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   CardActionArea,
+  CardActions,
   CardContent,
   CardHeader,
   IconButton,
@@ -15,6 +16,12 @@ import {
 import { eachListType } from "../../types/componentTypes";
 import { taskType } from "../../types/firestoreDataTypes";
 import moment from "moment";
+import EditIcon from "@mui/icons-material/Edit";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
 
 const EachTaskList: React.FC<eachListType<taskType>> = ({
   data,
@@ -45,7 +52,7 @@ const EachTaskList: React.FC<eachListType<taskType>> = ({
                 ? theme.palette.success.main
                 : eachData.status === "missed"
                 ? theme.palette.error.main
-                : theme.palette.background.paper,
+                : "transparent",
           }}
           key={eachData.id}
         >
@@ -59,33 +66,54 @@ const EachTaskList: React.FC<eachListType<taskType>> = ({
             }}
           >
             <Typography
-              style={{
-                fontSize: 14,
-                opacity: 0.6,
+              sx={{
+                fontSize: 18,
+                fontWeight: "bold",
                 height: "100%",
-                display: "block",
               }}
             >
-              {moment(parseInt(eachData.dueDateTime)).format("M/D/YY")} |{" "}
-              {moment(parseInt(eachData.dueDateTime)).calendar()}
+              {eachData.title}
             </Typography>
 
             <Typography
               sx={{
-                fontSize: 22,
-                fontWeight: "bold",
-                textOverflow: "ellipsis",
-                overflow: "hidden",
+                fontSize: 14,
                 height: "100%",
+                pt: 0.6,
               }}
             >
-              {moment(parseInt(eachData.dueDateTime)).format("h:mm a")}
-            </Typography>
-
-            <Typography sx={{ fontSize: { xs: 16 }, pt: 0.75 }}>
-              {eachData.title}
+              {moment(parseInt(eachData.dueDateTime)).format("HH:mm")} |{" "}
+              {moment(parseInt(eachData.dueDateTime)).calendar()}
             </Typography>
           </CardContent>
+          <CardActions sx={{ p: 0 }}>
+            <Stack direction="row">
+              <IconButton
+                color="primary"
+                aria-label=""
+              >
+                <CheckIcon sx={{ fontSize: 20 }} />
+              </IconButton>
+              <IconButton
+                color="primary"
+                aria-label=""
+              >
+                <FavoriteBorderIcon sx={{ fontSize: 20 }} />
+              </IconButton>
+              <IconButton
+                color="primary"
+                aria-label=""
+              >
+                <EditIcon sx={{ fontSize: 20 }} />
+              </IconButton>
+              <IconButton
+                color="primary"
+                aria-label=""
+              >
+                <DeleteIcon sx={{ fontSize: 20 }} />
+              </IconButton>
+            </Stack>
+          </CardActions>
         </Card>
       ))}
     </>
