@@ -6,7 +6,10 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import moment from "moment";
 import React from "react";
+import useFirestoreContext from "../../firestoreContext";
+import { reminderType, taskType } from "../../types/firestoreDataTypes";
 
 const mockupData = [
   {
@@ -47,8 +50,12 @@ type MockUpDataType = {
   status: string;
 };
 
-const TodayComponent: React.FC<{ category: string }> = ({ category }) => {
+const TodayComponent: React.FC<{ category: "Reminder" | "Tasks" }> = ({
+  category,
+}) => {
   const theme = useTheme();
+  const { dbData } = useFirestoreContext();
+
   return (
     <Box>
       <Typography
@@ -64,64 +71,117 @@ const TodayComponent: React.FC<{ category: string }> = ({ category }) => {
             justifyContent: "space-between",
           }}
         >
-          {mockupData.map(
-            ({ dateOfStart, dateOfEnd, title, status }: MockUpDataType) => (
-              <Card>
-                <CardActionArea
-                  sx={{
-                    width: "100px",
-                    height: "100px",
-                    display: "inline-flex",
-                    flexDirection: "column",
-                    alignItems: "start",
-                    borderTop: 5,
-                    px: 1,
-                    pb: 1,
-                  }}
-                  style={{
-                    borderBlockColor:
-                      status === "completed"
-                        ? theme.palette.success.main
-                        : status === "missed"
-                        ? theme.palette.error.main
-                        : status === "current"
-                        ? theme.palette.primary.main
-                        : theme.palette.background.paper,
-                  }}
-                >
-                  <Box
+          {category === "Reminder"
+            ? dbData[category].map((eachData: reminderType) => (
+                <Card key={eachData.id}>
+                  <CardActionArea
                     sx={{
-                      display: "flex",
+                      width: "100px",
+                      height: "100px",
+                      display: "inline-flex",
                       flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      height: "100%",
-                      mx: "auto",
+                      alignItems: "start",
+                      borderTop: 5,
+                      px: 1,
+                      pb: 1,
+                    }}
+                    style={{
+                      borderBlockColor:
+                        status === "completed"
+                          ? theme.palette.success.main
+                          : status === "missed"
+                          ? theme.palette.error.main
+                          : status === "current"
+                          ? theme.palette.primary.main
+                          : theme.palette.background.paper,
                     }}
                   >
-                    <Typography sx={{ fontSize: 24, fontWeight: "bold" }}>
-                      {dateOfStart}
-                    </Typography>
-                    {dateOfEnd && (
-                      <Typography sx={{ fontSize: 14, fontWeight: "bold" }}>
-                        {dateOfEnd}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "100%",
+                        mx: "auto",
+                      }}
+                    >
+                      <Typography sx={{ fontSize: 24, fontWeight: "bold" }}>
+                        {moment(parseInt(eachData.startTime)).format("HH:mm")} |{" "}
+                        {moment(parseInt(eachData.startTime)).calendar()}
                       </Typography>
-                    )}
-                  </Box>
-                  <Typography
-                    noWrap={true}
+                      {eachData.endTime && (
+                        <Typography sx={{ fontSize: 14, fontWeight: "bold" }}>
+                          {moment(parseInt(eachData.endTime)).format("HH:mm")} |{" "}
+                          {moment(parseInt(eachData.endTime)).calendar()}
+                        </Typography>
+                      )}
+                    </Box>
+                    <Typography
+                      noWrap={true}
+                      sx={{
+                        fontSize: { xs: 12, md: 14 },
+                        mt: "auto",
+                        textAlign: "center",
+                      }}
+                    >
+                      {eachData.title}
+                    </Typography>
+                  </CardActionArea>
+                </Card>
+              ))
+            : dbData[category].map((eachData: taskType) => (
+                <Card key={eachData.id}>
+                  <CardActionArea
                     sx={{
-                      fontSize: { xs: 12, md: 14 },
-                      mt: "auto",
-                      textAlign: "center",
+                      width: "100px",
+                      height: "100px",
+                      display: "inline-flex",
+                      flexDirection: "column",
+                      alignItems: "start",
+                      borderTop: 5,
+                      px: 1,
+                      pb: 1,
+                    }}
+                    style={{
+                      borderBlockColor:
+                        status === "completed"
+                          ? theme.palette.success.main
+                          : status === "missed"
+                          ? theme.palette.error.main
+                          : status === "current"
+                          ? theme.palette.primary.main
+                          : theme.palette.background.paper,
                     }}
                   >
-                    {title}
-                  </Typography>
-                </CardActionArea>
-              </Card>
-            )
-          )}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "100%",
+                        mx: "auto",
+                      }}
+                    >
+                      <Typography sx={{ fontSize: 24, fontWeight: "bold" }}>
+                        {moment(parseInt(eachData.dueDateTime)).format("HH:mm")}{" "}
+                        | {moment(parseInt(eachData.dueDateTime)).calendar()}
+                      </Typography>
+                    </Box>
+                    <Typography
+                      noWrap={true}
+                      sx={{
+                        fontSize: { xs: 12, md: 14 },
+                        mt: "auto",
+                        textAlign: "center",
+                      }}
+                    >
+                      {eachData.title}
+                    </Typography>
+                  </CardActionArea>
+                </Card>
+              ))}
         </Box>
       </Box>
     </Box>

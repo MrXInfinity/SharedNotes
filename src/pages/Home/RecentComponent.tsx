@@ -1,62 +1,35 @@
 import { useState } from "react";
 import { Box, Card, CardActionArea, Typography } from "@mui/material";
+import useFirestoreContext from "../../firestoreContext";
+import { noteType } from "../../types/firestoreDataTypes";
+import { useSerialize } from "../../hooks/useFormatContent";
 
-const mockupData = [
-  {
-    id: "adsdfsdfsdf",
-    createdAt: new Date(),
-    title: "My Favorite Bands",
-    description: "lorem",
-    updatedAt: new Date(Date.now()),
-  },
-  {
-    id: "asdjaksdhakjdkasdhkjd",
-    createdAt: new Date(),
-    title: "Accountancy Reviewer",
-    description: "lorem",
-    updatedAt: new Date(Date.now()),
-  },
-  {
-    id: "asdjargsgfdgf",
-    createdAt: new Date(),
-    title: "List of Manhwa",
-    description: "lorem",
-    updatedAt: new Date(Date.now()),
-  },
-];
-
-type RecentComponentProps = {
-  header: string;
-  category: string;
-};
-
-type APIDataTypes = {
-  id: string;
-  createdAt: Date;
-  title: string;
-  description: string;
-  updatedAt: Date;
-};
-const RecentComponent = ({ header, category }: RecentComponentProps) => {
+const RecentComponent: React.FC<{ category: "Private" | "Shared" }> = ({
+  category,
+}) => {
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
+  const { dbData } = useFirestoreContext();
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
       <Typography
         sx={{ fontWeight: "medium", fontSize: { xs: 18, md: 20 }, mb: 1 }}
       >
-        Recently {header}
+        Recently {category}
       </Typography>
       <Card sx={{ p: { xs: 1.5 }, borderRadius: 5 }}>
-        {mockupData.map(({ id, title }: APIDataTypes) => (
-          <CardActionArea
-            sx={{ p: 1.5 }}
-            key={id}
-            onClick={() => setIsNoteModalOpen(true)}
-          >
-            <Typography>{title}</Typography>
-          </CardActionArea>
-        ))}
+        {dbData[category].map((eachData: noteType, index) => {
+          if (index < 3)
+            return (
+              <CardActionArea
+                sx={{ p: 1.5 }}
+                key={eachData.id}
+                onClick={() => setIsNoteModalOpen(true)}
+              >
+                <Typography>{useSerialize(eachData.title)}</Typography>
+              </CardActionArea>
+            );
+        })}
       </Card>
     </Box>
   );

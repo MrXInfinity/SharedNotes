@@ -34,21 +34,15 @@ const Home = () => {
         direction={{ xs: "column", md: "row" }}
         spacing={{ xs: 2, md: 4 }}
       >
-        <RecentComponent
-          header={"Created"}
-          category={"createdAt"}
-        />
-        <RecentComponent
-          header={"Updated"}
-          category={"updatedAt"}
-        />
+        <RecentComponent category={"Private"} />
+        <RecentComponent category={"Shared"} />
       </Stack>
       <Stack
         direction={{ xs: "column", md: "row" }}
         spacing={{ xs: 2, md: 4 }}
       >
         <TodayComponent category="Reminder" />
-        <TodayComponent category="Task" />
+        <TodayComponent category="Tasks" />
       </Stack>
     </Container>
   );

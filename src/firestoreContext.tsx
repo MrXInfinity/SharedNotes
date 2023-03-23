@@ -65,7 +65,7 @@ export const FirestoreProvider: React.FC<React.ReactPortal> = ({
     const unsubscribe = onSnapshot(q, (querySnapshot: QuerySnapshot<any>) => {
       setDbData((prev: any) => ({
         ...prev,
-        Shared: querySnapshot.docs.map((doc) => {
+        Shared: querySnapshot.docs.map((doc, index) => {
           return { id: doc.id, ...doc.data() };
         }),
       }));
