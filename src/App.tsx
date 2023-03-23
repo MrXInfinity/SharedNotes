@@ -20,10 +20,23 @@ import NotePage from "./pages/NotesPage/NotePage";
 import Reminder from "./pages/Reminder/Reminder";
 import { FirestoreProvider } from "./firestoreContext";
 import Task from "./pages/Task/Task";
+import moment from "moment";
 
 function App() {
   const { theme, changeTheme } = useCustomTheme();
   const { logout } = useAuth();
+
+  moment.updateLocale("en", {
+    weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    calendar: {
+      lastDay: "[Yesterday]",
+      sameDay: "[Today]",
+      nextDay: "[Tomorrow]",
+      lastWeek: "[last] dddd",
+      nextWeek: "dddd",
+      sameElse: "MM/DD/YY",
+    },
+  });
 
   console.log(auth.currentUser);
 

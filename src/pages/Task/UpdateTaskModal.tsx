@@ -31,11 +31,11 @@ const UpdateTaskModal: React.FC<{
     shouldUnregister: true,
   });
 
-  const { updateTask } = useFirestoreDb();
+  const { updateTask, update } = useFirestoreDb();
 
   const formSubmit = (data: taskFormTypes) => {
     console.log(data);
-    updateTask({ id, ...data });
+    update({ id, type: "Tasks", ...data });
     setIsOpen(false);
   };
 

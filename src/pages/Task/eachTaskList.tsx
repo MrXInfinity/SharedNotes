@@ -25,7 +25,7 @@ const EachTaskList: React.FC<eachListType<taskType>> = ({
   toggleModal,
 }) => {
   const theme = useTheme();
-  const { updateTask, remove } = useFirestoreDb();
+  const { update, remove } = useFirestoreDb();
   return (
     <>
       {data.map((eachData) => (
@@ -91,8 +91,9 @@ const EachTaskList: React.FC<eachListType<taskType>> = ({
                 aria-label=""
                 sx={{ fontSize: 20 }}
                 onClick={() => {
-                  updateTask({
+                  update({
                     id: eachData.id,
+                    type: "Tasks",
                     status:
                       eachData.status === "finished"
                         ? moment().isBefore(parseInt(eachData.dueDateTime))
@@ -108,8 +109,9 @@ const EachTaskList: React.FC<eachListType<taskType>> = ({
                 color="primary"
                 aria-label=""
                 onClick={() => {
-                  updateTask({
+                  update({
                     id: eachData.id,
+                    type: "Tasks",
                     favorite: !eachData.favorite,
                   });
                 }}

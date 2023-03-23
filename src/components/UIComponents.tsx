@@ -4,7 +4,6 @@ import {
   IconButton,
   Modal,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -14,7 +13,6 @@ import {
   Path,
   UseFormRegister,
 } from "react-hook-form";
-import { FormTypes } from "./NewTaskModal";
 
 const ModalWrapper: React.FC<{
   isOpen: boolean;
@@ -22,7 +20,7 @@ const ModalWrapper: React.FC<{
   closeModal: () => void;
   options?: JSX.Element;
   children: React.ReactNode;
-}> = ({ isOpen, title, closeModal, children }) => {
+}> = ({ isOpen, title, closeModal, children, options }) => {
   return (
     <Modal
       open={isOpen}
@@ -57,11 +55,14 @@ const ModalWrapper: React.FC<{
           ) : (
             title
           )}
-
-          <IconButton onClick={() => closeModal()}>
-            <CloseIcon />
-          </IconButton>
+          <Stack direction="row">
+            {options}
+            <IconButton onClick={() => closeModal()}>
+              <CloseIcon />
+            </IconButton>
+          </Stack>
         </Stack>
+
         {children}
       </Box>
     </Modal>

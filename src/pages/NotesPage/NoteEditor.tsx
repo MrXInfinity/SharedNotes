@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Editable, Slate } from "slate-react";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, IconButton, Menu, Typography } from "@mui/material";
 import { ModalWrapper } from "../../components/UIComponents";
 import FormatBoldIcon from "@mui/icons-material/FormatBold";
 import FormatItalicIcon from "@mui/icons-material/FormatItalic";
@@ -15,9 +15,14 @@ import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
 import FormatAlignCenterIcon from "@mui/icons-material/FormatAlignCenter";
 import FormatAlignRightIcon from "@mui/icons-material/FormatAlignRight";
 import FormatAlignJustifyIcon from "@mui/icons-material/FormatAlignJustify";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import DeleteIcon from "@mui/icons-material/Delete";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import useNoteEditor from "./NoteEditorLogic";
 import { noteType } from "../../types/firestoreDataTypes";
 import useFirestoreDb from "../../hooks/useFirestoreDb";
+import { PopUpMenuItem } from "../../components/MenuComponent";
 
 const NoteEditor: React.FC<{
   isOpen: boolean;
@@ -37,9 +42,20 @@ const NoteEditor: React.FC<{
     BlockButton,
   } = useNoteEditor();
 
-  const { updateNote } = useFirestoreDb();
+  const { update, remove } = useFirestoreDb();
 
   const { noteType, id, title, content } = noteData;
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const showMenu = Boolean(anchorEl);
+
+  const LinkMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const MenuClose = () => {
+    setAnchorEl(null);
+  };
 
   if (Object.keys(noteData).length > 0) {
     return (
@@ -54,10 +70,64 @@ const NoteEditor: React.FC<{
               fontSize: { xs: 16 },
             }}
           >
-            Shared Notes
+            {noteType.charAt(0).toUpperCase() + noteType.slice(1)} Notes
           </Typography>
         }
-        options={<></>}
+        options={
+          <>
+            <IconButton
+              aria-label="settings"
+              onClick={LinkMenuClick}
+              aria-controls={showMenu ? "basic-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={showMenu ? "true" : undefined}
+            >
+              <MoreVertIcon />
+            </IconButton>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={showMenu}
+              onClose={MenuClose}
+              MenuListProps={{
+                "aria-labelledby": "basic-button",
+              }}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+            >
+              <PopUpMenuItem
+                title={!noteData.favorite ? "Favorite" : "Unfavorite"}
+                icon={
+                  !noteData.favorite ? <FavoriteBorderIcon /> : <FavoriteIcon />
+                }
+                click={() => {
+                  update({
+                    id: noteData.id,
+                    type: noteType,
+                    favorite: !noteData.favorite,
+                  });
+                  toggleModal(false);
+                  MenuClose();
+                }}
+              />
+              <PopUpMenuItem
+                title="Delete"
+                icon={<DeleteIcon />}
+                click={() => {
+                  remove(noteType, noteData.id);
+                  toggleModal(false);
+                  MenuClose();
+                }}
+              />
+            </Menu>
+          </>
+        }
         closeModal={() => toggleModal(false)}
       >
         <Slate
@@ -156,7 +226,7 @@ const NoteEditor: React.FC<{
         <Button
           onClick={() => {
             toggleModal(false);
-            updateNote({ noteType, id, title, content });
+            update({ noteType, id, type: "private", title, content });
           }}
         >
           Submit

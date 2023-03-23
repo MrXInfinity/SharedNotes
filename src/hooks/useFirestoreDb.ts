@@ -138,6 +138,20 @@ const useFirestoreDb = () => {
     }
   }
 
+  const update = async ({ type, id, ...data }: { type: string, id: string, [key: string]: any }) => {
+    try {
+      await updateDoc(
+        doc(db, "Users", auth.currentUser!.uid, type, id),
+        {
+          ...data,
+          dateUpdated: new Date()
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   const remove = async (type: string, id: string) => {
     try {
       await deleteDoc(doc(db, "Users", auth.currentUser!.uid, type, id))
@@ -147,7 +161,7 @@ const useFirestoreDb = () => {
    
   }
 
-  return {addNote, addReminder, addTask, updateNote, updateReminder, remove, updateTask}
+  return {addNote, addReminder, addTask, updateNote, updateReminder, remove, update, updateTask}
 }
 
   

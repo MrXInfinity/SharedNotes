@@ -18,18 +18,6 @@ const EachReminderList: React.FC<eachListType<reminderType>> = ({
 }) => {
   const theme = useTheme();
 
-  moment.updateLocale("en", {
-    weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-    calendar: {
-      lastDay: "[Yesterday]",
-      sameDay: "[Today]",
-      nextDay: "[Tomorrow]",
-      lastWeek: "[last] dddd",
-      nextWeek: "dddd",
-      sameElse: "MM/DD/YY",
-    },
-  });
-
   if (data) {
     return (
       <>

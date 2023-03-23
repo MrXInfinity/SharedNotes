@@ -78,7 +78,12 @@ const EachNoteList: React.FC<eachListType<noteType>> = ({
               <Stack
                 direction="row"
                 spacing={2}
-                sx={{ mx: 2, pt: 1 }}
+                sx={{
+                  px: 2,
+                  pt: 1,
+                  width: "100%",
+                  justifyContent: "space-between",
+                }}
               >
                 <Typography sx={{ fontSize: { xs: 10 } }}>
                   {eachData.dateCreated

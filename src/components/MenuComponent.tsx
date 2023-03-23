@@ -6,7 +6,8 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { reminderType } from "../types/firestoreDataTypes";
-const PopUpMenuItem = (props: any) => {
+import useFirestoreDb from "../hooks/useFirestoreDb";
+export const PopUpMenuItem = (props: any) => {
   const { title, icon, click, ...otherProps } = props;
   return (
     <MenuItem
@@ -15,7 +16,7 @@ const PopUpMenuItem = (props: any) => {
         alignItems: "center",
         justifyContent: "space-between",
       }}
-      onClick={() => click(true)}
+      onClick={() => click()}
       {...otherProps}
     >
       <Typography sx={{ pr: 1, fontSize: { xs: 14 } }}>{title}</Typography>
@@ -39,6 +40,8 @@ const MenuComponent: React.FC<{
   const MenuClose = () => {
     setAnchorEl(null);
   };
+
+  const { update, remove } = useFirestoreDb();
 
   return (
     <>
@@ -79,10 +82,20 @@ const MenuComponent: React.FC<{
         <PopUpMenuItem
           title={!eachData.favorite ? "Favorite" : "Unfavorite"}
           icon={!eachData.favorite ? <FavoriteBorderIcon /> : <FavoriteIcon />}
+          click={() => {
+            update({
+              id: eachData.id,
+              type: "Reminder",
+              favorite: !eachData.favorite,
+            });
+          }}
         />
         <PopUpMenuItem
           title="Delete"
           icon={<DeleteIcon />}
+          click={() => {
+            remove("Reminder", eachData.id);
+          }}
         />
       </Menu>
     </>
