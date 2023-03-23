@@ -1,14 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import {
-  Button,
   Card,
-  CardActionArea,
   CardActions,
   CardContent,
-  CardHeader,
   IconButton,
-  Menu,
-  MenuItem,
   Stack,
   Typography,
   useTheme,
@@ -16,6 +11,7 @@ import {
 import { eachListType } from "../../types/componentTypes";
 import { taskType } from "../../types/firestoreDataTypes";
 import moment from "moment";
+import useFirestoreDb from "../../hooks/useFirestoreDb";
 import EditIcon from "@mui/icons-material/Edit";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -29,6 +25,7 @@ const EachTaskList: React.FC<eachListType<taskType>> = ({
   toggleModal,
 }) => {
   const theme = useTheme();
+  const { updateTask, remove } = useFirestoreDb();
   return (
     <>
       {data.map((eachData) => (
@@ -40,9 +37,8 @@ const EachTaskList: React.FC<eachListType<taskType>> = ({
             height: "min-content",
             maxHeight: "200px",
             width: "150px",
-            alignItems: "start",
+            alignItems: "center",
             pt: 2,
-            px: 2,
           }}
           style={{
             borderColor:
@@ -59,10 +55,12 @@ const EachTaskList: React.FC<eachListType<taskType>> = ({
           <CardContent
             sx={{
               height: "100%",
+              width: "100%",
               display: "flex",
               flexDirection: "column",
               alignItems: "start",
               p: 0,
+              px: 2,
             }}
           >
             <Typography
@@ -86,29 +84,58 @@ const EachTaskList: React.FC<eachListType<taskType>> = ({
               {moment(parseInt(eachData.dueDateTime)).calendar()}
             </Typography>
           </CardContent>
-          <CardActions sx={{ p: 0 }}>
+          <CardActions sx={{ px: 0, py: 0.5 }}>
             <Stack direction="row">
               <IconButton
                 color="primary"
                 aria-label=""
+                sx={{ fontSize: 20 }}
+                onClick={() => {
+                  updateTask({
+                    id: eachData.id,
+                    status:
+                      eachData.status === "finished"
+                        ? moment().isBefore(parseInt(eachData.dueDateTime))
+                          ? "forthcoming"
+                          : "missed"
+                        : "finished",
+                  });
+                }}
               >
-                <CheckIcon sx={{ fontSize: 20 }} />
+                {eachData.status === "finished" ? <CloseIcon /> : <CheckIcon />}
               </IconButton>
               <IconButton
                 color="primary"
                 aria-label=""
+                onClick={() => {
+                  updateTask({
+                    id: eachData.id,
+                    favorite: !eachData.favorite,
+                  });
+                }}
               >
-                <FavoriteBorderIcon sx={{ fontSize: 20 }} />
+                {eachData.favorite ? (
+                  <FavoriteIcon sx={{ fontSize: 20 }} />
+                ) : (
+                  <FavoriteBorderIcon sx={{ fontSize: 20 }} />
+                )}
               </IconButton>
               <IconButton
                 color="primary"
                 aria-label=""
+                onClick={() => {
+                  setData(eachData);
+                  toggleModal(true);
+                }}
               >
                 <EditIcon sx={{ fontSize: 20 }} />
               </IconButton>
               <IconButton
                 color="primary"
                 aria-label=""
+                onClick={() => {
+                  remove("Tasks", eachData.id);
+                }}
               >
                 <DeleteIcon sx={{ fontSize: 20 }} />
               </IconButton>

@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { Box, Container, Grid, Stack, Typography } from "@mui/material";
-import EachReminderList from "./eachReminderList";
+import EachReminderList from "./EachReminderList";
 import useFirestoreContext from "../../firestoreContext";
 import { reminderType } from "../../types/firestoreDataTypes";
-import NewReminderModal from "../../components/NewReminderModal";
 import useFirestoreDb from "../../hooks/useFirestoreDb";
-import UpdateReminderModal from "./updateReminderModal";
+import UpdateReminderModal from "./UpdateReminderModal";
 
 const Reminder = () => {
   const { dbData } = useFirestoreContext();
@@ -15,14 +14,6 @@ const Reminder = () => {
 
   const [selectedReminderData, setSelectedReminderData] =
     useState<reminderType>({} as reminderType);
-
-  const updateReminderInitializer = ({
-    title,
-    startTime,
-    endTime,
-  }: Pick<reminderType, "title" | "startTime" | "endTime">) => {
-    updateReminder({ id: selectedReminderData.id, startTime, title, endTime });
-  };
 
   return (
     <>

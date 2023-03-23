@@ -5,6 +5,7 @@ import moment, { Moment } from "moment";
 import { useForm } from "react-hook-form";
 import { ModalWrapper } from "./UIComponents";
 import useFirestoreDb from "../hooks/useFirestoreDb";
+import { taskFormTypes } from "../types/modalContentTypes";
 
 export type FormTypes = {
   title: string;
@@ -20,7 +21,7 @@ const NewTaskModal: React.FC<{
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<FormTypes>({
+  } = useForm<taskFormTypes>({
     defaultValues: {
       title: "",
       dueDateTime: null,
@@ -36,8 +37,8 @@ const NewTaskModal: React.FC<{
     setDueDateTime(null);
   };
 
-  const formSubmit = ({ title, dueDateTime }: FormTypes) => {
-    addTask(title, dueDateTime!.format("x"));
+  const formSubmit = ({ title, dueDateTime }: taskFormTypes) => {
+    addTask(title, dueDateTime!);
     closeModal();
   };
 
@@ -86,9 +87,9 @@ const NewTaskModal: React.FC<{
           {...register("dueDateTime", {
             required: "Provide the due date of your task.",
           })}
-          onChange={(e) => {
-            setValue("dueDateTime", e);
-            setDueDateTime(e);
+          onChange={(data) => {
+            setValue("dueDateTime", data!.format("x"));
+            setDueDateTime(data);
           }}
           minDateTime={moment(Date.now())}
           minTime={moment(Date.now())}

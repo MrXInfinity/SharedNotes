@@ -1,15 +1,13 @@
-import { Preview } from "@mui/icons-material";
 import { TextField, Button } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers";
-import moment, { Moment } from "moment";
-import { useEffect } from "react";
+import moment from "moment";
 import { useForm } from "react-hook-form";
 import { ModalWrapper } from "../../components/UIComponents";
 import useFirestoreDb from "../../hooks/useFirestoreDb";
 import { reminderType } from "../../types/firestoreDataTypes";
 import { reminderFormTypes } from "../../types/modalContentTypes";
 
-const updateReminderModal: React.FC<{
+const UpdateReminderModal: React.FC<{
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   data: reminderType;
@@ -141,4 +139,4 @@ const updateReminderModal: React.FC<{
   );
 };
 
-export default updateReminderModal;
+export default UpdateReminderModal;

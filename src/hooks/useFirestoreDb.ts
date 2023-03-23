@@ -2,7 +2,8 @@ import { collection, deleteDoc, doc, onSnapshot, orderBy, query, QuerySnapshot, 
 import { auth } from "../firebase";
 import { useState, useEffect } from 'react'
 import { db } from "../firebase"
-import { dbDataObject, noteType, updateNoteType, reminderType } from '../types/firestoreDataTypes';
+import { dbDataObject, noteType, updateNoteType, reminderType, updateTaskType } from '../types/firestoreDataTypes';
+import moment from 'moment';
 
 const useFirestoreDb = () => {
 
@@ -74,9 +75,8 @@ const useFirestoreDb = () => {
       console.log(err);
     }
   };
-  // Pick<reminderType, "id" | "title" | "startTime" | "endTime">
 
-  const updateReminder = async ({id, ...data}: any) => {
+  const updateReminder = async ({id, ...data}: Pick<reminderType, "id" | "title" | "startTime" | "endTime">) => {
     try {
       await updateDoc(
         doc(db, "Users", auth.currentUser!.uid, "Reminder", id),
@@ -99,7 +99,7 @@ const useFirestoreDb = () => {
           dueDateTime,
           title,
           favorite: false,
-          status: "forthcoming",
+          status: moment().isBefore(parseInt(dueDateTime)) ? "forthcoming" : "missed",
           dateCreated: new Date(),
           dateUpdated: new Date(),
         }
@@ -109,9 +109,45 @@ const useFirestoreDb = () => {
     }
   };
 
-  const remove = async (type: "string", id: "string") => await deleteDoc(doc(db, "Users", auth.currentUser!.uid, type, id))
+  const toggleFinishTask = async (id: string, status: string) => {
+    try {
+      await updateDoc(
+        doc(db, "Users", auth.currentUser!.uid, "Task", id),
+        {
+          status: status,
+          dateUpdated: new Date()
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
-  return {addNote, addReminder, addTask, updateNote, updateReminder, remove}
+  const updateTask = async ({ id, ...data }: any) => {
+ 
+    try {
+      await updateDoc(
+        doc(db, "Users", auth.currentUser!.uid, "Tasks", id),
+        {
+          ...data,
+          dateUpdated: new Date()
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const remove = async (type: string, id: string) => {
+    try {
+      await deleteDoc(doc(db, "Users", auth.currentUser!.uid, type, id))
+    } catch (err) {
+      console.log(err)
+    }
+   
+  }
+
+  return {addNote, addReminder, addTask, updateNote, updateReminder, remove, updateTask}
 }
 
   

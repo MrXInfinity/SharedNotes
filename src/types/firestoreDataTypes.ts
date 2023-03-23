@@ -39,13 +39,15 @@ type updateReminderType = Pick<reminderType, "id" | "title" | "startTime" | "end
 
 type taskType = {
   id: string
-  dueDateTime: string,
+  dueDateTime: any,
   title: string,
   status: "forthcoming" | "finished" | "missed",
   favorite: boolean,
   dateCreated: Timestamp,
   ateUpdated: Timestamp
 }
+
+type updateTaskType = Pick<taskType, "id" | "title" | "dueDateTime">
 
 type dbDataObject = {
    Shared: noteType[];
@@ -55,4 +57,4 @@ type dbDataObject = {
 }
 
 
-export type {noteType, reminderType, taskType, dbDataObject, updateNoteType, updateReminderType}
+export type {noteType, reminderType, taskType, dbDataObject, updateNoteType, updateReminderType, updateTaskType}
