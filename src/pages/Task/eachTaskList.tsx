@@ -93,7 +93,7 @@ const EachTaskList: React.FC<eachListType<taskType>> = ({
                 onClick={() => {
                   update({
                     id: eachData.id,
-                    type: "Tasks",
+                    type: "Task",
                     status:
                       eachData.status === "finished"
                         ? moment().isBefore(parseInt(eachData.dueDateTime))
@@ -111,7 +111,7 @@ const EachTaskList: React.FC<eachListType<taskType>> = ({
                 onClick={() => {
                   update({
                     id: eachData.id,
-                    type: "Tasks",
+                    type: "Task",
                     favorite: !eachData.favorite,
                   });
                 }}
@@ -136,7 +136,7 @@ const EachTaskList: React.FC<eachListType<taskType>> = ({
                 color="primary"
                 aria-label=""
                 onClick={() => {
-                  remove("Tasks", eachData.id);
+                  remove("Task", eachData.id);
                 }}
               >
                 <DeleteIcon sx={{ fontSize: 20 }} />

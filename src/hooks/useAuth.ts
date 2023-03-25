@@ -20,7 +20,7 @@ type ErrorValues = {
 
 const useAuth = () => {
   const [currentUser, setCurrentUser] = useState("")
-  const [error, setError] = useState<ErrorType>({} as ErrorType | (() => ErrorType))
+  const [error, setError] = useState<ErrorType>({} as ErrorType)
 
     const login = async (email: string, password: string) => {
       try {
@@ -38,6 +38,7 @@ const useAuth = () => {
         setError({
           email: { type: "USER_NOT_FOUND", message: "User Not Found." }
         })
+        
       }
     }
   };
@@ -58,7 +59,6 @@ const useAuth = () => {
         email,
       })
     } catch (err: any) {
-      console.log(err)
       if (err.code == AuthErrorCodes.INVALID_EMAIL) {
         setError({
           email: { type: "INVALID_EMAIL", message: "Email is invalid." }
@@ -69,6 +69,12 @@ const useAuth = () => {
           email: { type: "EMAIL_EXISTS", message: "Email already in use." }
         })
       }
+      if (err.code == AuthErrorCodes.WEAK_PASSWORD) {
+          console.log("it happened")
+          setError({
+            password: {type: "WEAK_PASSWORD", message: "Password is too weak."}
+          })
+        }
     }
   };
 

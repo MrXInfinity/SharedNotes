@@ -94,7 +94,7 @@ const useFirestoreDb = () => {
   const addTask = async (title: string, dueDateTime: string) => {
     try {
       await setDoc(
-        doc(db, "Users", auth.currentUser!.uid, "Tasks", Date.now().toString()),
+        doc(db, "Users", auth.currentUser!.uid, "Task", Date.now().toString()),
         {
           dueDateTime,
           title,
@@ -127,7 +127,7 @@ const useFirestoreDb = () => {
  
     try {
       await updateDoc(
-        doc(db, "Users", auth.currentUser!.uid, "Tasks", id),
+        doc(db, "Users", auth.currentUser!.uid, "Task", id),
         {
           ...data,
           dateUpdated: new Date()

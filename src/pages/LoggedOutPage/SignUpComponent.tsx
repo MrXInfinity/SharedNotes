@@ -1,27 +1,25 @@
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {
   Box,
   Button,
   Card,
   CardActions,
   CardContent,
-  CardHeader,
   FormControl,
+  FormHelperText,
   IconButton,
   InputAdornment,
   InputLabel,
   OutlinedInput,
   TextField,
   Typography,
-  useTheme,
 } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import useAuthContext from "../../firestoreContext";
-import { useForm, UseFormRegister } from "react-hook-form";
 import React, { useState } from "react";
+import { useForm, UseFormRegister } from "react-hook-form";
 import { Link } from "react-router-dom";
+import type { ErrorKeys, ErrorType } from "../../hooks/useAuth";
 import useAuth from "../../hooks/useAuth";
-import type { ErrorType, ErrorKeys, ErrorValues } from "../../hooks/useAuth";
 
 type FormData = {
   firstname: string;
@@ -77,7 +75,7 @@ const SignUp: React.FC = () => {
   const onSubmit = ({ email, password, firstname, lastname }: FormData) => {
     signup(firstname, lastname, email, password);
   };
-  console.log(errors);
+  console.log(error);
 
   return (
     <Card
@@ -137,6 +135,7 @@ const SignUp: React.FC = () => {
             required
             sx={{ my: 1, width: "100%" }}
             variant="outlined"
+            error={error?.password ? true : false}
           >
             <InputLabel htmlFor="outlined-adornment-password">
               Password
@@ -158,6 +157,7 @@ const SignUp: React.FC = () => {
                 </InputAdornment>
               }
             />
+            <FormHelperText>{error?.password?.message}</FormHelperText>
           </FormControl>
         </CardContent>
         <CardActions
