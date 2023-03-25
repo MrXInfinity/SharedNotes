@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { ModalWrapper } from "./UIComponents";
 import useFirestoreDb from "../hooks/useFirestoreDb";
 import { taskFormTypes } from "../types/modalContentTypes";
+import { modalStateTypes } from "./Navigation";
 
 export type FormTypes = {
   title: string;
@@ -14,7 +15,7 @@ export type FormTypes = {
 
 const NewTaskModal: React.FC<{
   isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsOpen: React.Dispatch<React.SetStateAction<modalStateTypes>>;
 }> = ({ isOpen, setIsOpen }) => {
   const {
     register,
@@ -33,7 +34,10 @@ const NewTaskModal: React.FC<{
   const { addTask } = useFirestoreDb();
 
   const closeModal = () => {
-    setIsOpen(false);
+    setIsOpen({
+      isOpen: false,
+      type: "",
+    });
     setDueDateTime(null);
   };
 

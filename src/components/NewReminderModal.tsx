@@ -9,10 +9,11 @@ import type {
   reminderDateTypes,
 } from "../types/modalContentTypes";
 import useFirestoreDb from "../hooks/useFirestoreDb";
+import { modalStateTypes } from "./Navigation";
 
 const NewReminderModal: React.FC<{
   isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsOpen: React.Dispatch<React.SetStateAction<modalStateTypes>>;
 }> = ({ isOpen, setIsOpen }) => {
   const {
     register,
@@ -36,7 +37,10 @@ const NewReminderModal: React.FC<{
   });
 
   const closeModal = () => {
-    setIsOpen(false);
+    setIsOpen({
+      isOpen: false,
+      type: "",
+    });
     setFormDatesData({ startTime: null, endTime: null });
   };
 

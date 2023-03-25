@@ -1,3 +1,18 @@
+import AddIcon from "@mui/icons-material/Add";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
+import CloudIcon from "@mui/icons-material/Cloud";
+import CloudOutlinedIcon from "@mui/icons-material/CloudOutlined";
+import CottageIcon from "@mui/icons-material/Cottage";
+import CottageOutlinedIcon from "@mui/icons-material/CottageOutlined";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import FolderSharedIcon from "@mui/icons-material/FolderShared";
+import FolderSharedOutlinedIcon from "@mui/icons-material/FolderSharedOutlined";
+import LanguageIcon from "@mui/icons-material/Language";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import {
   AppBar,
   Box,
@@ -7,36 +22,20 @@ import {
   Menu,
   MenuItem,
   Paper,
+  Stack,
   Tab,
   Tabs,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { Link, NavLink, Outlet } from "react-router-dom";
-import { Stack } from "@mui/material";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-import LanguageIcon from "@mui/icons-material/Language";
-import Brightness7Icon from "@mui/icons-material/Brightness7";
-import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
-import CottageIcon from "@mui/icons-material/Cottage";
-import CottageOutlinedIcon from "@mui/icons-material/CottageOutlined";
-import CloudIcon from "@mui/icons-material/Cloud";
-import CloudOutlinedIcon from "@mui/icons-material/CloudOutlined";
-import FolderSharedIcon from "@mui/icons-material/FolderShared";
-import FolderSharedOutlinedIcon from "@mui/icons-material/FolderSharedOutlined";
-import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import AssignmentIcon from "@mui/icons-material/Assignment";
-import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
-import AddIcon from "@mui/icons-material/Add";
-import { ReactElement, useState } from "react";
 import { Container } from "@mui/system";
-import NewNoteModal from "./NewNoteModal";
-import NewTaskModal from "./NewTaskModal";
-import NewReminderModal from "./NewReminderModal";
-import useFirestoreContext from "../firestoreContext";
+import { useState } from "react";
+import { Link, NavLink, Outlet } from "react-router-dom";
 import useFirestoreDb from "../hooks/useFirestoreDb";
+import NewNoteModal from "./NewNoteModal";
+import NewReminderModal from "./NewReminderModal";
+import NewTaskModal from "./NewTaskModal";
 
 //Each navitem
 const NavItem: React.FC<any> = ({
@@ -77,6 +76,11 @@ const NavItem: React.FC<any> = ({
   );
 };
 
+export type modalStateTypes = {
+  isOpen: boolean;
+  type: "" | "note" | "reminder" | "task";
+};
+
 const Navigation: React.FC<{
   logout: () => Promise<void>;
   changeTheme: () => void;
@@ -84,9 +88,11 @@ const Navigation: React.FC<{
   const { addReminder } = useFirestoreDb();
   // const { setIsNewReminderModalOpen } = useFirestoreContext();
   //Modals
-  const [isNewReminderModalOpen, setIsNewReminderModalOpen] = useState(false);
-  const [isNewNoteModalOpen, setIsNewNoteModalOpen] = useState(false);
-  const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
+
+  const [isModalOpen, setIsModalOpen] = useState<modalStateTypes>({
+    isOpen: false,
+    type: "",
+  });
 
   //Menu withing Settings
   const [anchorSettingsEl, setAnchorSettingsEl] = useState<null | HTMLElement>(
@@ -230,14 +236,26 @@ const Navigation: React.FC<{
                   }}
                   sx={{ mt: 5 }}
                 >
-                  <MenuItem onClick={() => setIsNewNoteModalOpen(true)}>
+                  <MenuItem
+                    onClick={() =>
+                      setIsModalOpen({ isOpen: true, type: "note" })
+                    }
+                  >
                     New Note
                   </MenuItem>
-                  <MenuItem onClick={() => setIsNewTaskModalOpen(true)}>
-                    New Task
-                  </MenuItem>
-                  <MenuItem onClick={() => setIsNewReminderModalOpen(true)}>
+                  <MenuItem
+                    onClick={() =>
+                      setIsModalOpen({ isOpen: true, type: "reminder" })
+                    }
+                  >
                     New Reminder
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() =>
+                      setIsModalOpen({ isOpen: true, type: "task" })
+                    }
+                  >
+                    New Task
                   </MenuItem>
                 </Menu>
               </Box>
@@ -397,32 +415,45 @@ const Navigation: React.FC<{
                 }}
                 sx={{ mb: 4 }}
               >
-                <MenuItem onClick={() => setIsNewNoteModalOpen(true)}>
+                <MenuItem
+                  onClick={() => setIsModalOpen({ isOpen: true, type: "note" })}
+                >
                   New Note
                 </MenuItem>
-                <MenuItem onClick={() => setIsNewTaskModalOpen(true)}>
-                  New Task
-                </MenuItem>
-                <MenuItem onClick={() => setIsNewReminderModalOpen(true)}>
+                <MenuItem
+                  onClick={() =>
+                    setIsModalOpen({ isOpen: true, type: "reminder" })
+                  }
+                >
                   New Reminder
+                </MenuItem>
+                <MenuItem
+                  onClick={() => setIsModalOpen({ isOpen: true, type: "task" })}
+                >
+                  New Task
                 </MenuItem>
               </Menu>
             </Box>
           </>
         )}
-
-        <NewNoteModal
-          isOpen={isNewNoteModalOpen}
-          setIsOpen={setIsNewNoteModalOpen}
-        />
-        <NewTaskModal
-          isOpen={isNewTaskModalOpen}
-          setIsOpen={setIsNewTaskModalOpen}
-        />
-        <NewReminderModal
-          isOpen={isNewReminderModalOpen}
-          setIsOpen={setIsNewReminderModalOpen}
-        />
+        {isModalOpen.type === "note" && (
+          <NewNoteModal
+            isOpen={isModalOpen.isOpen}
+            setIsOpen={setIsModalOpen}
+          />
+        )}
+        {isModalOpen.type === "task" && (
+          <NewTaskModal
+            isOpen={isModalOpen.isOpen}
+            setIsOpen={setIsModalOpen}
+          />
+        )}
+        {isModalOpen.type === "reminder" && (
+          <NewReminderModal
+            isOpen={isModalOpen.isOpen}
+            setIsOpen={setIsModalOpen}
+          />
+        )}
       </Box>
     </>
   );

@@ -18,6 +18,7 @@ import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { ModalWrapper } from "./UIComponents";
 import useFirestoreDb from "../hooks/useFirestoreDb";
+import { modalStateTypes } from "./Navigation";
 
 type NewNoteFormType = {
   type: string;
@@ -27,7 +28,7 @@ type NewNoteFormType = {
 
 const NewNoteModal: React.FC<{
   isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsOpen: React.Dispatch<React.SetStateAction<modalStateTypes>>;
 }> = ({ isOpen, setIsOpen }) => {
   const [personName, setPersonName] = useState<string[]>([]);
   const { addNote } = useFirestoreDb();
@@ -59,7 +60,10 @@ const NewNoteModal: React.FC<{
   ];
 
   const closeModal = () => {
-    setIsOpen(false);
+    setIsOpen({
+      isOpen: false,
+      type: "",
+    });
     setPersonName([]);
   };
 
