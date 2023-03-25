@@ -38,6 +38,7 @@ import NoteEditor from "../pages/NotesPage/NoteEditor";
 import NewNoteModal from "./NewNoteModal";
 import NewReminderModal from "./NewReminderModal";
 import NewTaskModal from "./NewTaskModal";
+import ProfileAccount from "./ProfileAccount";
 
 //Each navitem
 const NavItem: React.FC<any> = ({
@@ -80,7 +81,7 @@ const NavItem: React.FC<any> = ({
 
 export type modalStateTypes = {
   isOpen: boolean;
-  type: "" | "note" | "reminder" | "task";
+  type: "" | "note" | "reminder" | "task" | "profile";
 };
 
 const Navigation: React.FC<{
@@ -183,7 +184,13 @@ const Navigation: React.FC<{
                   "aria-labelledby": "basic-button",
                 }}
               >
-                <MenuItem>My Account</MenuItem>
+                <MenuItem
+                  onClick={() =>
+                    setIsModalOpen({ isOpen: true, type: "profile" })
+                  }
+                >
+                  My Account
+                </MenuItem>
                 <MenuItem>Settings</MenuItem>
                 <MenuItem onClick={() => logout()}>Log Out</MenuItem>
               </Menu>
@@ -466,6 +473,12 @@ const Navigation: React.FC<{
           noteData={noteContentData}
           setNoteData={setNoteContentData}
         />
+        {isModalOpen.type === "profile" && (
+          <ProfileAccount
+            isOpen={isModalOpen.isOpen}
+            setIsOpen={setIsModalOpen}
+          />
+        )}
       </Box>
     </>
   );

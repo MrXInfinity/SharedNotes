@@ -10,6 +10,11 @@ type childrenContainerContent = {
   children?: childrenContainerContent[] | textChildrenContent[]
 }
 
+type publicNoteType = noteType & {
+  author: string
+  noteType: "shared"
+} 
+
 type noteType = {
   id: string
   noteType: "private" | "shared"
@@ -57,4 +62,4 @@ type dbDataObject = {
 }
 
 
-export type {noteType, reminderType, taskType, dbDataObject, updateNoteType, updateReminderType, updateTaskType}
+export type {noteType, reminderType, taskType, dbDataObject, updateNoteType, updateReminderType, updateTaskType, publicNoteType}
