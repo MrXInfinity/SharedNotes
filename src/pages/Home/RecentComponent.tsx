@@ -7,8 +7,8 @@ import { useSerialize } from "../../hooks/useFormatContent";
 const RecentComponent: React.FC<{ category: "Private" | "Shared" }> = ({
   category,
 }) => {
-  const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
-  const { dbData } = useFirestoreContext();
+  const { dbData, setIsNoteEditorModalOpen, setNoteContentData } =
+    useFirestoreContext();
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
@@ -24,7 +24,11 @@ const RecentComponent: React.FC<{ category: "Private" | "Shared" }> = ({
               <CardActionArea
                 sx={{ p: 1.5 }}
                 key={eachData.id}
-                onClick={() => setIsNoteModalOpen(true)}
+                onClick={() => {
+                  console.log("clicked");
+                  setIsNoteEditorModalOpen(true);
+                  setNoteContentData(eachData);
+                }}
               >
                 <Typography>{useSerialize(eachData.title)}</Typography>
               </CardActionArea>

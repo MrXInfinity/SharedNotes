@@ -9,11 +9,6 @@ const NotePage: React.FC<{ category: "Private" | "Shared" }> = ({
   category,
 }) => {
   const { dbData } = useFirestoreContext();
-  const [noteContentData, setNoteContentData] = useState<noteType>(
-    {} as noteType
-  );
-
-  const [isNoteEditorModalOpen, setIsNoteEditorModalOpen] = useState(false);
 
   return (
     <>
@@ -44,19 +39,9 @@ const NotePage: React.FC<{ category: "Private" | "Shared" }> = ({
             alignContent: "flex-end",
           }}
         >
-          <EachNoteList
-            data={dbData[category]}
-            toggleModal={setIsNoteEditorModalOpen}
-            setData={setNoteContentData}
-          />
+          <EachNoteList data={dbData[category]} />
         </Box>
       </Container>
-      <NoteEditor
-        isOpen={isNoteEditorModalOpen}
-        toggleModal={setIsNoteEditorModalOpen}
-        noteData={noteContentData}
-        setNoteData={setNoteContentData}
-      />
     </>
   );
 };

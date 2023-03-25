@@ -32,7 +32,9 @@ import {
 import { Container } from "@mui/system";
 import { useState } from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
+import useFirestoreContext from "../firestoreContext";
 import useFirestoreDb from "../hooks/useFirestoreDb";
+import NoteEditor from "../pages/NotesPage/NoteEditor";
 import NewNoteModal from "./NewNoteModal";
 import NewReminderModal from "./NewReminderModal";
 import NewTaskModal from "./NewTaskModal";
@@ -85,8 +87,12 @@ const Navigation: React.FC<{
   logout: () => Promise<void>;
   changeTheme: () => void;
 }> = ({ logout, changeTheme }) => {
-  const { addReminder } = useFirestoreDb();
-  // const { setIsNewReminderModalOpen } = useFirestoreContext();
+  const {
+    noteContentData,
+    setNoteContentData,
+    isNoteEditorModalOpen,
+    setIsNoteEditorModalOpen,
+  } = useFirestoreContext();
   //Modals
 
   const [isModalOpen, setIsModalOpen] = useState<modalStateTypes>({
@@ -454,6 +460,12 @@ const Navigation: React.FC<{
             setIsOpen={setIsModalOpen}
           />
         )}
+        <NoteEditor
+          isOpen={isNoteEditorModalOpen}
+          toggleModal={setIsNoteEditorModalOpen}
+          noteData={noteContentData}
+          setNoteData={setNoteContentData}
+        />
       </Box>
     </>
   );

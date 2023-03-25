@@ -1,4 +1,4 @@
-import React from "react";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import {
   Card,
   CardActionArea,
@@ -6,16 +6,15 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+import React from "react";
+import useFirestoreContext from "../../firestoreContext";
 import { useSerialize } from "../../hooks/useFormatContent";
 import { noteType } from "../../types/firestoreDataTypes";
-import { eachListType } from "../../types/componentTypes";
 
-const EachNoteList: React.FC<eachListType<noteType>> = ({
-  setData,
-  data,
-  toggleModal,
-}) => {
+const EachNoteList: React.FC<{ data: noteType[] }> = ({ data }) => {
+  const { setIsNoteEditorModalOpen, setNoteContentData } =
+    useFirestoreContext();
+
   if (data) {
     return (
       <>
@@ -41,8 +40,8 @@ const EachNoteList: React.FC<eachListType<noteType>> = ({
                 alignItems: "start",
               }}
               onClick={() => {
-                setData(eachData);
-                toggleModal(true);
+                setNoteContentData(eachData);
+                setIsNoteEditorModalOpen(true);
               }}
             >
               <Typography
