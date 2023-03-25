@@ -1,11 +1,23 @@
+import { Container, Stack } from "@mui/material";
 import Typography from "@mui/material/Typography";
-import { Box, Container, Fab, Stack } from "@mui/material";
+import moment from "moment";
+import { auth } from "../../firebase";
+import useFirestoreContext from "../../firestoreContext";
+import { reminderType, taskType } from "../../types/firestoreDataTypes";
 import RecentComponent from "./RecentComponent";
 import TodayComponent from "./TodayComponent";
-import { auth } from "../../firebase";
 
 const Home = () => {
-  console.log(auth.currentUser);
+  const { dbData } = useFirestoreContext();
+
+  const filterList = <T,>(data: T[], category: keyof T) =>
+    data.filter((eachData) =>
+      moment().isSame(
+        moment(parseInt(eachData[category as keyof typeof eachData])),
+        "day"
+      )
+    );
+
   return (
     <Container
       sx={{ px: { xs: 4, md: 12 } }}
@@ -27,7 +39,7 @@ const Home = () => {
           fontSize: { xs: 20, sm: 20, md: 24 },
         }}
       >
-        {auth.currentUser?.displayName}
+        {auth.currentUser!.displayName}
       </Typography>
       <Stack
         sx={{ my: 3, display: "flex" }}
@@ -41,8 +53,14 @@ const Home = () => {
         direction={{ xs: "column", md: "row" }}
         spacing={{ xs: 2, md: 4 }}
       >
-        <TodayComponent category="Reminder" />
-        <TodayComponent category="Tasks" />
+        <TodayComponent
+          data={filterList<reminderType>(dbData.Reminder, "startTime")}
+          category="Reminder"
+        />
+        <TodayComponent
+          data={filterList<taskType>(dbData.Tasks, "dueDateTime")}
+          category="Tasks"
+        />
       </Stack>
     </Container>
   );
