@@ -1,34 +1,35 @@
-import FavoriteIcon from "@mui/icons-material/Favorite";
 import {
   Card,
-  CardActionArea,
-  CardContent,
-  Stack,
+  CardHeader,
   Typography,
+  CardContent,
+  CardActionArea,
+  Stack,
 } from "@mui/material";
+import moment from "moment";
 import React from "react";
+import MenuComponent from "../../components/MenuComponent";
 import useFirestoreContext from "../../firestoreContext";
 import { useSerialize } from "../../hooks/useFormatContent";
+import theme from "../../theme";
 import { noteType } from "../../types/firestoreDataTypes";
 
-const EachNoteList: React.FC<{ category: "Private" | "Shared" }> = ({
-  category,
-}) => {
-  const { dbData, setIsNoteEditorModalOpen, setNoteContentData } =
-    useFirestoreContext();
-
-  if (dbData[category]) {
+const PublicList = () => {
+  const { publicData: data } = useFirestoreContext();
+  if (data) {
+    console.log(data);
     return (
       <>
-        {dbData[category].map((eachData: noteType, arr) => (
+        {data.map((eachData: noteType, arr) => (
           <Card
             sx={{
+              width: "100%",
               borderRadius: "16px",
               display: "flex",
               flexDirection: "column",
               height: "min-content",
               maxHeight: "200px",
-              width: "150px",
+
               alignItems: "start",
             }}
             key={arr}
@@ -40,10 +41,6 @@ const EachNoteList: React.FC<{ category: "Private" | "Shared" }> = ({
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "start",
-              }}
-              onClick={() => {
-                setNoteContentData(eachData);
-                setIsNoteEditorModalOpen(true);
               }}
             >
               <Typography
@@ -95,12 +92,6 @@ const EachNoteList: React.FC<{ category: "Private" | "Shared" }> = ({
                       day: "numeric",
                     })}
                 </Typography>
-                {eachData.favorite && (
-                  <FavoriteIcon
-                    sx={{}}
-                    color="primary"
-                  />
-                )}
               </Stack>
             </CardActionArea>
           </Card>
@@ -112,4 +103,4 @@ const EachNoteList: React.FC<{ category: "Private" | "Shared" }> = ({
   }
 };
 
-export default EachNoteList;
+export default PublicList;

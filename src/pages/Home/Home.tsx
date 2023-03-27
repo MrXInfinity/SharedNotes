@@ -8,7 +8,10 @@ import RecentComponent from "./RecentComponent";
 import TodayComponent from "./TodayComponent";
 
 const Home = () => {
-  const { dbData } = useFirestoreContext();
+  const {
+    dbData,
+    userData: { firstname, lastname },
+  } = useFirestoreContext();
 
   const filterList = <T,>(data: T[], category: keyof T) =>
     data.filter((eachData) =>
@@ -39,7 +42,7 @@ const Home = () => {
           fontSize: { xs: 20, sm: 20, md: 24 },
         }}
       >
-        {auth.currentUser!.displayName}
+        {firstname} {lastname}
       </Typography>
       <Stack
         sx={{ my: 3, display: "flex" }}

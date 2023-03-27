@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -6,16 +5,20 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { reminderType } from "../../types/firestoreDataTypes";
 import moment from "moment";
-import { eachListType } from "../../types/componentTypes";
+import React from "react";
 import MenuComponent from "../../components/MenuComponent";
+import useFirestoreContext from "../../firestoreContext";
+import { listType } from "../../types/componentTypes";
+import { reminderType } from "../../types/firestoreDataTypes";
 
-const EachReminderList: React.FC<eachListType<reminderType>> = ({
-  data,
+const EachReminderList: React.FC<listType<reminderType>> = ({
   setData,
   toggleModal,
 }) => {
+  const {
+    dbData: { Reminder: data },
+  } = useFirestoreContext();
   const theme = useTheme();
 
   if (data) {

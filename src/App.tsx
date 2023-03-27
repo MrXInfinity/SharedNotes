@@ -21,6 +21,7 @@ import Reminder from "./pages/Reminder/Reminder";
 import { FirestoreProvider } from "./firestoreContext";
 import Task from "./pages/Task/Task";
 import moment from "moment";
+import PublicPage from "./pages/PublicPage/PublicPage";
 
 function App() {
   const { theme, changeTheme } = useCustomTheme();
@@ -37,8 +38,6 @@ function App() {
       sameElse: "MM/DD/YY",
     },
   });
-
-  console.log(auth.currentUser);
 
   return (
     <Container
@@ -59,7 +58,7 @@ function App() {
                     type={""}
                     props={undefined}
                   >
-                    <Navigation {...{ logout, changeTheme }} />
+                    <Navigation {...{ changeTheme }} />
                   </FirestoreProvider>
                 ) : (
                   <Navigate to="/sign-in" />
@@ -87,7 +86,7 @@ function App() {
                   },
                   {
                     path: "public-share",
-                    element: <h1>Public Note Sharing</h1>,
+                    element: <PublicPage />,
                   },
                 ],
               },

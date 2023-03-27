@@ -8,7 +8,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { eachListType } from "../../types/componentTypes";
+import { eachListType, listType } from "../../types/componentTypes";
 import { taskType } from "../../types/firestoreDataTypes";
 import moment from "moment";
 import useFirestoreDb from "../../hooks/useFirestoreDb";
@@ -18,14 +18,17 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
+import useFirestoreContext from "../../firestoreContext";
 
-const EachTaskList: React.FC<eachListType<taskType>> = ({
-  data,
+const EachTaskList: React.FC<listType<taskType>> = ({
   setData,
   toggleModal,
 }) => {
   const theme = useTheme();
   const { update, remove } = useFirestoreDb();
+  const {
+    dbData: { Tasks: data },
+  } = useFirestoreContext();
   return (
     <>
       {data.map((eachData) => (
