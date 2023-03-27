@@ -1,15 +1,12 @@
 import { Button, Typography } from "@mui/material";
 import { Stack } from "@mui/system";
-import { ref } from "firebase/storage";
 import React, { useState } from "react";
-import { useDownloadURL } from "react-firebase-hooks/storage";
-import { auth, storage } from "../firebase";
+import avatarIcon from "../assets/avatarIcon.svg";
 import useFirestoreContext from "../firestoreContext";
+import useAuth from "../hooks/useAuth";
 import EditAccount from "./EditAccount";
 import { modalStateTypes } from "./Navigation";
 import { ModalWrapper } from "./UIComponents";
-import avatarIcon from "../assets/avatarIcon.svg";
-import useAuth from "../hooks/useAuth";
 
 const ProfileAccount: React.FC<{
   isOpen: boolean;
