@@ -57,6 +57,7 @@ const useAuth = () => {
         firstname,
         lastname,
         email,
+        bio: "",
       })
     } catch (err: any) {
       if (err.code == AuthErrorCodes.INVALID_EMAIL) {

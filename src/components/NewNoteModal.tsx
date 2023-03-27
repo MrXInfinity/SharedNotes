@@ -19,6 +19,7 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { ModalWrapper } from "./UIComponents";
 import useFirestoreDb from "../hooks/useFirestoreDb";
 import { modalStateTypes } from "./Navigation";
+import useFirestoreContext from "../firestoreContext";
 
 type NewNoteFormType = {
   type: string;
@@ -32,6 +33,9 @@ const NewNoteModal: React.FC<{
 }> = ({ isOpen, setIsOpen }) => {
   const [personName, setPersonName] = useState<string[]>([]);
   const { addNote } = useFirestoreDb();
+  const {
+    userData: { firstname, lastname },
+  } = useFirestoreContext();
 
   const {
     register,

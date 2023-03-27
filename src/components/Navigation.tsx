@@ -1,3 +1,4 @@
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import AddIcon from "@mui/icons-material/Add";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
@@ -12,7 +13,6 @@ import FolderSharedOutlinedIcon from "@mui/icons-material/FolderSharedOutlined";
 import LanguageIcon from "@mui/icons-material/Language";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import {
   AppBar,
   Box,
@@ -24,7 +24,6 @@ import {
   Paper,
   Stack,
   Tab,
-  Tabs,
   Typography,
   useMediaQuery,
   useTheme,
@@ -33,7 +32,6 @@ import { Container } from "@mui/system";
 import { useState } from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import useFirestoreContext from "../firestoreContext";
-import useFirestoreDb from "../hooks/useFirestoreDb";
 import NoteEditor from "../pages/NotesPage/NoteEditor";
 import NewNoteModal from "./NewNoteModal";
 import NewReminderModal from "./NewReminderModal";
@@ -70,7 +68,8 @@ const NavItem: React.FC<any> = ({
           minWidth: 0,
           flexGrow: 1,
           width: "100%",
-          justifyContent: { md: "start" },
+          justifyContent: { sm: "start" },
+          textAlign: "start",
         }}
         label={label}
         icon={selectedValue === value ? activeIcon : inactiveIcon}
@@ -85,30 +84,26 @@ export type modalStateTypes = {
 };
 
 const Navigation: React.FC<{
-  logout: () => Promise<void>;
   changeTheme: () => void;
-}> = ({ logout, changeTheme }) => {
+}> = ({ changeTheme }) => {
   const {
     noteContentData,
     setNoteContentData,
     isNoteEditorModalOpen,
     setIsNoteEditorModalOpen,
+    fetchProfilePics: { picValue, isPicLoading, picError },
   } = useFirestoreContext();
-  //Modals
 
   const [isModalOpen, setIsModalOpen] = useState<modalStateTypes>({
     isOpen: false,
     type: "",
   });
 
-  //Menu withing Settings
-  const [anchorSettingsEl, setAnchorSettingsEl] = useState<null | HTMLElement>(
+  //Menu within new button
+  const [anchorNewButton, setAnchorNewButton] = useState<null | HTMLElement>(
     null
   );
-  const showSettingsMenu = Boolean(anchorSettingsEl);
-  //Menu within new button
-  const [anchorNewEl, setAnchorNewEl] = useState<null | HTMLElement>(null);
-  const showNewMenu = Boolean(anchorNewEl);
+  const showNewButtonMenu = Boolean(anchorNewButton);
   const [tabsValue, setTabsValue] = useState("home");
 
   const isWindowLarge = useMediaQuery("(min-width:600px)");
@@ -121,7 +116,7 @@ const Navigation: React.FC<{
           sx={{
             pt: { xs: 1, md: 4 },
             pb: { xs: 1, md: 3 },
-            backgroundColor: theme.palette.background.paper,
+            backgroundColor: "background.paper",
             boxShadow: "none",
             display: "flex",
             flexDirection: "row",
@@ -163,38 +158,29 @@ const Navigation: React.FC<{
                 <DarkModeIcon />
               )}
             </IconButton>
-
-            <div>
-              <IconButton
-                onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-                  setAnchorSettingsEl(event.currentTarget);
-                }}
-                aria-controls={showSettingsMenu ? "basic-menu" : undefined}
-                aria-haspopup="true"
-                aria-expanded={showSettingsMenu ? "true" : undefined}
-              >
-                <SettingsRoundedIcon />
-              </IconButton>
-              <Menu
-                id="basic-menu"
-                anchorEl={anchorSettingsEl}
-                open={showSettingsMenu}
-                onClose={() => setAnchorSettingsEl(null)}
-                MenuListProps={{
-                  "aria-labelledby": "basic-button",
-                }}
-              >
-                <MenuItem
-                  onClick={() =>
-                    setIsModalOpen({ isOpen: true, type: "profile" })
-                  }
-                >
-                  My Account
-                </MenuItem>
-                <MenuItem>Settings</MenuItem>
-                <MenuItem onClick={() => logout()}>Log Out</MenuItem>
-              </Menu>
-            </div>
+            <Button
+              onClick={() => {
+                setIsModalOpen({
+                  isOpen: true,
+                  type: "profile",
+                });
+              }}
+            >
+              {picError || isPicLoading ? (
+                <AccountCircleIcon />
+              ) : (
+                <img
+                  style={{
+                    height: "24px",
+                    width: "24px",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    objectPosition: "center",
+                  }}
+                  src={picValue}
+                />
+              )}
+            </Button>
           </Stack>
         </AppBar>
         {/* When Windows is larger than or equal to 600px*/}
@@ -220,11 +206,11 @@ const Navigation: React.FC<{
                   variant="contained"
                   aria-label="Add New"
                   onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-                    setAnchorNewEl(event.currentTarget);
+                    setAnchorNewButton(event.currentTarget);
                   }}
-                  aria-controls={showNewMenu ? "basic-menu" : undefined}
+                  aria-controls={showNewButtonMenu ? "basic-menu" : undefined}
                   aria-haspopup="true"
-                  aria-expanded={showNewMenu ? "true" : undefined}
+                  aria-expanded={showNewButtonMenu ? "true" : undefined}
                 >
                   <AddIcon />
                   <Typography sx={{ fontWeight: "bold", fontSize: 18, ml: 1 }}>
@@ -233,9 +219,9 @@ const Navigation: React.FC<{
                 </Button>
                 <Menu
                   id="basic-menu"
-                  anchorEl={anchorNewEl}
-                  open={showNewMenu}
-                  onClose={() => setAnchorNewEl(null)}
+                  anchorEl={anchorNewButton}
+                  open={showNewButtonMenu}
+                  onClose={() => setAnchorNewButton(null)}
                   MenuListProps={{
                     "aria-labelledby": "basic-button",
                   }}
@@ -272,9 +258,7 @@ const Navigation: React.FC<{
                   </MenuItem>
                 </Menu>
               </Box>
-              <Tabs
-                value={null}
-                orientation="vertical"
+              <Paper
                 sx={{
                   backgroundColor: theme.palette.background.paper,
                   position: "static",
@@ -284,7 +268,6 @@ const Navigation: React.FC<{
                   boxShadow: "none",
                   display: "inline-flex",
                   flexDirection: "column",
-
                   height: "100%",
                 }}
               >
@@ -333,7 +316,7 @@ const Navigation: React.FC<{
                   selectedValue={tabsValue}
                   setSelectedValue={setTabsValue}
                 />
-              </Tabs>
+              </Paper>
             </div>
             <Outlet />
           </Container>
@@ -399,11 +382,11 @@ const Navigation: React.FC<{
                 variant="extended"
                 aria-label="Add New"
                 onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-                  setAnchorNewEl(event.currentTarget);
+                  setAnchorNewButton(event.currentTarget);
                 }}
-                aria-controls={showNewMenu ? "basic-menu" : undefined}
+                aria-controls={showNewButtonMenu ? "basic-menu" : undefined}
                 aria-haspopup="true"
-                aria-expanded={showNewMenu ? "true" : undefined}
+                aria-expanded={showNewButtonMenu ? "true" : undefined}
               >
                 <AddIcon />
                 <Typography sx={{ fontWeight: "bold", fontSize: 18, ml: 1 }}>
@@ -412,9 +395,9 @@ const Navigation: React.FC<{
               </Fab>
               <Menu
                 id="basic-menu"
-                anchorEl={anchorNewEl}
-                open={showNewMenu}
-                onClose={() => setAnchorNewEl(null)}
+                anchorEl={anchorNewButton}
+                open={showNewButtonMenu}
+                onClose={() => setAnchorNewButton(null)}
                 MenuListProps={{
                   "aria-labelledby": "basic-button",
                 }}
