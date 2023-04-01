@@ -29,14 +29,18 @@ import {
   useTheme,
 } from "@mui/material";
 import { Container } from "@mui/system";
+import { ref } from "firebase/storage";
 import { useState } from "react";
+import { useDownloadURL } from "react-firebase-hooks/storage";
 import { Link, NavLink, Outlet } from "react-router-dom";
+import { storage, auth } from "../firebase";
 import useFirestoreContext from "../firestoreContext";
 import NoteEditor from "../pages/NotesPage/NoteEditor";
 import NewNoteModal from "./NewNoteModal";
 import NewReminderModal from "./NewReminderModal";
 import NewTaskModal from "./NewTaskModal";
 import ProfileAccount from "./ProfileAccount";
+import avatarIcon from "../assets/avatarIcon.svg";
 
 //Each navitem
 const NavItem: React.FC<any> = ({
@@ -56,11 +60,12 @@ const NavItem: React.FC<any> = ({
       style={{ textDecoration: "none" }}
     >
       <Tab
-        style={
-          selectedValue === value
-            ? { color: theme.palette.primary.main }
-            : { color: theme.palette.text.primary }
-        }
+        style={{
+          color:
+            selectedValue === value
+              ? theme.palette.primary.main
+              : theme.palette.text.primary,
+        }}
         onClick={() => setSelectedValue("home")}
         iconPosition="start"
         sx={{
@@ -91,7 +96,6 @@ const Navigation: React.FC<{
     setNoteContentData,
     isNoteEditorModalOpen,
     setIsNoteEditorModalOpen,
-    fetchProfilePics: { picValue, isPicLoading, picError },
   } = useFirestoreContext();
 
   const [isModalOpen, setIsModalOpen] = useState<modalStateTypes>({
@@ -108,6 +112,10 @@ const Navigation: React.FC<{
 
   const isWindowLarge = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
+
+  const [picValue, isPicLoading, picError] = useDownloadURL(
+    ref(storage, `${auth.currentUser!.uid}/profilePic.jpg`)
+  );
   return (
     <>
       <Box mb={4}>
@@ -138,11 +146,18 @@ const Navigation: React.FC<{
             spacing={{ xs: 1, sm: 2 }}
             sx={{ alignItems: "center" }}
           >
-            <IconButton>
+            <IconButton
+              onClick={() => {
+                setTabsValue("public");
+              }}
+            >
               <Link
                 to="/public-share"
                 style={{
-                  color: theme.palette.text.secondary,
+                  color:
+                    tabsValue === "public"
+                      ? theme.palette.primary.main
+                      : theme.palette.text.primary,
                   display: "flex",
                   alignItems: "center",
                 }}
@@ -159,6 +174,7 @@ const Navigation: React.FC<{
               )}
             </IconButton>
             <Button
+              sx={{ minWidth: "" }}
               onClick={() => {
                 setIsModalOpen({
                   isOpen: true,
@@ -166,20 +182,16 @@ const Navigation: React.FC<{
                 });
               }}
             >
-              {picError || isPicLoading ? (
-                <AccountCircleIcon />
-              ) : (
-                <img
-                  style={{
-                    height: "24px",
-                    width: "24px",
-                    borderRadius: "50%",
-                    objectFit: "cover",
-                    objectPosition: "center",
-                  }}
-                  src={picValue}
-                />
-              )}
+              <img
+                style={{
+                  height: "24px",
+                  width: "24px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  objectPosition: "center",
+                }}
+                src={picError || isPicLoading ? avatarIcon : picValue}
+              />
             </Button>
           </Stack>
         </AppBar>
