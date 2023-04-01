@@ -12,7 +12,7 @@ import useFirestoreContext from "../../firestoreContext";
 import { listType } from "../../types/componentTypes";
 import { reminderType } from "../../types/firestoreDataTypes";
 
-const EachReminderList: React.FC<listType<reminderType>> = ({
+const ReminderList: React.FC<listType<reminderType>> = ({
   setData,
   toggleModal,
 }) => {
@@ -111,4 +111,4 @@ const EachReminderList: React.FC<listType<reminderType>> = ({
   }
 };
 
-export default EachReminderList;
+export default ReminderList;

@@ -20,10 +20,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import useFirestoreContext from "../../firestoreContext";
 
-const EachTaskList: React.FC<listType<taskType>> = ({
-  setData,
-  toggleModal,
-}) => {
+const TaskList: React.FC<listType<taskType>> = ({ setData, toggleModal }) => {
   const theme = useTheme();
   const { update, remove } = useFirestoreDb();
   const {
@@ -152,4 +149,4 @@ const EachTaskList: React.FC<listType<taskType>> = ({
   );
 };
 
-export default EachTaskList;
+export default TaskList;

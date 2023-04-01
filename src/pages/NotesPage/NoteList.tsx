@@ -11,7 +11,7 @@ import useFirestoreContext from "../../firestoreContext";
 import { useSerialize } from "../../hooks/useFormatContent";
 import { noteType } from "../../types/firestoreDataTypes";
 
-const EachNoteList: React.FC<{ category: "Private" | "Shared" }> = ({
+const NoteList: React.FC<{ category: "Private" | "Shared" }> = ({
   category,
 }) => {
   const { dbData, setIsNoteEditorModalOpen, setNoteContentData } =
@@ -112,4 +112,4 @@ const EachNoteList: React.FC<{ category: "Private" | "Shared" }> = ({
   }
 };
 
-export default EachNoteList;
+export default NoteList;

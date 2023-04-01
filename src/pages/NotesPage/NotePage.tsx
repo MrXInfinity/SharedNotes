@@ -1,6 +1,6 @@
 import { Box, Container, Stack, Typography } from "@mui/material";
 import React, { useState } from "react";
-import EachNoteList from "./EachNoteList";
+import NoteList from "./NoteList";
 import useFirestoreContext from "../../firestoreContext";
 import { noteType } from "../../types/firestoreDataTypes";
 import NoteEditor from "./NoteEditor";
@@ -12,7 +12,7 @@ const NotePage: React.FC<{ category: "Private" | "Shared" }> = ({
   return (
     <PageLayout
       title={`${category} Notes`}
-      pageList={<EachNoteList category={category} />}
+      pageList={<NoteList category={category} />}
     />
   );
 };

@@ -2,7 +2,7 @@ import { useState } from "react";
 import PageLayout from "../../components/PageLayout";
 import useFirestoreContext from "../../firestoreContext";
 import { reminderType } from "../../types/firestoreDataTypes";
-import EachReminderList from "./EachReminderList";
+import ReminderList from "./ReminderList";
 import UpdateReminderModal from "./UpdateReminderModal";
 
 const Reminder = () => {
@@ -15,7 +15,7 @@ const Reminder = () => {
     <PageLayout
       title="Reminders"
       pageList={
-        <EachReminderList
+        <ReminderList
           toggleModal={setIsReminderModalOpen}
           setData={setSelectedReminderData}
         />

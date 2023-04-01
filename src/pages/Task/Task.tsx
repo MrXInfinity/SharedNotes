@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Box, Container, Stack, Typography } from "@mui/material";
 import useFirestoreContext from "../../firestoreContext";
 import { taskType } from "../../types/firestoreDataTypes";
-import EachTaskList from "./EachTaskList";
+import TaskList from "./TaskList";
 import UpdateTaskModal from "./UpdateTaskModal";
 import PageLayout from "../../components/PageLayout";
 
@@ -16,7 +16,7 @@ const Task = () => {
     <PageLayout
       title="Reminders"
       pageList={
-        <EachTaskList
+        <TaskList
           setData={setSelectedTaskData}
           toggleModal={setIsTaskModalOpen}
         />
