@@ -1,5 +1,6 @@
 import { Button, TextField } from "@mui/material";
-import { updateDoc, doc } from "firebase/firestore";
+import { signOut } from "firebase/auth";
+import { doc, updateDoc } from "firebase/firestore";
 import { ref } from "firebase/storage";
 import React, { useEffect, useState } from "react";
 import { useUploadFile } from "react-firebase-hooks/storage";
@@ -33,11 +34,13 @@ const EditAccount: React.FC<{
 
   const formSubmit = async (data: formTypes) => {
     try {
-      if (selectedFile)
+      await updateDoc(doc(db, "Users", auth.currentUser!.uid), data);
+      if (selectedFile) {
         await uploadFile(imageRef, selectedFile, {
           contentType: "image/jpeg",
         });
-      await updateDoc(doc(db, "Users", auth.currentUser!.uid), data);
+        signOut(auth);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -65,6 +68,7 @@ const EditAccount: React.FC<{
         }}
       >
         <TextField
+          inputProps={{ minLength: 2, maxLength: 50 }}
           fullWidth
           id="firstName"
           label="First Name"
@@ -74,6 +78,7 @@ const EditAccount: React.FC<{
           }}
         />
         <TextField
+          inputProps={{ minLength: 2, maxLength: 50 }}
           fullWidth
           id="lastname"
           label="Last Name"
@@ -83,6 +88,7 @@ const EditAccount: React.FC<{
           }}
         />
         <TextField
+          inputProps={{ minLength: 2, maxLength: 50 }}
           fullWidth
           type="email"
           id="email"
@@ -93,22 +99,28 @@ const EditAccount: React.FC<{
           }}
         />
         <TextField
+          inputProps={{ minLength: 2, maxLength: 80 }}
           fullWidth
           id="biography"
           label="Bio"
           variant="outlined"
+          multiline
           onChange={(e) => {
             setValue("bio", e.target.value);
           }}
         />
-        <input
-          accept="image/*"
+
+        <TextField
+          fullWidth
+          variant="standard"
+          inputProps={{ accept: "image/*" }}
           type="file"
-          placeholder="Select new Profile Picture"
-          onChange={(e) => {
+          helperText="You will need to login again after updating your profile"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             e.target.files ? setSelectedFile(e.target.files[0]) : undefined;
           }}
         />
+
         <Button
           disabled={uploading}
           type="submit"

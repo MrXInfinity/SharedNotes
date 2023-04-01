@@ -1,9 +1,10 @@
 import { Button, Typography } from "@mui/material";
 import { Stack } from "@mui/system";
 import React, { useState } from "react";
+import { useSignOut } from "react-firebase-hooks/auth";
 import avatarIcon from "../assets/avatarIcon.svg";
+import { auth } from "../firebase";
 import useFirestoreContext from "../firestoreContext";
-import useAuth from "../hooks/useAuth";
 import EditAccount from "./EditAccount";
 import { modalStateTypes } from "./Navigation";
 import { ModalWrapper } from "./UIComponents";
@@ -19,7 +20,7 @@ const ProfileAccount: React.FC<{
     fetchProfilePics: { picValue, isPicLoading, picError },
   } = useFirestoreContext();
 
-  const { logout } = useAuth();
+  const [signOut, loading, error] = useSignOut(auth);
 
   return (
     <>
@@ -36,7 +37,6 @@ const ProfileAccount: React.FC<{
         <Stack
           direction="row"
           sx={{
-            display: "flex",
             alignItems: "center",
             width: "auto",
             px: 1,
@@ -54,17 +54,32 @@ const ProfileAccount: React.FC<{
             }}
             src={picError || isPicLoading ? avatarIcon : picValue}
           />
-          <Stack sx={{}}>
+          <Stack>
             <Typography sx={{ fontSize: { xs: 16 }, fontWeight: 500 }}>
               {firstname} {lastname}
             </Typography>
-            <Typography sx={{ fontSize: { xs: 14 } }}>{email}</Typography>
+            <Typography sx={{ fontSize: { xs: 14 }, mb: 1 }}>
+              {email}
+            </Typography>
             {bio ? (
-              <Typography sx={{ fontSize: { xs: 14 }, fontStyle: "italic" }}>
+              <Typography
+                sx={{
+                  fontSize: { xs: 14 },
+                  fontStyle: "italic",
+                  opacity: 0.75,
+                }}
+              >
                 "{bio}"
               </Typography>
             ) : (
-              <></>
+              <Typography
+                sx={{
+                  fontSize: { xs: 14 },
+                  opacity: 0.6,
+                }}
+              >
+                No Bio yet
+              </Typography>
             )}
           </Stack>
         </Stack>
@@ -79,7 +94,7 @@ const ProfileAccount: React.FC<{
             Edit
           </Button>
           <Button
-            onClick={() => logout()}
+            onClick={() => signOut()}
             sx={{ fontSize: { xs: 12 } }}
           >
             {" "}
