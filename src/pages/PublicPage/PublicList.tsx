@@ -1,106 +1,146 @@
-import {
-  Card,
-  CardHeader,
-  Typography,
-  CardContent,
-  CardActionArea,
-  Stack,
-} from "@mui/material";
-import moment from "moment";
+import { Card, CardActionArea, Stack, Typography } from "@mui/material";
+import { ref } from "firebase/storage";
 import React from "react";
-import MenuComponent from "../../components/MenuComponent";
+import { useDownloadURL } from "react-firebase-hooks/storage";
+import { storage } from "../../firebase";
 import useFirestoreContext from "../../firestoreContext";
-import { useSerialize } from "../../hooks/useFormatContent";
-import theme from "../../theme";
-import { noteType } from "../../types/firestoreDataTypes";
+import {
+  useFormattedSerialize,
+  useSerialize,
+} from "../../hooks/useFormatContent";
+import { publicNoteType } from "../../types/firestoreDataTypes";
+import avatarIcon from "../../assets/avatarIcon.svg";
 
-const PublicList = () => {
-  const { publicData: data } = useFirestoreContext();
-  if (data) {
-    console.log(data);
-    return (
-      <>
-        {data.map((eachData: noteType, arr) => (
-          <Card
+const EachPublicItem: React.FC<{
+  data: publicNoteType;
+  index: number;
+  setPreviewData: React.Dispatch<
+    React.SetStateAction<{
+      title: string;
+      content: string;
+    }>
+  >;
+  toggleModal: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({
+  data: { title, content, author, profilePicId, dateCreated },
+  index,
+  setPreviewData,
+  toggleModal,
+}) => {
+  const [picValue, isPicLoading, picError] = useDownloadURL(
+    ref(storage, profilePicId)
+  );
+  return (
+    <Card
+      sx={{
+        width: "100%",
+        borderRadius: "16px",
+        display: "flex",
+        flexDirection: "column",
+        height: "min-content",
+        maxHeight: "200px",
+
+        alignItems: "start",
+      }}
+      key={index}
+    >
+      <CardActionArea
+        sx={{
+          height: "100%",
+          py: 1.7,
+          display: "flex",
+          flexDirection: index % 2 ? "row" : "row-reverse",
+          justifyContent: "space-between",
+          alignItems: "start",
+          gap: { xs: 1.5, md: 2 },
+
+          p: 2,
+        }}
+        onClick={() => {
+          setPreviewData({
+            title: useSerialize(title),
+            content: content ? useSerialize(content) : useSerialize(content),
+          });
+          toggleModal(true);
+        }}
+      >
+        <Stack
+          direction="column"
+          sx={{ maxWidth: { xs: "60%", lg: "50%" }, flexGrow: 1 }}
+        >
+          <Typography
             sx={{
-              width: "100%",
-              borderRadius: "16px",
-              display: "flex",
-              flexDirection: "column",
-              height: "min-content",
-              maxHeight: "200px",
-
-              alignItems: "start",
+              fontSize: 18,
+              fontWeight: "medium",
             }}
-            key={arr}
           >
-            <CardActionArea
+            {useSerialize(title)}
+          </Typography>
+
+          <Typography
+            sx={{
+              pt: 1,
+              fontSize: 14,
+              opacity: 0.6,
+              textOverflow: "ellipsis",
+              overflow: "hidden",
+              maxHeight: "100px",
+              height: "100%",
+            }}
+          >
+            {useSerialize(content) === ""
+              ? "No Content"
+              : useSerialize(content)}
+          </Typography>
+        </Stack>
+
+        <Stack
+          direction={"column"}
+          sx={{ maxWidth: { xs: "100px" } }}
+        >
+          <img
+            style={{
+              height: "100px",
+              width: "100%",
+              objectFit: "cover",
+              objectPosition: "center",
+            }}
+            src={picError || isPicLoading ? avatarIcon : picValue}
+          />
+          <Stack
+            direction="column"
+            spacing={2}
+            sx={{
+              mt: 1,
+            }}
+          >
+            <Typography
               sx={{
-                height: "100%",
-                py: 1.7,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "start",
+                fontSize: { xs: 14 },
+                fontWeight: 500,
+                textOverflow: "ellipsis",
+                overflow: "hidden",
               }}
             >
-              <Typography
-                sx={{
-                  px: 2,
-                  fontSize: 16,
-                  fontWeight: "medium",
-                }}
-              >
-                {useSerialize(eachData.title)}
-              </Typography>
-              <CardContent
-                sx={{
-                  pt: 0.75,
-                  display: "flex",
-                  maxHeight: "100px",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-              >
-                <Typography
-                  sx={{
-                    fontSize: 14,
-                    opacity: 0.6,
-                    textOverflow: "ellipsis",
-                    overflow: "hidden",
-                    height: "100%",
-                  }}
-                >
-                  {useSerialize(eachData.content)}
-                </Typography>
-              </CardContent>
-              <Stack
-                direction="row"
-                spacing={2}
-                sx={{
-                  px: 2,
-                  pt: 1,
-                  width: "100%",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Typography sx={{ fontSize: { xs: 10 } }}>
-                  {eachData.dateCreated
-                    ?.toDate()
-                    .toLocaleDateString(undefined, {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                </Typography>
-              </Stack>
-            </CardActionArea>
-          </Card>
-        ))}
-      </>
-    );
-  } else {
-    return <></>;
-  }
+              {author}
+            </Typography>
+            <Typography
+              style={{
+                marginTop: 0,
+              }}
+              sx={{ fontSize: { xs: 12 } }}
+            >
+              {dateCreated?.toDate().toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </Typography>
+          </Stack>
+        </Stack>
+      </CardActionArea>
+    </Card>
+  );
 };
 
-export default PublicList;
+export default EachPublicItem;
