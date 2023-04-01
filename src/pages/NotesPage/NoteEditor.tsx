@@ -226,7 +226,7 @@ const NoteEditor: React.FC<{
         <Button
           onClick={() => {
             toggleModal(false);
-            update({ noteType, id, type: "private", title, content });
+            update({ type: noteType, id, title, content });
           }}
         >
           Submit
