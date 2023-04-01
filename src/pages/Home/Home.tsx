@@ -1,4 +1,4 @@
-import { Container, Stack } from "@mui/material";
+import { Box, Container, Stack } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import moment from "moment";
 import { auth } from "../../firebase";
@@ -23,14 +23,14 @@ const Home = () => {
 
   return (
     <Container
-      sx={{ px: { xs: 4, md: 12 } }}
+      sx={{ px: { xs: 4, sm: 6 }, pt: { sm: 2, md: 3 } }}
       maxWidth="lg"
       disableGutters={true}
     >
       <Typography
         sx={{
           fontWeight: "bold",
-          fontSize: { xs: 48, sm: 56, md: 64 },
+          fontSize: { xs: 48, sm: 56, md: 72, lg: 84 },
           mb: { xs: -1, sm: -2 },
         }}
       >
@@ -38,23 +38,27 @@ const Home = () => {
       </Typography>
       <Typography
         sx={{
-          fontWeight: { xs: "medium", sm: 400 },
-          fontSize: { xs: 20, sm: 20, md: 24 },
+          fontWeight: { sm: "light" },
+          fontSize: { xs: 16, sm: 18, md: 20 },
         }}
       >
         {firstname} {lastname}
       </Typography>
-      <Stack
-        sx={{ my: 3, display: "flex" }}
-        direction={{ xs: "column", md: "row" }}
-        spacing={{ xs: 2, md: 4 }}
+      <Box
+        sx={{
+          my: { xs: 4, md: 4 },
+          display: { xs: "flex", sm: "grid" },
+          flexDirection: "column",
+          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+          gap: { xs: 2, sm: 4, lg: 6 },
+        }}
       >
         <RecentComponent category={"Private"} />
         <RecentComponent category={"Shared"} />
-      </Stack>
+      </Box>
       <Stack
-        direction={{ xs: "column", md: "row" }}
-        spacing={{ xs: 2, md: 4 }}
+        direction={{ xs: "column", sm: "row" }}
+        spacing={{ xs: 2, sm: 4, lg: 6 }}
       >
         <TodayComponent
           data={filterList<reminderType>(dbData.Reminder, "startTime")}

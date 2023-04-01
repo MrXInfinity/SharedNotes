@@ -73,7 +73,7 @@ const NavItem: React.FC<any> = ({
           minWidth: 0,
           flexGrow: 1,
           width: "100%",
-          justifyContent: { sm: "start" },
+          justifyContent: { md: "start" },
           textAlign: "start",
         }}
         label={label}
@@ -110,7 +110,7 @@ const Navigation: React.FC<{
   const showNewButtonMenu = Boolean(anchorNewButton);
   const [tabsValue, setTabsValue] = useState("home");
 
-  const isWindowLarge = useMediaQuery("(min-width:600px)");
+  const isWindowLarge = useMediaQuery("(min-width:900px)");
   const theme = useTheme();
 
   const [picValue, isPicLoading, picError] = useDownloadURL(
@@ -122,8 +122,8 @@ const Navigation: React.FC<{
         <AppBar
           position="static"
           sx={{
-            pt: { xs: 1, md: 4 },
-            pb: { xs: 1, md: 3 },
+            pt: { xs: 1, md: 2 },
+            pb: { xs: 1, md: 2 },
             backgroundColor: "background.paper",
             boxShadow: "none",
             display: "flex",
@@ -136,7 +136,7 @@ const Navigation: React.FC<{
           }}
         >
           <Typography
-            sx={{ fontWeight: 450, fontSize: { xs: 16, md: 24 } }}
+            sx={{ fontWeight: 450, fontSize: { xs: 16, md: 18 } }}
             color="primary"
           >
             ShareNotes
@@ -203,7 +203,14 @@ const Navigation: React.FC<{
             sx={{ display: "flex" }}
           >
             <div
-              style={{ display: "flex", flexDirection: "column", width: "20%" }}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                // top: "0px",
+                // bottom: "0px",
+                // left: "0px",
+                // position: "absolute",
+              }}
             >
               <Box
                 sx={{
@@ -226,7 +233,7 @@ const Navigation: React.FC<{
                 >
                   <AddIcon />
                   <Typography sx={{ fontWeight: "bold", fontSize: 18, ml: 1 }}>
-                    ADD NEW
+                    NEW
                   </Typography>
                 </Button>
                 <Menu
@@ -330,6 +337,7 @@ const Navigation: React.FC<{
                 />
               </Paper>
             </div>
+
             <Outlet />
           </Container>
         ) : (
@@ -402,7 +410,7 @@ const Navigation: React.FC<{
               >
                 <AddIcon />
                 <Typography sx={{ fontWeight: "bold", fontSize: 18, ml: 1 }}>
-                  ADD
+                  New
                 </Typography>
               </Fab>
               <Menu

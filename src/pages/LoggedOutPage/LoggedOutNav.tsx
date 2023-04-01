@@ -59,7 +59,7 @@ const LoggedOutNav: React.FC<{ changeTheme: () => void }> = ({
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          py: { xs: 1, sm: 2, md: 2 },
+          py: { xs: 1, md: 2 },
           px: 3,
           opacity: 0.9,
         }}
