@@ -5,12 +5,36 @@ import { db } from "../firebase"
 import { dbDataObject, noteType, updateNoteType, reminderType, updateTaskType } from '../types/firestoreDataTypes';
 import moment from 'moment';
 
+
 const useFirestoreDb = () => {
 
-  const addNote = async (type: string, title: string, tags: string[]) => {
+  const addNote = async (type: string, title: string, tags: string[] ) => {
+    const docRef = doc(db, "Users", auth.currentUser!.uid, type, Date.now().toString())
+
     try {
-      await setDoc(
-        doc(db, "Users", auth.currentUser!.uid, type, Date.now().toString()),
+      if (type === "Shared") {
+         await setDoc(
+        docRef,
+        {
+          noteType: type,
+          title: [
+            {
+              type: "heading-one",
+              children: [{ text: title }],
+            },
+          ],
+          tags,
+          content: "",
+          favorite: false,
+          author: auth.currentUser!.uid,
+          dateCreated: new Date(),
+          dateUpdated: new Date(),
+        }
+      );
+      }
+      else {
+        await setDoc(
+        docRef,
         {
           noteType: type,
           title: [
@@ -24,8 +48,10 @@ const useFirestoreDb = () => {
           favorite: false,
           dateCreated: new Date(),
           dateUpdated: new Date(),
-        }
-      );
+          }
+        )
+      }
+      
     } catch (err) {
       console.log(err);
     }
@@ -139,6 +165,7 @@ const useFirestoreDb = () => {
   }
 
   const update = async ({ type, id, ...data }: { type: string, id: string, [key: string]: any }) => {
+    console.log(data)
     try {
       await updateDoc(
         doc(db, "Users", auth.currentUser!.uid, type, id),
