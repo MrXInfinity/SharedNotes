@@ -12,7 +12,7 @@ type childrenContainerContent = {
 
 type publicNoteType = noteType & {
   author: string
-  noteType: "shared"
+  profilePicId: string,
 } 
 
 type noteType = {
