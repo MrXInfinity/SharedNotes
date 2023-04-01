@@ -12,14 +12,17 @@ import {
   InputAdornment,
   InputLabel,
   OutlinedInput,
+  Stack,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
+import { AuthErrorCodes, createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import React, { useState } from "react";
-import { useForm, UseFormRegister } from "react-hook-form";
+import { FieldErrorsImpl, useForm, UseFormRegister } from "react-hook-form";
 import { Link } from "react-router-dom";
-import type { ErrorKeys, ErrorType } from "../../hooks/useAuth";
-import useAuth from "../../hooks/useAuth";
+import { auth, db } from "../../firebase";
 
 type FormData = {
   firstname: string;
@@ -29,25 +32,32 @@ type FormData = {
 };
 
 const StyledTextFieldComponent: React.FC<{
-  type: "email" | "firstname" | "lastname";
+  type?: string;
+  value: "email" | "firstname" | "lastname";
   label: string;
   register: UseFormRegister<FormData>;
-  error: ErrorType;
-}> = ({ type, label, register, error }) => {
+  formError: Partial<FieldErrorsImpl<FormData>>;
+  minLength?: number;
+  maxLength?: number;
+}> = ({ type, value, label, register, formError, minLength, maxLength }) => {
   return (
     <TextField
       sx={{ width: "100%", mb: 2 }}
-      error={error[type] ? true : false}
-      helperText={error[type as ErrorKeys]?.message}
-      type={type}
+      error={formError[value] ? true : false}
+      helperText={formError[value]?.message}
+      type={type ?? "text"}
       required
       label={label}
       variant="outlined"
-      {...register(type, {
+      {...register(value, {
         required: `${type} is required.`,
         minLength: {
-          value: 2,
-          message: "Length should be atleast 3 characters.",
+          value: minLength ?? 2,
+          message: "This should be atleast 3 characters.",
+        },
+        maxLength: {
+          value: maxLength ?? 40,
+          message: "Too many characters.",
         },
       })}
     />
@@ -57,8 +67,8 @@ const StyledTextFieldComponent: React.FC<{
 const SignUp: React.FC = () => {
   const {
     register,
-    watch,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
@@ -68,14 +78,54 @@ const SignUp: React.FC = () => {
       password: "",
     },
   });
-
-  const { signup, error } = useAuth();
+  const theme = useTheme();
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const onSubmit = ({ email, password, firstname, lastname }: FormData) => {
-    signup(firstname, lastname, email, password);
+  const onSubmit = async ({
+    email,
+    password,
+    firstname,
+    lastname,
+  }: FormData) => {
+    setIsLoading(true);
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      if (auth.currentUser)
+        await setDoc(doc(db, "Users", auth.currentUser!.uid), {
+          firstname,
+          lastname,
+          email,
+          bio: "",
+        });
+      setIsLoading(false);
+    } catch (err: any) {
+      console.log(err);
+      setIsLoading(false);
+      if (err.code == AuthErrorCodes.EMAIL_EXISTS) {
+        setError("email", {
+          type: "custom",
+          message: "This email is already taken.",
+        });
+      }
+      if (err.code == AuthErrorCodes.WEAK_PASSWORD) {
+        setError("password", {
+          type: "custom",
+          message: "Chosen password is weak.",
+        });
+      } else {
+        setError("email", {
+          type: "custom",
+          message: "Invalid email or password.",
+        });
+        setError("password", {
+          type: "custom",
+          message: "Invalid email or password",
+        });
+      }
+    }
   };
-  console.log(error);
+  console.log(errors);
 
   return (
     <Card
@@ -83,59 +133,72 @@ const SignUp: React.FC = () => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        p: 2,
-        pb: 3,
+        pt: { xs: 3, md: 2 },
+        px: { xs: 3, md: 4 },
+        pb: { xs: 4, md: 3 },
         mx: "auto",
-        maxWidth: "565px",
-        mt: 6,
+        maxWidth: "400px",
+        mt: { xs: 8, md: 8 },
+        opacity: 0.98,
       }}
       variant="outlined"
     >
-      <Box
+      <Stack
+        direction="column"
         sx={{
-          display: "flex",
           width: "100%",
           justifyContent: "center",
-          position: "relative",
+
           alignItems: "center",
-          py: 2,
+          pt: 2,
+          pb: 1,
         }}
       >
-        <IconButton
-          sx={{ left: 0, position: "absolute" }}
-          aria-label="return"
-        >
-          <Link to="/sign-in">
-            <ArrowBackIcon color="primary" />
-          </Link>
-        </IconButton>
         <Typography variant="h5">Sign Up</Typography>
-      </Box>
+        <Typography
+          sx={{ opacity: 0.8, fontSize: { xs: 12, md: 12 }, my: 0.5 }}
+        >
+          or
+        </Typography>
+        <Typography sx={{ opacity: 0.8, fontSize: { xs: 14, md: 16 } }}>
+          Already have an account?{" "}
+          <Link
+            to="/sign-in"
+            style={{
+              color: theme.palette.primary.main,
+              textDecoration: "none",
+            }}
+          >
+            Log in
+          </Link>
+        </Typography>
+      </Stack>
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent sx={{ dislay: "flex", gap: 2 }}>
           <StyledTextFieldComponent
-            type="firstname"
             register={register}
-            error={error}
+            formError={errors}
             label="First Name"
+            value="firstname"
           />
           <StyledTextFieldComponent
-            type="lastname"
             register={register}
-            error={error}
+            formError={errors}
             label="Last Name"
+            value="lastname"
           />
           <StyledTextFieldComponent
             type="email"
             register={register}
-            error={error}
+            formError={errors}
             label="Email"
+            value="email"
           />
           <FormControl
             required
             sx={{ my: 1, width: "100%" }}
             variant="outlined"
-            error={error?.password ? true : false}
+            error={errors?.password ? true : false}
           >
             <InputLabel htmlFor="outlined-adornment-password">
               Password
@@ -143,7 +206,17 @@ const SignUp: React.FC = () => {
             <OutlinedInput
               id="outlined-adornment-password"
               type={showPassword ? "text" : "password"}
-              {...register("password")}
+              {...register("password", {
+                required: "Please provide a password",
+                minLength: {
+                  value: 4,
+                  message: "Chosen password is weak",
+                },
+                maxLength: {
+                  value: 40,
+                  message: "Too many characters!",
+                },
+              })}
               label="Password"
               endAdornment={
                 <InputAdornment position="end">
@@ -152,12 +225,16 @@ const SignUp: React.FC = () => {
                     onClick={() => setShowPassword((prev) => !prev)}
                     edge="end"
                   >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                    {showPassword ? (
+                      <VisibilityOff fontSize="small" />
+                    ) : (
+                      <Visibility fontSize="small" />
+                    )}
                   </IconButton>
                 </InputAdornment>
               }
             />
-            <FormHelperText>{error?.password?.message}</FormHelperText>
+            <FormHelperText>{errors?.password?.message}</FormHelperText>
           </FormControl>
         </CardContent>
         <CardActions
@@ -170,10 +247,12 @@ const SignUp: React.FC = () => {
           }}
         >
           <Button
+            fullWidth
             variant="contained"
-            sx={{ color: "white" }}
             size="large"
             type="submit"
+            disabled={isLoading}
+            sx={{ color: "white" }}
           >
             Sign Up
           </Button>

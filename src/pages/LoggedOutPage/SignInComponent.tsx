@@ -1,3 +1,4 @@
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   Button,
   Card,
@@ -11,40 +12,26 @@ import {
   InputLabel,
   OutlinedInput,
   TextField,
+  Typography,
+  useTheme,
 } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import useAuth from "../../hooks/useAuth";
-import type { ErrorType, ErrorKeys, ErrorValues } from "../../hooks/useAuth";
+import { auth } from "../../firebase";
 
 type FormData = {
   email: string;
   password: string;
 };
 
-const StyledButtons: React.FC<{
-  children: React.ReactNode;
-  type?: "submit";
-}> = ({ children, type }) => {
-  return (
-    <Button
-      variant="contained"
-      sx={{ color: "white" }}
-      size="large"
-      type={type}
-    >
-      {children}
-    </Button>
-  );
-};
-
 const SignIn: React.FC = () => {
   const {
     register,
-    watch,
     handleSubmit,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
@@ -52,14 +39,29 @@ const SignIn: React.FC = () => {
       password: "",
     },
   });
-
-  const { login, error } = useAuth();
+  const theme = useTheme();
+  const [signInWithEmailAndPassword, _, loading, error] =
+    useSignInWithEmailAndPassword(auth);
   const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit: SubmitHandler<FormData> = ({ email, password }) => {
-    login(email, password);
+    signInWithEmailAndPassword(email, password);
   };
-  console.log(error);
+
+  useEffect(() => {
+    if (error) {
+      setError("email", {
+        type: "custom",
+        message: "Incorrect email/password",
+      });
+      setError("password", {
+        type: "custom",
+        message: "Incorrect email/password",
+      });
+    }
+
+    return () => clearErrors();
+  }, [error]);
 
   return (
     <Card
@@ -67,22 +69,24 @@ const SignIn: React.FC = () => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        p: 2,
-        pb: 3,
+        py: { xs: 3, md: 2 },
+        px: { xs: 3, md: 4 },
         mx: "auto",
-        maxWidth: "565px",
-        mt: 10,
+        maxWidth: "400px",
+        mt: { xs: 14, md: 16 },
+        opacity: 0.98,
       }}
       variant="outlined"
     >
-      <CardHeader title="Sign In" />
+      <CardHeader title="Log In" />
+
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent sx={{ dislay: "flex" }}>
           <TextField
             sx={{ width: "100%", mb: 2 }}
             type="email"
-            error={error.email ? true : false}
-            helperText={error.email?.message}
+            error={errors.email ? true : false}
+            helperText={errors.email?.message}
             required
             label="Email"
             variant="outlined"
@@ -94,7 +98,7 @@ const SignIn: React.FC = () => {
             required
             sx={{ my: 1, width: "100%" }}
             variant="outlined"
-            error={error.password ? true : false}
+            error={errors.password ? true : false}
           >
             <InputLabel>Password</InputLabel>
             <OutlinedInput
@@ -114,27 +118,40 @@ const SignIn: React.FC = () => {
                 </InputAdornment>
               }
             />
-            <FormHelperText>{error.password?.message}</FormHelperText>
+            <FormHelperText>{errors.password?.message}</FormHelperText>
           </FormControl>
         </CardContent>
         <CardActions
           sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
+            display: "flex",
+            flexDirection: "column",
             gap: 2,
             width: "100%",
             px: 2,
           }}
         >
-          <StyledButtons>
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{ color: "white" }}
+            size="large"
+            type="submit"
+            disabled={loading}
+          >
+            Log In
+          </Button>
+          <Typography sx={{ fontSize: { xs: 14, md: 16 }, opacity: 0.8 }}>
+            Don't have an account yet?{" "}
             <Link
               to="/sign-in/new-user"
-              style={{ color: "inherit", textDecoration: "none" }}
+              style={{
+                color: theme.palette.primary.main,
+                textDecoration: "none",
+              }}
             >
               Sign up
             </Link>
-          </StyledButtons>
-          <StyledButtons type="submit">Sign In</StyledButtons>
+          </Typography>
         </CardActions>
       </form>
     </Card>

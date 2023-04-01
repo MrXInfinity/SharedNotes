@@ -5,7 +5,6 @@ import {
 } from "react-router-dom";
 import { auth } from "./firebase";
 import useCustomTheme from "./theme";
-import useAuth from "./hooks/useAuth";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
@@ -22,10 +21,12 @@ import { FirestoreProvider } from "./firestoreContext";
 import Task from "./pages/Task/Task";
 import moment from "moment";
 import PublicPage from "./pages/PublicPage/PublicPage";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 function App() {
   const { theme, changeTheme } = useCustomTheme();
-  const { logout } = useAuth();
+  const [signedInUser, loading, error] = useAuthState(auth);
+  console.log(signedInUser);
 
   moment.updateLocale("en", {
     weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
@@ -52,7 +53,7 @@ function App() {
             router={createBrowserRouter([
               {
                 path: "/",
-                element: auth.currentUser ? (
+                element: signedInUser ? (
                   <FirestoreProvider
                     key={null}
                     type={""}
