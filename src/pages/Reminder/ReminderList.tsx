@@ -1,3 +1,7 @@
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import {
   Card,
   CardContent,
@@ -8,21 +12,15 @@ import {
 } from "@mui/material";
 import moment from "moment";
 import React from "react";
-import { MenuComponent } from "../../components/UIComponents";
+import { MenuComponent, NoDataComponent } from "../../components/UIComponents";
 import useAppContext from "../../context";
-import { listType } from "../../types/componentTypes";
-import { reminderType } from "../../types/firestoreDataTypes";
-import { NoDataComponent } from "../../components/UIComponents";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import useFirestoreDb from "../../hooks/useFirestoreDb";
+import { reminderType } from "../../types/firestoreDataTypes";
 
-const ReminderList: React.FC<listType<reminderType>> = ({
-  setData,
-  toggleModal,
-}) => {
+const ReminderList: React.FC<{
+  setData: React.Dispatch<React.SetStateAction<reminderType>>;
+  toggleModal: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ setData, toggleModal }) => {
   const {
     dbData: { Reminder: data },
     isLoading,

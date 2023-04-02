@@ -2,14 +2,13 @@ import { Card, CardActionArea, Stack, Typography } from "@mui/material";
 import { ref } from "firebase/storage";
 import React from "react";
 import { useDownloadURL } from "react-firebase-hooks/storage";
+import avatarIcon from "../../assets/avatarIcon.svg";
 import { storage } from "../../firebase";
-import useAppContext from "../../context";
 import {
   useFormattedSerialize,
   useSerialize,
 } from "../../hooks/useFormatContent";
 import { publicNoteType } from "../../types/firestoreDataTypes";
-import avatarIcon from "../../assets/avatarIcon.svg";
 
 const EachPublicItem: React.FC<{
   data: publicNoteType;

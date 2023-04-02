@@ -1,7 +1,5 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {
-  Box,
   Button,
   Card,
   CardActions,
@@ -20,7 +18,7 @@ import {
 import { AuthErrorCodes, createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import React, { useState } from "react";
-import { FieldErrorsImpl, useForm, UseFormRegister } from "react-hook-form";
+import { FieldErrorsImpl, UseFormRegister, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { auth, db } from "../../firebase";
 

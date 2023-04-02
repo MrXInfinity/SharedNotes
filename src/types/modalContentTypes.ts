@@ -6,11 +6,6 @@ type reminderFormTypes = {
   endTime: string | null
 }
 
-type reminderDateTypes = {
-  startTime: Moment | null;
-  endTime: Moment | null;
-};
-
 type taskFormTypes = {
   title: string;
   dueDateTime: string | null;
@@ -18,4 +13,4 @@ type taskFormTypes = {
 
 
 
-export type {reminderFormTypes, reminderDateTypes, taskFormTypes}
+export type {reminderFormTypes, taskFormTypes}

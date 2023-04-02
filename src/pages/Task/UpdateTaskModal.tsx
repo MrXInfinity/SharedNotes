@@ -13,12 +13,7 @@ const UpdateTaskModal: React.FC<{
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   data: taskType;
   setData: React.Dispatch<React.SetStateAction<taskType>>;
-}> = ({
-  isOpen,
-  setIsOpen,
-  data: { id, dueDateTime, title, status },
-  setData,
-}) => {
+}> = ({ isOpen, setIsOpen, data: { id, dueDateTime, title }, setData }) => {
   const {
     handleSubmit,
     setValue,

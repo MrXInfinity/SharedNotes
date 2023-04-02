@@ -26,7 +26,6 @@ import { useAuthState } from "react-firebase-hooks/auth";
 function App() {
   const { theme, changeTheme } = useCustomTheme();
   const [signedInUser, loading, error] = useAuthState(auth);
-  console.log(signedInUser);
 
   moment.updateLocale("en", {
     weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],

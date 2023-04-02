@@ -15,7 +15,7 @@ import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
 import LooksOneIcon from "@mui/icons-material/LooksOne";
 import LooksTwoIcon from "@mui/icons-material/LooksTwo";
 import { Box, Button, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import { Editable, Slate } from "slate-react";
 import { MenuComponent, ModalWrapper } from "../../components/UIComponents";
 import useFirestoreDb from "../../hooks/useFirestoreDb";

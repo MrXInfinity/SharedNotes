@@ -1,15 +1,12 @@
 import { Button, TextField } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import moment, { Moment } from "moment";
 import React, { useState } from "react";
-import moment from "moment";
 import { useForm } from "react-hook-form";
-import { ModalWrapper } from "./UIComponents";
-import type {
-  reminderFormTypes,
-  reminderDateTypes,
-} from "../types/modalContentTypes";
 import useFirestoreDb from "../hooks/useFirestoreDb";
+import type { reminderFormTypes } from "../types/modalContentTypes";
 import { modalStateTypes } from "./Navigation";
+import { ModalWrapper } from "./UIComponents";
 
 const NewReminderModal: React.FC<{
   isOpen: boolean;
@@ -31,7 +28,10 @@ const NewReminderModal: React.FC<{
 
   const { add } = useFirestoreDb();
 
-  const [formDatesData, setFormDatesData] = useState<reminderDateTypes>({
+  const [formDatesData, setFormDatesData] = useState<{
+    startTime: Moment | null;
+    endTime: Moment | null;
+  }>({
     startTime: null,
     endTime: null,
   });

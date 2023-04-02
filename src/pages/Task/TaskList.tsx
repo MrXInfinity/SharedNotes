@@ -17,13 +17,15 @@ import {
 } from "@mui/material";
 import moment from "moment";
 import React from "react";
+import { NoDataComponent } from "../../components/UIComponents";
 import useAppContext from "../../context";
 import useFirestoreDb from "../../hooks/useFirestoreDb";
-import { listType } from "../../types/componentTypes";
 import { taskType } from "../../types/firestoreDataTypes";
-import { NoDataComponent } from "../../components/UIComponents";
 
-const TaskList: React.FC<listType<taskType>> = ({ setData, toggleModal }) => {
+const TaskList: React.FC<{
+  setData: React.Dispatch<React.SetStateAction<taskType>>;
+  toggleModal: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ setData, toggleModal }) => {
   const theme = useTheme();
   const { update, remove } = useFirestoreDb();
   const {

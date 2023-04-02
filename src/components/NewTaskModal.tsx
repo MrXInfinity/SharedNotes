@@ -1,12 +1,12 @@
 import { Button, TextField } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import React, { useEffect, useState } from "react";
 import moment, { Moment } from "moment";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { ModalWrapper } from "./UIComponents";
 import useFirestoreDb from "../hooks/useFirestoreDb";
 import { taskFormTypes } from "../types/modalContentTypes";
 import { modalStateTypes } from "./Navigation";
+import { ModalWrapper } from "./UIComponents";
 
 export type FormTypes = {
   title: string;

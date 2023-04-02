@@ -14,7 +14,6 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { useDownloadURL } from "react-firebase-hooks/storage";
 import { auth, db, storage } from "./firebase";
 import {
-  dbDataObject,
   noteType,
   publicNoteType,
   reminderType,
@@ -58,7 +57,12 @@ const useAppContext = () => useContext(AppContext);
 export const ContextProvider: React.FC<React.ReactPortal> = ({ children }) => {
   const [userData, setUserData] = useState<any>({});
   const [error, setError] = useState<Error>({} as Error | (() => Error));
-  const [dbData, setDbData] = useState<dbDataObject>({
+  const [dbData, setDbData] = useState<{
+    Shared: noteType[];
+    Private: noteType[];
+    Reminder: reminderType[];
+    Tasks: taskType[];
+  }>({
     Shared: [],
     Private: [],
     Reminder: [],
