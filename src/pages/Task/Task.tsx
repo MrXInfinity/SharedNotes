@@ -1,10 +1,8 @@
-import React, { useState } from "react";
-import { Box, Container, Stack, Typography } from "@mui/material";
-import useFirestoreContext from "../../firestoreContext";
+import { useState } from "react";
+import { PageLayout } from "../../components/UIComponents";
 import { taskType } from "../../types/firestoreDataTypes";
 import TaskList from "./TaskList";
 import UpdateTaskModal from "./UpdateTaskModal";
-import PageLayout from "../../components/PageLayout";
 
 const Task = () => {
   const [selectedTaskData, setSelectedTaskData] = useState<taskType>(
@@ -14,7 +12,7 @@ const Task = () => {
 
   return (
     <PageLayout
-      title="Reminders"
+      title="Task"
       pageList={
         <TaskList
           setData={setSelectedTaskData}
