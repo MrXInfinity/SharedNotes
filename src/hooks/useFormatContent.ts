@@ -12,17 +12,24 @@ const useFormattedSerialize = (node: any) => {
     if (typeof node === "string") return node
 if (Text.isText(node)) {
     let string = escapeHtml(node.text)
-    if (node.bold) {
-      string = `<strong>${string}</strong>`
-    }
     return string
   }
 
   const children = node.children.map((n: any) => useFormattedSerialize(n)).join('')
 
   switch (node.type) {
-    case 'quote':
+    case 'block-quote':
       return `<blockquote><p>${children}</p></blockquote>`
+    case `bulleted-list`:
+      return `<ul>${children}</ul>`
+    case "heading-one":
+      return `<h1>${children}</h1>`
+    case "heading-two":
+      return `<h2>${children}</h2>`
+    case "list-item":
+      return `<li>${children}</li>`
+    case "numbered-list":
+        return `<ol>${children}</ol>`
     case 'paragraph':
       return `<p>${children}</p>`
     case 'link':
