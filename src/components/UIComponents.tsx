@@ -1,11 +1,6 @@
 import CloseIcon from "@mui/icons-material/Close";
-import { Box, IconButton, Modal, Stack, Typography } from "@mui/material";
-import {
-  FieldErrorsImpl,
-  FieldValues,
-  Path,
-  UseFormRegister,
-} from "react-hook-form";
+import { Box, Card, IconButton, Modal, Stack, Typography } from "@mui/material";
+import React from "react";
 
 const ModalWrapper: React.FC<{
   isOpen: boolean;
@@ -62,12 +57,25 @@ const ModalWrapper: React.FC<{
   );
 };
 
-type TextInputTypes<T extends FieldValues> = {
-  label: string;
-  title: Path<T>;
-  register: UseFormRegister<T>;
-  maxLength: number;
-  errors: Partial<FieldErrorsImpl<T>>;
+const NoDataComponent: React.FC<{ title: string }> = ({ title }) => {
+  return (
+    <Card
+      sx={{
+        borderRadius: "16px",
+        display: "flex",
+        flexDirection: "column",
+        height: "min-content",
+        maxHeight: "200px",
+        alignItems: "start",
+        px: 2,
+        py: 1.7,
+        fontSize: 16,
+        opacity: 0.9,
+      }}
+    >
+      {title}
+    </Card>
+  );
 };
 
-export { ModalWrapper };
+export { ModalWrapper, NoDataComponent };

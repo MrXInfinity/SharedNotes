@@ -1,31 +1,91 @@
-import React from "react";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import {
+  Box,
   Card,
   CardActions,
   CardContent,
   IconButton,
+  Skeleton,
   Stack,
   Typography,
   useTheme,
 } from "@mui/material";
-import { eachListType, listType } from "../../types/componentTypes";
-import { taskType } from "../../types/firestoreDataTypes";
 import moment from "moment";
-import useFirestoreDb from "../../hooks/useFirestoreDb";
-import EditIcon from "@mui/icons-material/Edit";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import DeleteIcon from "@mui/icons-material/Delete";
-import CheckIcon from "@mui/icons-material/Check";
-import CloseIcon from "@mui/icons-material/Close";
+import React from "react";
 import useFirestoreContext from "../../firestoreContext";
+import useFirestoreDb from "../../hooks/useFirestoreDb";
+import { listType } from "../../types/componentTypes";
+import { taskType } from "../../types/firestoreDataTypes";
+import { NoDataComponent } from "../../components/UIComponents";
 
 const TaskList: React.FC<listType<taskType>> = ({ setData, toggleModal }) => {
   const theme = useTheme();
   const { update, remove } = useFirestoreDb();
   const {
     dbData: { Tasks: data },
+    isLoading,
   } = useFirestoreContext();
+
+  if (isLoading) {
+    return (
+      <Card
+        sx={{
+          borderRadius: "16px",
+          display: "flex",
+          flexDirection: "column",
+          height: "min-content",
+          maxHeight: "200px",
+          alignItems: "start",
+          px: 2,
+          py: 1.7,
+        }}
+      >
+        <Skeleton
+          variant="text"
+          sx={{ fontSize: 16, width: "60%" }}
+        />
+        <Skeleton
+          variant="text"
+          sx={{ fontSize: 14, width: "90%" }}
+        />
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+            gap: 2,
+            width: "100%",
+          }}
+        >
+          <Skeleton
+            variant="text"
+            sx={{ fontSize: 16 }}
+          />
+          <Skeleton
+            variant="text"
+            sx={{ fontSize: 16 }}
+          />
+          <Skeleton
+            variant="text"
+            sx={{ fontSize: 16 }}
+          />
+          <Skeleton
+            variant="text"
+            sx={{ fontSize: 16 }}
+          />
+        </Box>
+      </Card>
+    );
+  }
+
+  if (data.length < 1) {
+    return <NoDataComponent title={`No Tasks Found...`} />;
+  }
+
   return (
     <>
       {data.map((eachData) => (
@@ -36,7 +96,6 @@ const TaskList: React.FC<listType<taskType>> = ({ setData, toggleModal }) => {
             flexDirection: "column",
             height: "min-content",
             maxHeight: "200px",
-            width: "150px",
             alignItems: "center",
             pt: 2,
           }}
