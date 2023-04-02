@@ -17,7 +17,7 @@ import SignIn from "./pages/LoggedOutPage/SignInComponent";
 import SignUp from "./pages/LoggedOutPage/SignUpComponent";
 import NotePage from "./pages/NotesPage/NotePage";
 import Reminder from "./pages/Reminder/Reminder";
-import { FirestoreProvider } from "./firestoreContext";
+import { ContextProvider } from "./context";
 import Task from "./pages/Task/Task";
 import moment from "moment";
 import PublicPage from "./pages/PublicPage/PublicPage";
@@ -54,13 +54,13 @@ function App() {
               {
                 path: "/",
                 element: signedInUser ? (
-                  <FirestoreProvider
+                  <ContextProvider
                     key={null}
                     type={""}
                     props={undefined}
                   >
                     <Navigation {...{ changeTheme }} />
-                  </FirestoreProvider>
+                  </ContextProvider>
                 ) : (
                   <Navigate to="/sign-in" />
                 ),

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Box, Card, CardActionArea, Typography } from "@mui/material";
-import useFirestoreContext from "../../firestoreContext";
+import useAppContext from "../../context";
 import { noteType } from "../../types/firestoreDataTypes";
 import { useSerialize } from "../../hooks/useFormatContent";
 
@@ -8,7 +8,7 @@ const RecentComponent: React.FC<{ category: "Private" | "Shared" }> = ({
   category,
 }) => {
   const { dbData, setIsNoteEditorModalOpen, setNoteContentData } =
-    useFirestoreContext();
+    useAppContext();
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>

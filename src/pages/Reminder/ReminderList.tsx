@@ -9,7 +9,7 @@ import {
 import moment from "moment";
 import React from "react";
 import { MenuComponent } from "../../components/UIComponents";
-import useFirestoreContext from "../../firestoreContext";
+import useAppContext from "../../context";
 import { listType } from "../../types/componentTypes";
 import { reminderType } from "../../types/firestoreDataTypes";
 import { NoDataComponent } from "../../components/UIComponents";
@@ -26,7 +26,7 @@ const ReminderList: React.FC<listType<reminderType>> = ({
   const {
     dbData: { Reminder: data },
     isLoading,
-  } = useFirestoreContext();
+  } = useAppContext();
   const theme = useTheme();
   const { update, remove } = useFirestoreDb();
 

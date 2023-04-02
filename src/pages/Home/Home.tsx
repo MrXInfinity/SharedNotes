@@ -2,7 +2,7 @@ import { Box, Container, Stack } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import moment from "moment";
 import { auth } from "../../firebase";
-import useFirestoreContext from "../../firestoreContext";
+import useAppContext from "../../context";
 import { reminderType, taskType } from "../../types/firestoreDataTypes";
 import RecentComponent from "./RecentComponent";
 import TodayComponent from "./TodayComponent";
@@ -11,7 +11,7 @@ const Home = () => {
   const {
     dbData,
     userData: { firstname, lastname },
-  } = useFirestoreContext();
+  } = useAppContext();
 
   const filterList = <T,>(data: T[], category: keyof T) =>
     data.filter((eachData) =>

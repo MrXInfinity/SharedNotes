@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import moment from "moment";
 import React from "react";
-import useFirestoreContext from "../../firestoreContext";
+import useAppContext from "../../context";
 import useFirestoreDb from "../../hooks/useFirestoreDb";
 import { listType } from "../../types/componentTypes";
 import { taskType } from "../../types/firestoreDataTypes";
@@ -29,7 +29,7 @@ const TaskList: React.FC<listType<taskType>> = ({ setData, toggleModal }) => {
   const {
     dbData: { Tasks: data },
     isLoading,
-  } = useFirestoreContext();
+  } = useAppContext();
 
   if (isLoading) {
     return (

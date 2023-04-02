@@ -1,14 +1,13 @@
 import { Typography } from "@mui/material";
-import { Container, Box } from "@mui/system";
-import React, { useState } from "react";
-import PageLayout from "../../components/PageLayout";
-import useFirestoreContext from "../../firestoreContext";
+import { Box, Container } from "@mui/system";
+import { useState } from "react";
+import useAppContext from "../../context";
 import { publicNoteType } from "../../types/firestoreDataTypes";
 import EachPublicItem from "./PublicList";
 import PublicNotePreview from "./PublicNotePreview";
 
 const PublicPage = () => {
-  const { publicData: data } = useFirestoreContext();
+  const { publicData: data } = useAppContext();
   const [selectedOnPreview, setSelectedOnPreview] = useState<{
     title: string;
     content: string;

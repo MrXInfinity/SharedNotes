@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useSignOut } from "react-firebase-hooks/auth";
 import avatarIcon from "../assets/avatarIcon.svg";
 import { auth } from "../firebase";
-import useFirestoreContext from "../firestoreContext";
+import useAppContext from "../context";
 import EditAccount from "./EditAccount";
 import { modalStateTypes } from "./Navigation";
 import { ModalWrapper } from "./UIComponents";
@@ -18,7 +18,7 @@ const ProfileAccount: React.FC<{
   const {
     userData: { firstname, lastname, email, bio },
     fetchProfilePics: { picValue, isPicLoading, picError },
-  } = useFirestoreContext();
+  } = useAppContext();
 
   const [signOut, loading, error] = useSignOut(auth);
 

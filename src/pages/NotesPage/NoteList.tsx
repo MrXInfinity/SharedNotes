@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import { NoDataComponent } from "../../components/UIComponents";
-import useFirestoreContext from "../../firestoreContext";
+import useAppContext from "../../context";
 import { useSerialize } from "../../hooks/useFormatContent";
 import { noteType } from "../../types/firestoreDataTypes";
 
@@ -16,7 +16,7 @@ const NoteList: React.FC<{ category: "Private" | "Shared" }> = ({
   category,
 }) => {
   const { dbData, setIsNoteEditorModalOpen, setNoteContentData, isLoading } =
-    useFirestoreContext();
+    useAppContext();
 
   if (isLoading) {
     return (

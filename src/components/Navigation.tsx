@@ -1,4 +1,3 @@
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import AddIcon from "@mui/icons-material/Add";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
@@ -33,14 +32,14 @@ import { ref } from "firebase/storage";
 import { useState } from "react";
 import { useDownloadURL } from "react-firebase-hooks/storage";
 import { Link, NavLink, Outlet } from "react-router-dom";
-import { storage, auth } from "../firebase";
-import useFirestoreContext from "../firestoreContext";
+import avatarIcon from "../assets/avatarIcon.svg";
+import { auth, storage } from "../firebase";
+import useAppContext from "../context";
 import NoteEditor from "../pages/NotesPage/NoteEditor";
 import NewNoteModal from "./NewNoteModal";
 import NewReminderModal from "./NewReminderModal";
 import NewTaskModal from "./NewTaskModal";
 import ProfileAccount from "./ProfileAccount";
-import avatarIcon from "../assets/avatarIcon.svg";
 
 //Each navitem
 const NavItem: React.FC<any> = ({
@@ -96,7 +95,7 @@ const Navigation: React.FC<{
     setNoteContentData,
     isNoteEditorModalOpen,
     setIsNoteEditorModalOpen,
-  } = useFirestoreContext();
+  } = useAppContext();
 
   const [isModalOpen, setIsModalOpen] = useState<modalStateTypes>({
     isOpen: false,

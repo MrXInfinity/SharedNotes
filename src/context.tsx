@@ -21,7 +21,7 @@ import {
   taskType,
 } from "./types/firestoreDataTypes";
 
-type firestoreContextProps = {
+type contextProps = {
   error: Error;
   dbData: {
     Shared: noteType[];
@@ -41,11 +41,10 @@ type firestoreContextProps = {
     isPicLoading: boolean;
     picError: StorageError | undefined;
   };
+  isLoading: boolean;
 };
 
-const firestoreContext = createContext<firestoreContextProps>(
-  {} as firestoreContextProps
-);
+const AppContext = createContext<contextProps>({} as contextProps);
 
 type userType = {
   firstname: string;
@@ -54,11 +53,9 @@ type userType = {
   bio: string;
 };
 
-const useFirestoreContext = () => useContext(firestoreContext);
+const useAppContext = () => useContext(AppContext);
 
-export const FirestoreProvider: React.FC<React.ReactPortal> = ({
-  children,
-}) => {
+export const ContextProvider: React.FC<React.ReactPortal> = ({ children }) => {
   const [userData, setUserData] = useState<any>({});
   const [error, setError] = useState<Error>({} as Error | (() => Error));
   const [dbData, setDbData] = useState<dbDataObject>({
@@ -71,13 +68,23 @@ export const FirestoreProvider: React.FC<React.ReactPortal> = ({
   const [noteContentData, setNoteContentData] = useState<noteType>(
     {} as noteType
   );
-  console.log(noteContentData);
 
   const [isNoteEditorModalOpen, setIsNoteEditorModalOpen] = useState(false);
   const [picValue, isPicLoading, picError] = useDownloadURL(
     ref(storage, `${auth.currentUser!.uid}/profilePic.jpg`)
   );
-  console.log(picValue, isPicLoading, picError);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Loading timer
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading((prev) => !prev);
+    }, 3000);
+    return () => {
+      clearTimeout(timer);
+      setIsLoading((prev) => !prev);
+    };
+  }, []);
 
   // USER DATA
   useEffect(() => {
@@ -183,7 +190,6 @@ export const FirestoreProvider: React.FC<React.ReactPortal> = ({
     const unsubscribe = onSnapshot(
       sharedQuery,
       (sharedQuerySnapshot: QuerySnapshot<any>) => {
-        console.log("did snapshot on shared");
         const authorList: string[] = [];
         const initialDataList: any[] = [];
         sharedQuerySnapshot.forEach((doc) => {
@@ -194,10 +200,8 @@ export const FirestoreProvider: React.FC<React.ReactPortal> = ({
         onSnapshot(
           query(collection(db, "Users"), where(documentId(), "in", authorList)),
           (userQuerySnapshot: QuerySnapshot<any>) => {
-            console.log("did snapshot on user");
             setPublicData(
               initialDataList.map((eachData, index) => {
-                console.log(eachData);
                 return {
                   ...eachData,
                   profilePicId: `${authorList[index]}/profilePic.jpg`,
@@ -219,7 +223,7 @@ export const FirestoreProvider: React.FC<React.ReactPortal> = ({
   }, []);
 
   return (
-    <firestoreContext.Provider
+    <AppContext.Provider
       value={{
         error,
         dbData,
@@ -231,11 +235,12 @@ export const FirestoreProvider: React.FC<React.ReactPortal> = ({
         setPublicData,
         userData,
         fetchProfilePics: { picValue, isPicLoading, picError },
+        isLoading,
       }}
     >
       {children}
-    </firestoreContext.Provider>
+    </AppContext.Provider>
   );
 };
 
-export default useFirestoreContext;
+export default useAppContext;
