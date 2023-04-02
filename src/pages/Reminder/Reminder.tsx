@@ -1,6 +1,5 @@
 import { useState } from "react";
-import PageLayout from "../../components/PageLayout";
-import useFirestoreContext from "../../firestoreContext";
+import { PageLayout } from "../../components/UIComponents";
 import { reminderType } from "../../types/firestoreDataTypes";
 import ReminderList from "./ReminderList";
 import UpdateReminderModal from "./UpdateReminderModal";

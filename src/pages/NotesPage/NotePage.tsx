@@ -1,10 +1,6 @@
-import { Box, Container, Stack, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
+import { PageLayout } from "../../components/UIComponents";
 import NoteList from "./NoteList";
-import useFirestoreContext from "../../firestoreContext";
-import { noteType } from "../../types/firestoreDataTypes";
-import NoteEditor from "./NoteEditor";
-import PageLayout from "../../components/PageLayout";
 
 const NotePage: React.FC<{ category: "Private" | "Shared" }> = ({
   category,
