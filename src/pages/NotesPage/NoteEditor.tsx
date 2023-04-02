@@ -1,28 +1,26 @@
-import React, { useState } from "react";
-import { Editable, Slate } from "slate-react";
-import { Box, Button, IconButton, Menu, Typography } from "@mui/material";
-import { ModalWrapper } from "../../components/UIComponents";
-import FormatBoldIcon from "@mui/icons-material/FormatBold";
-import FormatItalicIcon from "@mui/icons-material/FormatItalic";
-import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
 import CodeIcon from "@mui/icons-material/Code";
-import LooksOneIcon from "@mui/icons-material/LooksOne";
-import LooksTwoIcon from "@mui/icons-material/LooksTwo";
-import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
-import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
-import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
-import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
-import FormatAlignCenterIcon from "@mui/icons-material/FormatAlignCenter";
-import FormatAlignRightIcon from "@mui/icons-material/FormatAlignRight";
-import FormatAlignJustifyIcon from "@mui/icons-material/FormatAlignJustify";
+import DeleteIcon from "@mui/icons-material/Delete";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import DeleteIcon from "@mui/icons-material/Delete";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import useNoteEditor from "./NoteEditorLogic";
-import { noteType } from "../../types/firestoreDataTypes";
+import FormatAlignCenterIcon from "@mui/icons-material/FormatAlignCenter";
+import FormatAlignJustifyIcon from "@mui/icons-material/FormatAlignJustify";
+import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
+import FormatAlignRightIcon from "@mui/icons-material/FormatAlignRight";
+import FormatBoldIcon from "@mui/icons-material/FormatBold";
+import FormatItalicIcon from "@mui/icons-material/FormatItalic";
+import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
+import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
+import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
+import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
+import LooksOneIcon from "@mui/icons-material/LooksOne";
+import LooksTwoIcon from "@mui/icons-material/LooksTwo";
+import { Box, Button, Typography } from "@mui/material";
+import React, { useState } from "react";
+import { Editable, Slate } from "slate-react";
+import { MenuComponent, ModalWrapper } from "../../components/UIComponents";
 import useFirestoreDb from "../../hooks/useFirestoreDb";
-import { PopUpMenuItem } from "../../components/MenuComponent";
+import { noteType } from "../../types/firestoreDataTypes";
+import useNoteEditor from "./NoteEditorLogic";
 
 const NoteEditor: React.FC<{
   isOpen: boolean;
@@ -46,21 +44,11 @@ const NoteEditor: React.FC<{
 
   const { noteType, id, title, content } = noteData;
 
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const showMenu = Boolean(anchorEl);
-
-  const LinkMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const MenuClose = () => {
-    setAnchorEl(null);
-  };
-
   if (Object.keys(noteData).length > 0) {
     return (
       <ModalWrapper
         isOpen={isOpen}
+        closeModal={() => toggleModal(false)}
         title={
           <Typography
             sx={{
@@ -74,61 +62,35 @@ const NoteEditor: React.FC<{
           </Typography>
         }
         options={
-          <>
-            <IconButton
-              aria-label="settings"
-              onClick={LinkMenuClick}
-              aria-controls={showMenu ? "basic-menu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={showMenu ? "true" : undefined}
-            >
-              <MoreVertIcon />
-            </IconButton>
-            <Menu
-              id="basic-menu"
-              anchorEl={anchorEl}
-              open={showMenu}
-              onClose={MenuClose}
-              MenuListProps={{
-                "aria-labelledby": "basic-button",
-              }}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-            >
-              <PopUpMenuItem
-                title={!noteData.favorite ? "Favorite" : "Unfavorite"}
-                icon={
-                  !noteData.favorite ? <FavoriteBorderIcon /> : <FavoriteIcon />
-                }
-                click={() => {
+          <MenuComponent
+            data={[
+              {
+                title: !noteData.favorite ? "Favorite" : "Unfavorite",
+                icon: !noteData.favorite ? (
+                  <FavoriteBorderIcon />
+                ) : (
+                  <FavoriteIcon />
+                ),
+                click: () => {
                   update({
                     id: noteData.id,
                     type: noteType,
                     favorite: !noteData.favorite,
                   });
                   toggleModal(false);
-                  MenuClose();
-                }}
-              />
-              <PopUpMenuItem
-                title="Delete"
-                icon={<DeleteIcon />}
-                click={() => {
+                },
+              },
+              {
+                title: "Delete",
+                icon: <DeleteIcon />,
+                click: () => {
                   remove(noteType, noteData.id);
                   toggleModal(false);
-                  MenuClose();
-                }}
-              />
-            </Menu>
-          </>
+                },
+              },
+            ]}
+          />
         }
-        closeModal={() => toggleModal(false)}
       >
         <Slate
           editor={titleEditor}

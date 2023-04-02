@@ -4,11 +4,14 @@ import {
   Card,
   Container,
   IconButton,
+  Menu,
+  MenuItem,
   Modal,
   Stack,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 const ModalWrapper: React.FC<{
   isOpen: boolean;
@@ -130,4 +133,69 @@ const PageLayout: React.FC<{
   );
 };
 
-export { ModalWrapper, NoDataComponent, PageLayout };
+const MenuComponent: React.FC<{
+  data: { title: string; icon: any; click: () => void }[];
+}> = ({ data }) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const showMenu = Boolean(anchorEl);
+
+  const LinkMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const MenuClose = () => {
+    setAnchorEl(null);
+  };
+  return (
+    <>
+      <IconButton
+        aria-label="settings"
+        onClick={LinkMenuClick}
+        aria-controls={showMenu ? "basic-menu" : undefined}
+        aria-haspopup="true"
+        aria-expanded={showMenu ? "true" : undefined}
+      >
+        <MoreVertIcon />
+      </IconButton>
+      <Menu
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={showMenu}
+        onClose={MenuClose}
+        MenuListProps={{
+          "aria-labelledby": "basic-button",
+        }}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+      >
+        {data.map(({ title, icon, click }, index) => (
+          <MenuItem
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+            onClick={() => {
+              click();
+              MenuClose();
+            }}
+            key={index}
+          >
+            <Typography sx={{ pr: 1, fontSize: { xs: 14 } }}>
+              {title}
+            </Typography>
+            {icon}
+          </MenuItem>
+        ))}
+      </Menu>
+    </>
+  );
+};
+
+export { ModalWrapper, NoDataComponent, PageLayout, MenuComponent };
