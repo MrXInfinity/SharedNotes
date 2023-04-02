@@ -59,7 +59,9 @@ const EachPublicItem: React.FC<{
         onClick={() => {
           setPreviewData({
             title: useSerialize(title),
-            content: content ? useSerialize(content) : useSerialize(content),
+            content: content
+              ? useFormattedSerialize({ children: content })
+              : useSerialize(content),
           });
           toggleModal(true);
         }}
