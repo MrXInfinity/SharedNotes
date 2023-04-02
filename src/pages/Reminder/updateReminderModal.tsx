@@ -30,12 +30,12 @@ const UpdateReminderModal: React.FC<{
 
   console.log(watch());
 
-  const { updateReminder } = useFirestoreDb();
+  const { update } = useFirestoreDb();
 
   const formSubmit = (data: reminderFormTypes) => {
     if (Object.keys(data).length < 1) return alert("There is no new data");
     console.log(data);
-    updateReminder({ id, ...data });
+    update({ type: "Reminder", id, ...data });
     setIsOpen(false);
     reset();
   };

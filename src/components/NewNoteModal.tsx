@@ -1,3 +1,4 @@
+import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import {
   Box,
   Button,
@@ -14,15 +15,13 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import NoteAddIcon from "@mui/icons-material/NoteAdd";
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { ModalWrapper } from "./UIComponents";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import useFirestoreDb from "../hooks/useFirestoreDb";
 import { modalStateTypes } from "./Navigation";
-import useFirestoreContext from "../firestoreContext";
+import { ModalWrapper } from "./UIComponents";
 
 type NewNoteFormType = {
-  type: string;
+  type: "Shared" | "Private";
   title: string;
   tags: string[];
 };
@@ -32,10 +31,7 @@ const NewNoteModal: React.FC<{
   setIsOpen: React.Dispatch<React.SetStateAction<modalStateTypes>>;
 }> = ({ isOpen, setIsOpen }) => {
   const [personName, setPersonName] = useState<string[]>([]);
-  const { addNote } = useFirestoreDb();
-  const {
-    userData: { firstname, lastname },
-  } = useFirestoreContext();
+  const { add } = useFirestoreDb();
 
   const {
     register,
@@ -46,11 +42,6 @@ const NewNoteModal: React.FC<{
     control,
     formState: { errors },
   } = useForm<NewNoteFormType>({
-    defaultValues: {
-      type: "",
-      title: "",
-      tags: [""],
-    },
     shouldUnregister: true,
   });
 
@@ -81,9 +72,20 @@ const NewNoteModal: React.FC<{
   const formSubmit: SubmitHandler<NewNoteFormType> = ({
     type,
     title,
-    tags,
+    ...data
   }) => {
-    addNote(type, title, tags);
+    add({
+      type,
+      noteType: type,
+      title: [
+        {
+          type: "heading-one",
+          children: [{ text: title }],
+        },
+      ],
+      content: "",
+      ...data,
+    });
     closeModal();
   };
 

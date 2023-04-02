@@ -31,7 +31,7 @@ const NewTaskModal: React.FC<{
   });
 
   const [dueDateTime, setDueDateTime] = useState<Moment | null>(null);
-  const { addTask } = useFirestoreDb();
+  const { add } = useFirestoreDb();
 
   const closeModal = () => {
     setIsOpen({
@@ -41,8 +41,14 @@ const NewTaskModal: React.FC<{
     setDueDateTime(null);
   };
 
-  const formSubmit = ({ title, dueDateTime }: taskFormTypes) => {
-    addTask(title, dueDateTime!);
+  const formSubmit = ({ dueDateTime, ...data }: taskFormTypes) => {
+    add({
+      type: "Task",
+      status: "forthcoming",
+      dueDateTime,
+      ...data,
+    });
+
     closeModal();
   };
 

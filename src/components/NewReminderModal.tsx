@@ -29,7 +29,7 @@ const NewReminderModal: React.FC<{
     shouldUnregister: true,
   });
 
-  const { addReminder } = useFirestoreDb();
+  const { add } = useFirestoreDb();
 
   const [formDatesData, setFormDatesData] = useState<reminderDateTypes>({
     startTime: null,
@@ -45,7 +45,7 @@ const NewReminderModal: React.FC<{
   };
 
   const formSubmit = (data: reminderFormTypes) => {
-    addReminder(data);
+    add({ type: "Reminder", status: "forthcoming", ...data });
     closeModal();
   };
   console.log(formDatesData);
