@@ -1,4 +1,4 @@
-import { deleteDoc, doc, setDoc, updateDoc } from 'firebase/firestore';
+import { deleteDoc, doc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from "../firebase";
 
 
@@ -11,21 +11,25 @@ const useFirestoreDb = () => {
   
   const add = async ({ type, ...data }: { type: "Shared" | "Private" | "Reminder" | "Task", [key: string]: any }) => {
     try {
-        await setDoc(
-          doc(db, "Users", auth.currentUser!.uid, type, Date.now().toString()),
-          type === "Shared" ? {
+
+        type === "Shared" ? await setDoc(
+          doc(db, "Shared", Date.now().toString()),
+           {
             ...data, 
             favorite: false,
             author: auth.currentUser!.uid,
-            dateCreated: new Date(),
-            dateUpdated: new Date(),
-          } : {
+            dateCreated: serverTimestamp(),
+            dateUpdated: serverTimestamp(),
+          } 
+        ) : await setDoc(
+          doc(db, "Users", auth.currentUser!.uid, type, Date.now().toString()),
+           {
             ...data,
             favorite: false,
             dateCreated: new Date(),
             dateUpdated: new Date(),
           }
-        );
+        )
       
     } catch (err: any) {
       console.log(err)
@@ -35,7 +39,7 @@ const useFirestoreDb = () => {
     console.log(data)
     try {
       await updateDoc(
-        doc(db, "Users", auth.currentUser!.uid, type, id),
+        type === "Shared" ? doc(db, "Shared", id) : doc(db, "Users", auth.currentUser!.uid, type, id),
         {
           ...data,
           dateUpdated: new Date()

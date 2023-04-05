@@ -35,11 +35,8 @@ const EachPublicItem: React.FC<{
         width: "100%",
         borderRadius: "16px",
         display: "flex",
-        flexDirection: "column",
         height: "min-content",
         maxHeight: "200px",
-
-        alignItems: "start",
       }}
       key={index}
     >
@@ -48,11 +45,10 @@ const EachPublicItem: React.FC<{
           height: "100%",
           py: 1.7,
           display: "flex",
-          flexDirection: index % 2 ? "row" : "row-reverse",
+          flexDirection: index % 2 ? "row-reverse" : "row",
           justifyContent: "space-between",
           alignItems: "start",
           gap: { xs: 1.5, md: 2 },
-
           p: 2,
         }}
         onClick={() => {
@@ -66,8 +62,52 @@ const EachPublicItem: React.FC<{
         }}
       >
         <Stack
+          direction={"column"}
+          sx={{ width: { xs: "80px" }, flexShrink: 0 }}
+        >
+          <img
+            style={{
+              height: "80px",
+              width: "100%",
+              objectFit: "cover",
+              objectPosition: "center",
+            }}
+            src={picError || isPicLoading ? avatarIcon : picValue}
+          />
+          <Stack
+            direction="column"
+            spacing={2}
+            sx={{
+              mt: 1,
+            }}
+          >
+            <Typography
+              sx={{
+                fontSize: { xs: 12 },
+                fontWeight: 500,
+                textOverflow: "ellipsis",
+                overflow: "hidden",
+              }}
+            >
+              {author ?? "No author name"}
+            </Typography>
+            <Typography
+              style={{
+                marginTop: 0,
+              }}
+              sx={{ fontSize: { xs: 12 } }}
+            >
+              {dateCreated?.toDate().toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </Typography>
+          </Stack>
+        </Stack>
+        <Stack
           direction="column"
-          sx={{ maxWidth: { xs: "60%", lg: "50%" }, flexGrow: 1 }}
+          sx={{ flexGrow: 1 }}
         >
           <Typography
             sx={{
@@ -89,55 +129,8 @@ const EachPublicItem: React.FC<{
               height: "100%",
             }}
           >
-            {useSerialize(content) === ""
-              ? "No Content"
-              : useSerialize(content)}
+            {content ? useSerialize(content) : "No Content"}
           </Typography>
-        </Stack>
-
-        <Stack
-          direction={"column"}
-          sx={{ maxWidth: { xs: "100px" } }}
-        >
-          <img
-            style={{
-              height: "100px",
-              width: "100%",
-              objectFit: "cover",
-              objectPosition: "center",
-            }}
-            src={picError || isPicLoading ? avatarIcon : picValue}
-          />
-          <Stack
-            direction="column"
-            spacing={2}
-            sx={{
-              mt: 1,
-            }}
-          >
-            <Typography
-              sx={{
-                fontSize: { xs: 14 },
-                fontWeight: 500,
-                textOverflow: "ellipsis",
-                overflow: "hidden",
-              }}
-            >
-              {author}
-            </Typography>
-            <Typography
-              style={{
-                marginTop: 0,
-              }}
-              sx={{ fontSize: { xs: 12 } }}
-            >
-              {dateCreated?.toDate().toLocaleDateString(undefined, {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </Typography>
-          </Stack>
         </Stack>
       </CardActionArea>
     </Card>

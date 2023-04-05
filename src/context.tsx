@@ -3,10 +3,13 @@ import {
   collectionGroup,
   doc,
   documentId,
+  getDocs,
+  limit,
   onSnapshot,
   orderBy,
   query,
   QuerySnapshot,
+  startAfter,
   where,
 } from "firebase/firestore";
 import { ref, StorageError } from "firebase/storage";
@@ -32,8 +35,6 @@ type contextProps = {
   setNoteContentData: React.Dispatch<React.SetStateAction<noteType>>;
   isNoteEditorModalOpen: boolean;
   setIsNoteEditorModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  publicData: publicNoteType[];
-  setPublicData: React.Dispatch<React.SetStateAction<publicNoteType[]>>;
   userData: userType;
   fetchProfilePics: {
     picValue: string | undefined;
@@ -41,6 +42,7 @@ type contextProps = {
     picError: StorageError | undefined;
   };
   isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const AppContext = createContext<contextProps>({} as contextProps);
@@ -68,7 +70,6 @@ export const ContextProvider: React.FC<React.ReactPortal> = ({ children }) => {
     Reminder: [],
     Tasks: [],
   });
-  const [publicData, setPublicData] = useState<publicNoteType[]>([]);
   const [noteContentData, setNoteContentData] = useState<noteType>(
     {} as noteType
   );
@@ -82,11 +83,12 @@ export const ContextProvider: React.FC<React.ReactPortal> = ({ children }) => {
   // Loading timer
   useEffect(() => {
     const timer = setTimeout(() => {
-      setIsLoading((prev) => !prev);
+      console.log("inside timer");
+      setIsLoading(false);
     }, 3000);
     return () => {
+      setIsLoading(true);
       clearTimeout(timer);
-      setIsLoading((prev) => !prev);
     };
   }, []);
 
@@ -109,16 +111,18 @@ export const ContextProvider: React.FC<React.ReactPortal> = ({ children }) => {
   // SHARED NOTES QUERY
   useEffect(() => {
     const q = query(
-      collection(db, "Users", auth.currentUser!.uid, "Shared"),
-      orderBy("favorite", "desc")
+      collection(db, "Shared"),
+      orderBy("favorite", "desc"),
+      where("author", "==", auth.currentUser!.uid)
     );
 
     const unsubscribe = onSnapshot(q, (querySnapshot: QuerySnapshot<any>) => {
       setDbData((prev: any) => ({
         ...prev,
-        Shared: querySnapshot.docs.map((doc, index) => {
-          return { id: doc.id, ...doc.data() };
-        }),
+        Shared: querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })),
       }));
     });
 
@@ -135,9 +139,10 @@ export const ContextProvider: React.FC<React.ReactPortal> = ({ children }) => {
     const unsubscribe = onSnapshot(q, (querySnapshot: QuerySnapshot<any>) => {
       setDbData((prev: any) => ({
         ...prev,
-        Private: querySnapshot.docs.map((doc) => {
-          return { id: doc.id, ...doc.data() };
-        }),
+        Private: querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })),
       }));
     });
 
@@ -155,9 +160,10 @@ export const ContextProvider: React.FC<React.ReactPortal> = ({ children }) => {
     const unsubscribe = onSnapshot(q, (querySnapshot: QuerySnapshot<any>) => {
       setDbData((prev: any) => ({
         ...prev,
-        Reminder: querySnapshot.docs.map((doc) => {
-          return { id: doc.id, ...doc.data() };
-        }),
+        Reminder: querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })),
       }));
     });
 
@@ -175,53 +181,12 @@ export const ContextProvider: React.FC<React.ReactPortal> = ({ children }) => {
     const unsubscribe = onSnapshot(q, (querySnapshot: QuerySnapshot<any>) => {
       setDbData((prev: any) => ({
         ...prev,
-        Tasks: querySnapshot.docs.map((doc) => {
-          return { id: doc.id, ...doc.data() };
-        }),
+        Tasks: querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })),
       }));
     });
-
-    return () => unsubscribe();
-  }, []);
-
-  //PUBLIC NOTES QUERY
-  useEffect(() => {
-    const sharedQuery = query(
-      collectionGroup(db, "Shared"),
-      orderBy("dateCreated", "desc")
-    );
-
-    const unsubscribe = onSnapshot(
-      sharedQuery,
-      (sharedQuerySnapshot: QuerySnapshot<any>) => {
-        const authorList: string[] = [];
-        const initialDataList: any[] = [];
-        sharedQuerySnapshot.forEach((doc) => {
-          initialDataList.push({ id: doc.id, ...doc.data() });
-          authorList.push(doc.data().author);
-        });
-
-        onSnapshot(
-          query(collection(db, "Users"), where(documentId(), "in", authorList)),
-          (userQuerySnapshot: QuerySnapshot<any>) => {
-            setPublicData(
-              initialDataList.map((eachData, index) => {
-                return {
-                  ...eachData,
-                  profilePicId: `${authorList[index]}/profilePic.jpg`,
-                  author: userQuerySnapshot.docs
-                    .map((doc) => {
-                      if (doc.id === eachData.author)
-                        return `${doc.data().firstname} ${doc.data().lastname}`;
-                    })
-                    .shift(),
-                };
-              })
-            );
-          }
-        );
-      }
-    );
 
     return () => unsubscribe();
   }, []);
@@ -235,11 +200,10 @@ export const ContextProvider: React.FC<React.ReactPortal> = ({ children }) => {
         setNoteContentData,
         isNoteEditorModalOpen,
         setIsNoteEditorModalOpen,
-        publicData,
-        setPublicData,
         userData,
         fetchProfilePics: { picValue, isPicLoading, picError },
         isLoading,
+        setIsLoading,
       }}
     >
       {children}

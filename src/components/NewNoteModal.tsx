@@ -83,7 +83,7 @@ const NewNoteModal: React.FC<{
           children: [{ text: title }],
         },
       ],
-      content: "",
+      content: null,
       ...data,
     });
     closeModal();

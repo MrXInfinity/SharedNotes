@@ -100,7 +100,7 @@ const NoteList: React.FC<{ category: "Private" | "Shared" }> = ({
                 whiteSpace: "pre-wrap",
               }}
             >
-              {useSerialize(eachData.content)}
+              {eachData.content ? useSerialize(eachData.content) : "No Content"}
             </Typography>
             <Stack
               direction="row"

@@ -109,11 +109,7 @@ const NoteEditor: React.FC<{
         </Slate>
         <Slate
           editor={contentEditor}
-          value={
-            typeof noteData.content === "string"
-              ? initialValue
-              : noteData.content
-          }
+          value={noteData.content ?? initialValue}
           onChange={(value) => {
             setNoteData((prev) => ({
               ...prev,

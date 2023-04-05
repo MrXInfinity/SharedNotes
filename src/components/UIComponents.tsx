@@ -93,22 +93,27 @@ const PageLayout: React.FC<{
   title: string;
   pageList: JSX.Element;
   modal?: JSX.Element;
-}> = ({ title, pageList, modal }) => {
+  customCss?: { [key: string]: string | { [property: string]: string } };
+  action?: JSX.Element;
+}> = ({ title, pageList, modal, customCss, action }) => {
   return (
     <>
       <Container
         sx={{ px: { xs: 4, sm: 6 }, pt: { xs: 0, md: 6 } }}
         disableGutters={true}
       >
-        <Typography
-          variant="h4"
-          sx={{
-            fontWeight: "bold",
-            fontSize: { xs: 24, sm: 30, md: 36, lg: 40 },
-          }}
-        >
-          {title}
-        </Typography>
+        <Stack direction="row">
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: "bold",
+              fontSize: { xs: 24, sm: 30, md: 36, lg: 40 },
+            }}
+          >
+            {title}
+          </Typography>
+          {action}
+        </Stack>
         <Box
           sx={{
             display: "grid",
@@ -118,6 +123,7 @@ const PageLayout: React.FC<{
               md: "repeat(4, minmax(0, 1fr))",
               lg: "repeat(5, minmax(0, 1fr))",
             },
+            ...customCss,
             gap: 4,
             width: "100%",
             flexWrap: "wrap",
