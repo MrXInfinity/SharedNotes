@@ -13,7 +13,7 @@ const Home = () => {
     userData: { firstname, lastname },
   } = useAppContext();
 
-  const filterList = <T,>(data: T[], category: keyof T) =>
+  const filterList = (data: any[], category: string) =>
     data.filter((eachData) =>
       moment().isSame(
         moment(parseInt(eachData[category as keyof typeof eachData])),
@@ -61,11 +61,11 @@ const Home = () => {
         spacing={{ xs: 2, sm: 4, lg: 6 }}
       >
         <TodayComponent
-          data={filterList<reminderType>(dbData.Reminder, "startTime")}
+          data={filterList(dbData.Reminder, "startTime")}
           category="Reminder"
         />
         <TodayComponent
-          data={filterList<taskType>(dbData.Tasks, "dueDateTime")}
+          data={filterList(dbData.Tasks, "dueDateTime")}
           category="Tasks"
         />
       </Stack>

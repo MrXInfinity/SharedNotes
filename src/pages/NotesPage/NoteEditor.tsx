@@ -16,11 +16,24 @@ import LooksOneIcon from "@mui/icons-material/LooksOne";
 import LooksTwoIcon from "@mui/icons-material/LooksTwo";
 import { Box, Button, Typography } from "@mui/material";
 import React from "react";
-import { Editable, Slate } from "slate-react";
+import { Editable, ReactEditor, Slate } from "slate-react";
 import { MenuComponent, ModalWrapper } from "../../components/UIComponents";
 import useFirestoreDb from "../../hooks/useFirestoreDb";
 import { noteType } from "../../types/firestoreDataTypes";
 import useNoteEditor from "./NoteEditorLogic";
+import { BaseEditor } from "slate";
+import { HistoryEditor } from "slate-history";
+
+type CustomText = { text: string };
+type CustomElement = { type: "paragraph"; children: CustomText[] };
+
+declare module "slate" {
+  interface CustomTypes {
+    Editor: BaseEditor & ReactEditor & HistoryEditor;
+    Element: CustomElement;
+    Text: CustomText;
+  }
+}
 
 const NoteEditor: React.FC<{
   isOpen: boolean;
@@ -94,8 +107,8 @@ const NoteEditor: React.FC<{
       >
         <Slate
           editor={titleEditor}
-          value={noteData.title}
-          onChange={(value) => {
+          value={noteData.title as any}
+          onChange={(value: any) => {
             setNoteData((prev) => ({
               ...prev,
               title: value,
@@ -109,8 +122,8 @@ const NoteEditor: React.FC<{
         </Slate>
         <Slate
           editor={contentEditor}
-          value={noteData.content ?? initialValue}
-          onChange={(value) => {
+          value={(noteData.content as any) ?? (initialValue as any)}
+          onChange={(value: any) => {
             setNoteData((prev) => ({
               ...prev,
               content: value,
