@@ -84,8 +84,8 @@ const TaskList: React.FC<{
     );
   }
 
-  if (data.length < 1) {
-    return <NoDataComponent title={`No Tasks Found...`} />;
+  if (data.length === 0) {
+    return <NoDataComponent title="No Tasks Found..." />;
   }
 
   return (

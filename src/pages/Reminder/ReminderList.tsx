@@ -58,8 +58,8 @@ const ReminderList: React.FC<{
     );
   }
 
-  if (data.length < 1) {
-    return <NoDataComponent title={`No Reminders Found...`} />;
+  if (data.length === 0) {
+    return <NoDataComponent title="No Reminders Found..." />;
   }
 
   return (

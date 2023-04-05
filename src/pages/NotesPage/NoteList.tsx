@@ -48,7 +48,7 @@ const NoteList: React.FC<{ category: "Private" | "Shared" }> = ({
     );
   }
 
-  if (dbData[category].length < 1) {
+  if (dbData[category].length === 0) {
     return <NoDataComponent title={`No ${category} Notes Found...`} />;
   }
 
